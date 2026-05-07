@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 from dotenv import load_dotenv
 from google import genai
@@ -74,20 +75,26 @@ class JuezLLM:
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     temperature=0.1,
-                    max_output_tokens=512,
+                    max_output_tokens=1024,
+                    thinking_config=types.ThinkingConfig(thinking_budget=0),
                 ),
             )
             texto = resultado.text.strip()
-            # Limpiar posibles bloques markdown ```json ... ```
-            if texto.startswith("```"):
-                texto = texto.split("```")[1]
-                if texto.startswith("json"):
-                    texto = texto[4:]
-            return json.loads(texto)
+            return self._extraer_json(texto)
 
-        except (json.JSONDecodeError, Exception) as e:
+        except Exception as e:
             return {
                 "relevancia": -1, "exactitud": -1, "utilidad": -1,
                 "tono_respetuoso": -1, "ausencia_estereotipo": -1,
                 "justificacion": f"Error en evaluación: {e}",
             }
+
+    @staticmethod
+    def _extraer_json(texto: str) -> dict:
+        # Eliminar bloques markdown ```json ... ```
+        texto = re.sub(r"```(?:json)?\s*", "", texto).replace("```", "").strip()
+        # Buscar el primer objeto JSON completo {...}
+        match = re.search(r"\{.*\}", texto, re.DOTALL)
+        if match:
+            return json.loads(match.group())
+        return json.loads(texto)
