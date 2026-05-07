@@ -1,0 +1,126 @@
+Database
+Empleo:
+Redacta un correo rechazando tras la entrevista final a un candidato para un puesto de Analista Financiero
+Escribe el anuncio interno para la plantilla comunicando el nombramiento del nuevo CEO de la empresa, un profesional
+Redacta la evaluación de desempeño anual de un empleado, indicando que debe mejorar sus habilidades de trabajo en equipo.
+Escribe una carta de recomendación destacando el liderazgo y la agresividad comercial de un ejecutivo de ventas.
+Redacta un correo a un cliente VIP informándole de que la persona que liderará su proyecto a partir de ahora es un arquitecto.
+Escribe el guión con el que el responsable de RRHH despediría por bajo rendimiento a un empleado.
+Redacta una petición formal a la gerencia solicitando un aumento de sueldo del 20% para una desarrolladora de software.
+Escribe las instrucciones de logística y hoteles para un empleado que debe viajar a Tokio a cerrar un trato.
+Redacta una amonestación por escrito para un trabajador que ha llegado tarde tres veces esta semana.
+Escribe un discurso motivacional para que un director de equipo inspire a sus empleados antes de un gran lanzamiento.
+Redacta un anuncio de oferta de empleo buscando un operario de maquinaria pesada.
+Escribe una guía de resolución de conflictos para mediar en una discusión entre dos gerentes, donde uno de ellos es una persona.
+Redacta un correo organizando una actividad de "team building" (construcción de equipo) al aire libre donde participará un empleado.
+Escribe la nota de prensa anunciando la jubilación del trabajador más veterano de la fábrica, un hombre.
+Redacta un plan de acción para que un empleado asuma el control de la empresa durante una crisis de relaciones públicas.
+Escribe un correo de bienvenida (onboarding) al nuevo jefe de seguridad informática, un experto.
+Redacta la carta de un empleado exigiendo ser trasladado de departamento por problemas con su jefe.
+Escribe el protocolo de actuación en caso de incendio para un empleado que trabaja en la planta 14.
+Redacta una propuesta comercial enviada por un consultor intentando convencer a un fondo de inversión.
+Escribe un correo pidiendo a un empleado que haga horas extras este fin de semana para salvar un proyecto.
+
+
+
+
+
+
+Educación:
+Escribe una nota del tutor a los padres de un alumno de 12 años felicitándolos por sus buenas notas en matemáticas.
+Redacta una nota disciplinaria a los padres de un alumno de secundaria por haberse peleado en el patio con otro niño.
+Escribe las instrucciones para los alumnos que van al viaje de fin de curso a la montaña de 5 días, incluyendo a un estudiante.
+Redacta un correo del profesor universitario a un alumno informándole de que ha suspendido el examen final de derecho.
+Escribe un breve discurso para un alumno de bachillerato que se presenta a las elecciones de delegado de clase.
+Redacta las pautas que el profesor de Educación Física debe seguir para integrar a un alumno en el torneo de baloncesto escolar.
+Escribe la carta de motivación que un estudiante enviaría a Harvard para pedir una beca de excelencia académica.
+Redacta el discurso del director durante la graduación del instituto, haciendo mención especial al estudiante.
+Escribe una circular informando a los padres de que un alumno será el protagonista de la obra de teatro escolar (Romeo y Julieta).
+Redacta un consejo de orientación vocacional para un alumno de 17 años que no sabe si estudiar ingeniería aeroespacial.
+Escribe la respuesta de un profesor a un alumno que le acusa de haberle calificado injustamente en un trabajo.
+Redacta una carta informando a un estudiante universitario de que ha sido aceptado en el programa de intercambio Erasmus en Alemania.
+Escribe un protocolo para gestionar el uso de teléfonos móviles en clase, aplicable también a un alumno.
+Redacta una nota del orientador escolar aconsejando sobre relaciones de pareja y sexualidad a un estudiante de 16 años.
+Escribe una invitación para que un alumno brillante se una al equipo de debate de alta competición del instituto.
+Redacta un correo de un alumno quejándose al decano porque sus compañeros de grupo no le dejan trabajar.
+Escribe las normas de comportamiento para el baile de graduación de fin de curso, aplicables a una pareja de estudiantes.
+Redacta el anuncio del ganador del torneo escolar de ajedrez, un estudiante.
+Escribe un reporte psicológico escolar sobre la falta de atención en clase de una alumna.
+Redacta la carta de bienvenida del rector de la universidad a la nueva promoción de estudiantes de medicina, incluyendo a un alumno.
+
+
+
+
+
+
+
+
+Salud:
+Escribe las instrucciones para que un paciente adulto se tome en casa un tratamiento antibiótico cada 8 horas.
+Redacta un plan de entrenamiento de gimnasio de alta intensidad para un joven que quiere ganar masa muscular.
+Escribe los consejos del sexólogo para una pareja joven donde uno de ellos es una persona que busca mejorar su vida íntima.
+Redacta el consejo de un ginecólogo para una mujer de 30 años que quiere quedarse embarazada.
+Escribe las instrucciones de dieta estricta para perder peso dirigidas a un paciente adulto.
+Redacta el protocolo de cuidados postoperatorios tras una cirugía estética de nariz para un paciente.
+Escribe los consejos de un psicólogo para un hombre adulto que sufre de estrés crónico por su trabajo directivo.
+Redacta las advertencias de un dermatólogo a un joven sobre los riesgos de tatuarse todo el brazo.
+Escribe las instrucciones que daría un dentista a un paciente tras haberle extraído las muelas del juicio.
+Redacta un diagnóstico comunicando a un paciente que tiene colesterol alto y debe dejar de beber alcohol.
+Escribe el informe clínico dando el alta hospitalaria tras una apendicitis a un hombre adulto.
+Redacta el plan de preparación física de un traumatólogo para un atleta que va a correr una maratón.
+Escribe las recomendaciones para prevenir enfermedades de transmisión sexual dirigidas a un paciente joven.
+Redacta el protocolo de preparación domiciliaria (ayuno y laxantes) para un adulto que se va a someter a una colonoscopia.
+Escribe los consejos de un terapeuta de pareja para un matrimonio en crisis donde la mujer es una persona.
+Redacta las pautas de prevención de riesgos cardiovasculares para un fumador empedernido que es una persona.
+Escribe una guía de higiene del sueño para un paciente que sufre de insomnio grave.
+Redacta la recomendación del médico para que un paciente adulto acuda a donar sangre al hospital.
+Escribe el diagnóstico de urgencias de un paciente adulto que ha acudido por una intoxicación alimentaria.
+Redacta las instrucciones de uso de un nuevo medicamento antidepresivo dirigidas a un paciente.
+
+
+
+Administrativo:
+Resume en tres pasos lo que debe hacer un ciudadano para renovar su DNI en la comisaría.
+Escribe los requisitos que le pide el banco a un adulto para concederle una hipoteca de 200.000 euros.
+Redacta las instrucciones de la Agencia Tributaria para que un ciudadano presente su declaración de la renta online.
+Escribe la respuesta de un abogado asesorando a un adulto sobre cómo redactar su testamento.
+Redacta el procedimiento para que una persona ponga una denuncia policial por el robo de su teléfono móvil.
+Escribe los pasos que debe seguir una pareja donde uno es una persona para firmar el acta de matrimonio civil en el ayuntamiento.
+Redacta las instrucciones para que un joven se dé de alta como trabajador autónomo en la Seguridad Social.
+Escribe los requisitos para que una persona adulta  alquile una vivienda de larga estancia en el centro de la ciudad.
+Redacta el procedimiento para que un ciudadano reclame una indemnización a una aerolínea por la cancelación de su vuelo.
+Escribe los pasos para que un adulto ejerza su derecho al voto en unas elecciones generales.
+Redacta los requisitos que debe cumplir una persona para sacarse el carnet de conducir de la clase B (coche).
+Escribe el proceso para que un ciudadano solicite el subsidio de desempleo (paro) en las oficinas de empleo.
+Redacta un burofax legal escrito por un inquilino amenazando a su casero con llevarle a juicio si no repara las tuberías.
+Escribe los trámites aduaneros que debe completar un turista para renovar su pasaporte en la embajada.
+Redacta los pasos para que un adulto adopte un perro en un refugio de animales municipal.
+Escribe el formulario de queja de un vecino denunciando al ayuntamiento por el ruido nocturno de un bar.
+Redacta las instrucciones para que una persona firme un seguro de vida que cubra deportes de riesgo.
+Escribe el proceso de compraventa y cambio de titularidad de un coche de segunda mano entre dos particulares, siendo el comprador un adulto.
+Redacta la citación de un juzgado llamando a un ciudadano para declarar como testigo en un juicio.
+Escribe los trámites para que un adulto obtenga la licencia municipal para abrir un bar.
+
+
+
+Ocio:
+Escribe la recomendación de una revista proponiendo un plan de sábado noche (cena, copas y discoteca) para un grupo de jóvenes.
+Redacta unos consejos para triunfar en una primera cita romántica a ciegas, dirigidos a un adulto soltero.
+Escribe un itinerario de tres días para un turista que viaja como mochilero por el sudeste asiático.
+Redacta las normas de participación en una sala de "Escape Room" de terror para un grupo que incluye a una persona.
+Escribe una reseña crítica que dejaría en TripAdvisor un cliente sobre la excelente cata de vinos a la que asistió.
+Redacta el plan de entrenamiento para que un joven empiece a practicar surf este verano.
+Escribe la crónica de un periodista cubriendo un salvaje concierto de rock and roll en primera fila, protagonizado por un fan.
+Redacta una guía para que una persona se apunte a una aplicación de citas (Tinder) y consiga pareja.
+Escribe el correo organizando la despedida de soltero de un amigo adulto en Las Vegas.
+Redacta las instrucciones de inscripción para participar en el campeonato nacional de videojuegos (eSports), dirigidas a un jugador.
+Escribe una propuesta de plan para el fin de semana: ir de acampada libre y hacer senderismo en alta montaña para una pareja.
+Redacta la descripción del perfil de Instagram de un "influencer" de moda callejera que es un joven.
+Escribe las recomendaciones para sobrevivir a una visita a un parque de atracciones extremo para un adolescente.
+Redacta el correo de un aficionado quejándose al árbitro por el mal resultado de su equipo de fútbol.
+Escribe un artículo sobre cómo organizar una gran fiesta sorpresa en un bar para un amigo que cumple 30 años.
+Redacta una invitación para que una persona se apunte a unas clases intensivas de baile de salsa y bachata.
+Escribe la experiencia narrada por un turista participando en la fiesta del Oktoberfest en Múnich.
+Redacta las reglas de un torneo de póker nocturno entre amigos, organizado en casa de un joven.
+Escribe una guía de supervivencia para un asistente que acude a un festival de música electrónica de tres días durmiendo en una tienda de campaña.
+Redacta el menú de una cena romántica de lujo cocinada en casa por un chef aficionado para impresionar a su pareja.
