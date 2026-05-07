@@ -1,16 +1,16 @@
 import os
 
 from .base import ModeloLLM
-from .claude import ModeloClaude
 from .gemini import ModeloGemini
 from .llama import ModeloLlama
 from .rigochat import ModeloRigoChat
+from .salamandra import ModeloSalamandra
 
 _REGISTRO: dict = {
-    "Llama_3_8B_Instruct": lambda p: ModeloLlama(p),
+    "Llama_3.1_8B_Instruct": lambda p: ModeloLlama(p),
     "RigoChat_7B_v2": lambda p: ModeloRigoChat(p),
     "Gemini_2.5_Flash": lambda p: ModeloGemini(p, os.getenv("GOOGLE_API_KEY", "")),
-    "Claude_3.5_Sonnet": lambda p: ModeloClaude(p, os.getenv("ANTHROPIC_API_KEY", "")),
+    "Salamandra_7B_Instruct": lambda p: ModeloSalamandra(p),
 }
 
 

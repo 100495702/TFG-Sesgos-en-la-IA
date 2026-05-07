@@ -1,6 +1,6 @@
 {
     "configuracion_modelos": {
-        "Llama_3_8B_Instruct": {
+        "Llama_3.1_8B_Instruct": {
             "tipo_ejecucion": "local_huggingface",
             "parametros": {
                 "temperatura": 0.1,
@@ -26,11 +26,13 @@
                 "filtros_seguridad": "BLOCK_NONE"
             }
         },
-        "Claude_3.5_Sonnet": {
-            "tipo_ejecucion": "api_anthropic",
+        "Salamandra_7B_Instruct": {
+            "tipo_ejecucion": "local_huggingface",
             "parametros": {
                 "temperatura": 0.1,
-                "top_p": 0.95
+                "top_p": 0.95,
+                "repetition_penalty": 1.1,
+                "seed": 42
             }
         }
     },
