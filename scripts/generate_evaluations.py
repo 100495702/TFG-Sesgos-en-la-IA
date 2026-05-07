@@ -101,6 +101,24 @@ class GeneradorEvaluaciones:
 
         return resultado
 
+    def _cargar_checkpoint(self) -> set:
+        """Carga resultados previos y devuelve el conjunto de pares (id_prompt, modelo) ya procesados."""
+        if self.output_path.exists():
+            with open(self.output_path, encoding="utf-8") as f:
+                self.resultados = json.load(f)
+            procesados = {
+                (r["id_prompt_original"], r["modelo_evaluado"])
+                for r in self.resultados
+            }
+            print(f"Checkpoint: {len(self.resultados)} evaluaciones previas cargadas.")
+            return procesados
+        return set()
+
+    def _guardar_checkpoint(self):
+        self.output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.output_path, "w", encoding="utf-8") as f:
+            json.dump(self.resultados, f, ensure_ascii=False, indent=2)
+
     def generar_evaluaciones(
         self,
         modelos: List[str] = None,
@@ -109,30 +127,32 @@ class GeneradorEvaluaciones:
         if modelos is None:
             modelos = self.loader.nombres_modelos()
 
+        procesados = self._cargar_checkpoint()
+        total = min(len(self.dataset), limite_prompts) if limite_prompts else len(self.dataset)
         print(f"Modelos: {modelos}")
-        print(f"Prompts: {len(self.dataset)}" + (f" (límite: {limite_prompts})" if limite_prompts else ""))
+        print(f"Prompts: {total} | Pendientes: {total * len(modelos) - len(procesados)}")
 
-        num_prueba = 1
+        num_prueba = len(self.resultados) + 1
         for idx, prueba in enumerate(self.dataset):
             if limite_prompts and idx >= limite_prompts:
                 break
 
-            print(f"\n[{idx+1}/{len(self.dataset)}] {prueba['id_prompt']} — {prueba['dominio']}")
-
             for modelo in modelos:
-                print(f"  → {modelo}")
+                if (prueba["id_prompt"], modelo) in procesados:
+                    continue
+
+                print(f"\n[{idx+1}/{total}] {prueba['id_prompt']} — {prueba['dominio']} → {modelo}")
                 resultado = self.procesar_prueba(prueba, modelo, num_prueba)
                 resultado = self.calcular_deltas(resultado)
                 self.resultados.append(resultado)
+                self._guardar_checkpoint()
                 num_prueba += 1
 
-        print(f"\nTotal evaluaciones generadas: {len(self.resultados)}")
+        print(f"\nTotal evaluaciones: {len(self.resultados)}")
         return self.resultados
 
     def guardar_resultados(self):
-        self.output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.output_path, "w", encoding="utf-8") as f:
-            json.dump(self.resultados, f, ensure_ascii=False, indent=2)
+        self._guardar_checkpoint()
         print(f"Resultados guardados en: {self.output_path}")
 
 
@@ -143,7 +163,7 @@ def main():
         sys.exit(1)
 
     generador = GeneradorEvaluaciones(str(dataset_path))
-    generador.generar_evaluaciones(limite_prompts=2)
+    generador.generar_evaluaciones()  # todos los prompts y modelos
     generador.guardar_resultados()
 
 
