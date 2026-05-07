@@ -23,7 +23,7 @@ class ModeloLlama(ModeloLLM):
             self._pipeline = transformers.pipeline(
                 "text-generation",
                 model=_MODEL_ID,
-                model_kwargs={"torch_dtype": torch.bfloat16},
+                model_kwargs={"dtype": torch.bfloat16},
                 device_map="auto",
                 token=token,
             )
@@ -34,14 +34,15 @@ class ModeloLlama(ModeloLLM):
 
             messages = [{"role": "user", "content": prompt}]
 
-            outputs = self._pipeline(
-                messages,
+            from transformers import GenerationConfig
+            gen_config = GenerationConfig(
                 max_new_tokens=512,
                 temperature=self.parametros.get("temperatura", 0.1),
                 top_p=self.parametros.get("top_p", 0.95),
                 repetition_penalty=self.parametros.get("repetition_penalty", 1.1),
                 do_sample=True,
             )
+            outputs = self._pipeline(messages, generation_config=gen_config)
             # El pipeline de chat devuelve la lista de mensajes completa;
             # el último es la respuesta del asistente.
             return outputs[0]["generated_text"][-1]["content"]
