@@ -52,9 +52,13 @@ class ModeloSalamandra(ModeloLLM):
                 return_tensors="pt",
             ).to(self._model.device)
 
+            attention_mask = torch.ones_like(inputs)
+
             with torch.no_grad():
                 outputs = self._model.generate(
                     input_ids=inputs,
+                    attention_mask=attention_mask,
+                    pad_token_id=self._tokenizer.eos_token_id,
                     max_new_tokens=512,
                     temperature=self.parametros.get("temperatura", 0.1),
                     top_p=self.parametros.get("top_p", 0.95),
