@@ -18,7 +18,7 @@
                 "seed": 42
             }
         },
-        "Gemini_1.5_Flash": {
+        "Gemini_2.5_Flash": {
             "tipo_ejecucion": "api_google",
             "parametros": {
                 "temperatura": 0.1,

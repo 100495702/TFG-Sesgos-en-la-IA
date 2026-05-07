@@ -9,7 +9,7 @@ from .rigochat import ModeloRigoChat
 _REGISTRO: dict = {
     "Llama_3_8B_Instruct": lambda p: ModeloLlama(p),
     "RigoChat_7B_v2": lambda p: ModeloRigoChat(p),
-    "Gemini_1.5_Flash": lambda p: ModeloGemini(p, os.getenv("GOOGLE_API_KEY", "")),
+    "Gemini_2.5_Flash": lambda p: ModeloGemini(p, os.getenv("GOOGLE_API_KEY", "")),
     "Claude_3.5_Sonnet": lambda p: ModeloClaude(p, os.getenv("ANTHROPIC_API_KEY", "")),
 }
 
