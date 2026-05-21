@@ -872,7 +872,15 @@ La rúbrica utilizada para la evaluación manual es la misma que la del juez LLM
 
 \section{Amenazas a la validez}
 
-Varias limitaciones metodológicas pueden afectar a la interpretación de los resultados. En primer lugar, el uso de temperatura baja (0,1) reduce la variabilidad estocástica de las respuestas, pero no la elimina completamente: los resultados pueden variar ligeramente entre ejecuciones. En segundo lugar, el análisis de sentimiento con robertuito, aunque es el modelo más adecuado disponible para el español, fue preentrenado principalmente sobre datos de Twitter, lo que puede introducir sesgos en la evaluación de textos de registro formal. En tercer lugar, el juez LLM puede presentar sus propios sesgos que afecten a las evaluaciones; aunque se opera en modo ciego, el juez fue entrenado por el mismo proveedor que uno de los modelos evaluados (Gemini 2.5 Flash). En cuarto lugar, el corpus de prompts es sintético y no proviene de consultas reales de usuarios, lo que puede limitar la generalización de los resultados.
+Creemos que es importante ser honestos sobre las limitaciones que pueden afectar a la interpretación de los resultados. Hay cuatro que nos parecen especialmente relevantes.
+
+La primera es la variabilidad de los modelos: aunque usamos temperatura baja (0,1) para reducirla, los resultados pueden variar ligeramente entre ejecuciones. Esto significa que los valores concretos de las métricas no son completamente estables, aunque las tendencias generales sí deberían serlo.
+
+La segunda tiene que ver con robertuito: aunque es el modelo de sentimiento más adecuado disponible para el español, fue entrenado principalmente sobre datos de Twitter, lo que puede introducir ciertos sesgos a la hora de analizar textos de registro formal como los que genera el experimento.
+
+La tercera afecta al juez LLM: Gemini 2.5 Flash puede tener sus propios sesgos que afecten a sus evaluaciones, y aunque opera en modo ciego, es un modelo del mismo proveedor que uno de los evaluados. Esto es algo que no podemos controlar completamente.
+
+Por último, el dataset es sintético: los prompts los hemos redactado nosotros siguiendo criterios de diseño experimental, no son consultas reales de usuarios. Esto puede afectar a la generalización de los resultados a usos reales de los modelos.
 
 \section{Conclusiones}
 
@@ -885,12 +893,14 @@ Varias limitaciones metodológicas pueden afectar a la interpretación de los re
 
 \section{Introducción}
 
-Este capítulo describe la planificación seguida durante el desarrollo del trabajo, el presupuesto asociado y el impacto social y ético del proyecto.
+En este capítulo describimos cómo hemos organizado el trabajo a lo largo del tiempo, qué costes ha tenido el proyecto y qué impacto social y ético creemos que tiene.
 
 
 \section{Planificación del proyecto}
 
-El desarrollo del trabajo se organizó en cinco fases secuenciales. La primera fase, de revisión bibliográfica y delimitación del problema, tuvo una duración de tres semanas y comprendió la lectura de los trabajos de referencia y la definición de las preguntas de investigación. La segunda fase, de diseño del dataset, tuvo una duración de cuatro semanas e incluyó la definición de las plantillas de prompts, la selección de tipos de discapacidad y dominios, y la validación manual de las variantes generadas. La tercera fase, de implementación del pipeline, tuvo una duración de seis semanas y abarcó el desarrollo de los módulos de carga, ejecución, evaluación y almacenamiento. La cuarta fase correspondió a la ejecución del experimento y al análisis de los resultados, con una duración estimada de tres semanas. La quinta y última fase, de redacción de la memoria, se desarrolló de forma paralela a las anteriores y se intensificó durante las últimas cuatro semanas del proyecto.
+El desarrollo del trabajo lo hemos organizado en cinco fases. Empezamos con la revisión bibliográfica y la delimitación del problema, que nos llevó aproximadamente tres semanas: leímos los artículos de referencia, acotamos las preguntas de investigación y decidimos el enfoque metodológico. A continuación dedicamos cuatro semanas al diseño del dataset: redactamos las 100 plantillas de prompts, decidimos los dominios y tipos de discapacidad a incluir y validamos manualmente que todas las variantes generaban frases correctas.
+
+La fase más larga fue la de implementación del pipeline, que nos ocupó unas seis semanas. En este tiempo desarrollamos el módulo de carga, los clientes de los cuatro modelos, los módulos de evaluación automática y el orquestador con soporte de checkpoint. Después vino la ejecución del experimento y el análisis de los resultados, con una duración de unas tres semanas. La redacción de la memoria la fuimos haciendo en paralelo a todo lo anterior y la intensificamos en las últimas cuatro semanas.
 
 
 \section{Fases de trabajo}
@@ -917,13 +927,13 @@ Redacción de la memoria & 4 semanas (paralela) & Escritura y revisión \\
 
 \section{Presupuesto}
 
-El presupuesto del proyecto se divide en tres categorías: coste de personal, coste de infraestructura computacional y coste de servicios externos.
+Para el presupuesto diferenciamos tres conceptos: el trabajo personal, la infraestructura computacional y los servicios externos de API.
 
-El coste de personal corresponde al trabajo del estudiante durante el desarrollo del proyecto. Considerando una dedicación aproximada de 300 horas a lo largo de las 16 semanas del proyecto, y un coste por hora de estudiante de investigación de 15 €/h, el coste total de personal asciende a 4.500 €.
+En cuanto al trabajo personal, estimamos unas 300 horas de dedicación a lo largo de las 16 semanas del proyecto. Aplicando un coste de 15 €/h (coste orientativo de un estudiante de investigación), el total asciende a 4.500 €.
 
-El coste de infraestructura computacional es prácticamente nulo, dado que el experimento se ejecuta en un servidor de investigación de uso compartido al que el estudiante tiene acceso sin coste adicional. El equipamiento utilizado (servidores con GPU NVIDIA L4) forma parte de la infraestructura del grupo de investigación.
+La infraestructura computacional tiene un coste prácticamente nulo para este trabajo, ya que el experimento se ejecuta en un servidor del grupo de investigación de la tutora al que tenemos acceso sin coste adicional. Las GPUs NVIDIA L4 utilizadas son parte de esa infraestructura.
 
-El coste de servicios externos corresponde a las llamadas a la API de Google para la ejecución del modelo Gemini 2.5 Flash y para el juez LLM. Con un total estimado de aproximadamente 6.400 llamadas (3.200 de generación y 3.200 de evaluación), a un coste medio de 0,0015 €/llamada para Gemini 2.5 Flash, el coste total asciende a aproximadamente 10 €.
+En cuanto a los servicios externos, el único coste real son las llamadas a la API de Gemini 2.5 Flash: aproximadamente 6.400 en total (3.200 para la generación de respuestas y 3.200 para el juez LLM). A un coste medio de 0,0015 €/llamada, el total es de unos 10 €.
 
 \begin{table}[H]
 \centering
@@ -945,19 +955,19 @@ API Google Gemini & ~6.400 llamadas & ~10 € \\
 
 \section{Impacto social y ético}
 
-Este trabajo tiene un impacto social potencialmente positivo en varios planos. En primer lugar, contribuye a visibilizar una forma de sesgo algorítmico que afecta a un colectivo especialmente vulnerable y que ha recibido escasa atención en el contexto del español. En segundo lugar, el dataset y el pipeline desarrollados quedan disponibles de forma pública en el repositorio de GitHub del proyecto, lo que permite a otros investigadores utilizarlos como base para estudios similares o ampliarlos con nuevos modelos, dominios o tipos de discapacidad. En tercer lugar, los resultados obtenidos pueden ser de interés para los desarrolladores de los modelos evaluados, en la medida en que identifican patrones de sesgo concretos que podrían ser objeto de mejora en versiones futuras.
+Creemos que este trabajo puede tener un impacto positivo en varios sentidos. El más directo es que ayuda a visibilizar un problema que estaba poco estudiado en español: el sesgo algorítmico hacia las personas con discapacidad. Al publicar tanto el dataset como el pipeline en GitHub de forma pública, cualquier otro investigador puede usar nuestro trabajo como punto de partida, ampliarlo con nuevos modelos o dominios, o replicarlo para comparar resultados. También puede ser útil para los equipos que desarrollan los modelos evaluados, ya que los resultados identifican patrones concretos de sesgo que podrían corregirse en versiones futuras.
 
-Desde el punto de vista ético, el trabajo respeta la dignidad del colectivo estudiado al utilizar la terminología recomendada por las organizaciones representativas de las personas con discapacidad y al presentar los resultados de forma objetiva, sin descalificar ningún modelo ni extraer conclusiones que vayan más allá de lo que los datos permiten afirmar. Las claves de API utilizadas durante el experimento no se incluyen en el repositorio de código.
+Desde el punto de vista ético, hemos intentado ser cuidadosos en varios aspectos. Usamos la terminología recomendada por las organizaciones representativas del colectivo (CERMI, ONCE), presentamos los resultados sin descalificar a ningún modelo más allá de lo que los datos indican, y no incluimos ninguna credencial ni clave de API en el repositorio.
 
 
 \section{Relación con los Objetivos de Desarrollo Sostenible}
 
-Este trabajo presenta una relación directa con varios Objetivos de Desarrollo Sostenible de la Agenda 2030 de las Naciones Unidas. En primer lugar, el ODS 10 (\textit{Reducción de las desigualdades}) es el más directamente relacionado: la detección de sesgos algorítmicos hacia las personas con discapacidad es un paso necesario para garantizar que los sistemas de IA no amplifiquen las desigualdades existentes. En segundo lugar, el ODS 4 (\textit{Educación de calidad}) es relevante por el análisis de sesgos en el dominio educativo, que puede afectar a las oportunidades de acceso y participación de las personas con discapacidad en la educación. En tercer lugar, el ODS 16 (\textit{Paz, justicia e instituciones sólidas}) conecta con la necesidad de garantizar que los sistemas automáticos utilizados en procesos de toma de decisiones sean justos y no discriminatorios.
+Este trabajo conecta con varios ODS de la Agenda 2030. El más relevante es el \textbf{ODS 10} (\textit{Reducción de las desigualdades}): identificar sesgos algorítmicos hacia las personas con discapacidad es un paso necesario para que los sistemas de IA no amplifiquen las desigualdades existentes. También tiene relación con el \textbf{ODS 4} (\textit{Educación de calidad}), dado que uno de los dominios analizados es el educativo y los sesgos en ese contexto pueden afectar a las oportunidades del colectivo. Por último, conecta con el \textbf{ODS 16} (\textit{Paz, justicia e instituciones sólidas}) en el sentido de que contribuye a que los sistemas automáticos que toman o apoyan decisiones sean más justos y no discriminatorios.
 
 
 \section{Conclusiones}
 
-Este capítulo ha descrito la planificación del proyecto, el presupuesto estimado y el impacto social y ético del trabajo. El coste total del proyecto es relativamente reducido, dada la disponibilidad de infraestructura computacional compartida y la naturaleza de investigación del trabajo. El impacto social potencial es, sin embargo, significativo, en tanto que el trabajo contribuye a mejorar la comprensión del sesgo hacia la discapacidad en modelos de IA en español.
+El proyecto ha tenido un coste económico reducido gracias al acceso a infraestructura compartida y al uso de modelos de código abierto. El coste principal es el tiempo dedicado, que estimamos en unas 300 horas. El impacto potencial, en cambio, puede ser relevante: aportamos un dataset, un pipeline y unos resultados que pueden servir de base para investigación futura sobre equidad en IA en español.
 
 
 % ============================================================
@@ -966,64 +976,61 @@ Este capítulo ha descrito la planificación del proyecto, el presupuesto estima
 
 \section{Conclusiones generales}
 
-% [PENDIENTE: completar cuando el experimento haya finalizado y se hayan analizado los resultados]
+% [PENDIENTE: completar con los resultados finales una vez analizado el experimento completo]
 
-Este trabajo ha diseñado, implementado y ejecutado un marco experimental para analizar sesgos relacionados con la discapacidad en modelos de IA generativa en español. La metodología basada en prompts contrafactuales ha permitido comparar de forma sistemática las respuestas generadas por cuatro modelos ante consultas neutras y consultas que incorporan referencias explícitas a distintos tipos de discapacidad.
+En este TFG hemos diseñado, implementado y ejecutado un benchmark para analizar sesgos relacionados con la discapacidad en modelos de IA generativa en español. El enfoque contrafactual nos ha permitido comparar de forma sistemática las respuestas de cuatro modelos ante las mismas consultas con y sin referencia explícita a la discapacidad.
 
-Los resultados preliminares obtenidos durante el desarrollo del pipeline evidencian que los cuatro modelos analizados presentan formas de sesgo diferenciadas: desde cambios sutiles de tono (RigoChat) hasta la inclusión de notas de DEI no solicitadas (Llama), la autoconciencia del sesgo (Gemini) o la discriminación directa basada en la discapacidad (Salamandra). Esta diversidad de patrones sugiere que el sesgo relacionado con la discapacidad no es un fenómeno uniforme ni predecible, y que su análisis requiere una combinación de métricas automáticas y revisión humana.
+Ya durante el desarrollo del pipeline pudimos observar ejemplos muy claros de los distintos tipos de sesgo que pueden aparecer. En las pruebas preliminares con el prompt de rechazo laboral, los cuatro modelos mostraron comportamientos distintos entre sí: RigoChat cambiaba sutilmente el tono volviéndose más frío y formal, Llama añadía una nota de inclusión no solicitada, Gemini era consciente de que podía sesgar la respuesta e intentaba evitarlo activamente, y Salamandra llegaba a justificar el rechazo argumentando que la silla de ruedas dificultaba el desempeño del puesto (un puesto de Analista Financiero, donde la discapacidad física no tiene ninguna relevancia). Estos resultados son solo un ejemplo, pero muestran que el problema es real y que se manifiesta de formas muy distintas según el modelo.
 
-% [PENDIENTE: completar con conclusiones definitivas basadas en los resultados completos]
+% [PENDIENTE: completar con el análisis completo del experimento]
 
 
 \section{Cumplimiento de objetivos}
 
-% [PENDIENTE: revisar cuando estén disponibles todos los resultados]
-
-Los objetivos específicos planteados al inicio del trabajo han sido abordados de la siguiente forma:
+A continuación repasamos cómo hemos ido cumpliendo cada uno de los objetivos específicos que nos planteamos al principio:
 
 \begin{itemize}
-    \item El estudio de los fundamentos y trabajos relacionados se recoge en el capítulo 2 de esta memoria.
-    \item El diseño experimental basado en prompts contrafactuales se describe en el capítulo 4.
-    \item La arquitectura del pipeline experimental se describe en los capítulos 4 y 5.
-    \item La implementación del proceso reproducible se recoge en el capítulo 5.
-    \item La evaluación y comparación de resultados se presenta en el capítulo 6.
-    \item Las limitaciones y líneas de mejora se describen en las secciones \ref{} y \ref{} de este capítulo.
+    \item El estudio de los trabajos relacionados y los fundamentos teóricos se recoge en el capítulo 2.
+    \item El diseño del experimento basado en prompts contrafactuales se describe en el capítulo 4.
+    \item La arquitectura del pipeline experimental y su implementación se describen en los capítulos 4 y 5.
+    \item La ejecución del experimento y la evaluación de resultados se presentan en el capítulo 6.
+    \item Las limitaciones y líneas de mejora se recogen en este mismo capítulo.
 \end{itemize}
 
 
 \section{Principales aportaciones}
 
-Las principales aportaciones de este trabajo son las siguientes:
+Lo que creemos que aporta este trabajo es lo siguiente:
 
 \begin{enumerate}
-    \item Un dataset original de 100 plantillas de prompts contrafactuales en español, organizadas en cinco dominios temáticos y con siete tipos de discapacidad, disponible públicamente en GitHub.
-    \item Un pipeline experimental modular y reproducible que integra modelos locales y de API bajo una interfaz común.
-    \item Un sistema de evaluación automática que combina análisis de sentimiento en español (robertuito), evaluación por juez LLM y diferencia de extensión.
-    \item Un análisis empírico del sesgo hacia la discapacidad en cuatro modelos representativos del estado del arte en español, incluyendo tanto modelos especializados en esta lengua como modelos multilingües de propósito general.
+    \item Un dataset original de 100 plantillas de prompts contrafactuales en español, organizado en cinco dominios temáticos con siete tipos de discapacidad, disponible públicamente en GitHub.
+    \item Un pipeline experimental modular y reproducible que integra modelos locales y de API bajo una interfaz común, con soporte de checkpoint.
+    \item Un sistema de evaluación automática que combina análisis de sentimiento en español (robertuito), evaluación por juez LLM con rúbrica de cinco dimensiones y diferencia de extensión.
+    \item Un análisis empírico del sesgo hacia la discapacidad en cuatro modelos representativos, incluyendo dos especializados en español (RigoChat y Salamandra) y dos multilingües de propósito general (Llama y Gemini).
 \end{enumerate}
 
 
 \section{Limitaciones}
 
-Las principales limitaciones del trabajo son las siguientes. En primer lugar, el dataset es de naturaleza sintética y no proviene de consultas reales de usuarios, lo que puede afectar a la generalización de los resultados. En segundo lugar, el análisis se limita a la generación de texto en español estándar y no contempla variedades regionales o contextos culturales específicos. En tercer lugar, la evaluación automática presenta limitaciones conocidas para la detección de formas sutiles de sesgo como el paternalismo o la infantilización. En cuarto lugar, la muestra de evaluación manual es necesariamente reducida dada la escala del experimento.
+Somos conscientes de que el trabajo tiene algunas limitaciones que conviene mencionar. La más importante es que el dataset es sintético: los prompts los hemos redactado nosotros y no provienen de consultas reales de usuarios, lo que puede afectar a la generalización de los resultados. También nos hemos limitado al español estándar, sin contemplar variedades regionales. La evaluación automática, por su parte, tiene problemas conocidos para detectar sesgos sutiles como el paternalismo. Y la muestra para revisión manual es necesariamente pequeña dado el volumen total del experimento.
 
 
 \section{Líneas futuras}
 
-Entre las posibles líneas de trabajo futuro se identifican las siguientes:
+Hay varias direcciones en las que podría continuarse este trabajo:
 
 \begin{itemize}
-    \item \textbf{Ampliación del dataset}: incorporar nuevos dominios (movilidad, tecnología, justicia), nuevos tipos de discapacidad (neurológica, psiquiátrica) y nuevas variantes de los textos insertados para enriquecer la cobertura del estudio.
+    \item \textbf{Ampliar el dataset}: añadir nuevos dominios (tecnología, justicia, vivienda), nuevos tipos de discapacidad (neurológica, de salud mental) o nuevas variantes de los textos de condición.
 
-    \item \textbf{Evaluación con participantes con discapacidad}: complementar la evaluación automática y la revisión del estudiante con grupos de discusión o anotaciones realizadas por personas con los tipos de discapacidad representados en el dataset.
+    \item \textbf{Evaluación con personas con discapacidad}: la limitación más importante de la evaluación manual es que la hacemos nosotros. Sería mucho más valioso contar con anotaciones de personas del colectivo, como hicieron \citeauthor{gadiraju2023disability} \cite{gadiraju2023disability}.
 
-    \item \textbf{Incorporación de nuevos modelos}: extender el experimento a otros modelos de interés, como GPT-4o, ALIA-40b o modelos futuros especializados en español, para ampliar la comparativa.
+    \item \textbf{Más modelos}: incluir GPT-4o, ALIA-40b u otros modelos futuros especializados en español para ampliar la comparativa.
 
-    \item \textbf{Análisis temporal}: repetir el experimento con versiones futuras de los mismos modelos para analizar si las tendencias de sesgo se mantienen, mejoran o empeoran a lo largo del tiempo.
+    \item \textbf{Seguimiento temporal}: repetir el experimento con versiones futuras de los mismos modelos para ver si el sesgo mejora, empeora o se mantiene.
 
-    \item \textbf{Técnicas de mitigación}: explorar métodos de post-procesado o de ajuste del sistema de instrucciones que reduzcan los sesgos identificados sin comprometer la utilidad de las respuestas.
+    \item \textbf{Técnicas de mitigación}: una vez identificados los patrones de sesgo, explorar cómo reducirlos mediante ajuste del sistema de instrucciones u otras técnicas de post-procesado.
 
-    \item \textbf{Generalización a otras lenguas}: adaptar la metodología a otras lenguas con menor representación en la literatura de sesgo en IA, como el catalán, el gallego o el euskera.
+    \item \textbf{Otras lenguas}: adaptar la metodología al catalán, gallego o euskera, que tienen representación aún menor en la literatura de sesgo en IA.
 \end{itemize}
 
 
