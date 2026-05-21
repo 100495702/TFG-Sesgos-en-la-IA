@@ -26,7 +26,7 @@ class AnalizadorSentimiento:
 
         self._cargar()
         texto_truncado = " ".join(texto.split()[:200])
-        resultados = self._pipe(texto_truncado)[0]
+        resultados = self._pipe(texto_truncado, truncation=True, max_length=128)[0]
         probs = {r["label"]: round(r["score"], 4) for r in resultados}
         probs["score"] = round(probs.get("POS", 0.0) - probs.get("NEG", 0.0), 4)
         return probs
