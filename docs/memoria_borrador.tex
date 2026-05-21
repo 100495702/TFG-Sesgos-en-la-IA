@@ -229,33 +229,29 @@ Los resultados obtenidos muestran patrones de sesgo diferenciados entre modelos,
 
 \section{Contexto}
 
-En la última década, los modelos de lenguaje de gran escala —conocidos en inglés como \textit{Large Language Models} (LLMs)— han experimentado una transformación radical en sus capacidades y en su nivel de adopción social. Impulsados por la arquitectura \textit{transformer} \cite{vaswani2017attention} y entrenados sobre corpus de texto de escala masiva, modelos como GPT-4, Llama o Gemini son capaces de generar texto coherente, responder preguntas complejas, resumir documentos, redactar correos o mantener conversaciones con un grado de naturalidad anteriormente inédito en sistemas automáticos.
+En los últimos años, los modelos de lenguaje de gran escala —o LLMs, como se les conoce habitualmente— han pasado a ser una herramienta cotidiana para millones de personas en todo el mundo. Gracias a la arquitectura \textit{transformer} \cite{vaswani2017attention} y a su entrenamiento sobre enormes cantidades de texto, sistemas como GPT-4, Llama o Gemini son capaces de generar texto coherente, responder preguntas, redactar documentos o mantener conversaciones de una forma que hace unos años habría parecido imposible.
 
-Esta capacidad ha propiciado su integración progresiva en ámbitos de alto impacto social. Los LLMs se utilizan ya en sistemas de atención al cliente, asistentes de salud, plataformas educativas, herramientas de redacción profesional y servicios de la administración pública. En el contexto hispanohablante, donde el español es la segunda lengua más hablada del mundo con más de 500 millones de hablantes nativos, el desarrollo de modelos orientados específicamente al español ha cobrado un impulso significativo, con iniciativas como RigoChat (Instituto de Ingeniería del Conocimiento), Salamandra (Barcelona Supercomputing Center) o ALIA (BSC-LT).
+Como consecuencia de esto, estos modelos se están integrando en ámbitos que afectan directamente a la vida de las personas: atención sanitaria, educación, servicios públicos, selección de personal o asesoría legal, entre otros. En el contexto del español, esto es especialmente relevante dado que es la segunda lengua más hablada del mundo, y ha surgido un ecosistema propio de modelos orientados específicamente a esta lengua, como RigoChat (desarrollado por el IIC), Salamandra (del Barcelona Supercomputing Center) o ALIA.
 
-Sin embargo, en paralelo a este avance tecnológico, la comunidad científica ha documentado de forma sistemática la presencia de sesgos en las salidas de estos modelos \cite{navigli2023biases, guo2024bias}. Estos sesgos no son siempre evidentes ni explícitos: en muchos casos se manifiestan como diferencias sutiles en el tono, la extensión, el nivel de detalle o el uso de estereotipos en función de las características demográficas de los sujetos descritos en las consultas. Su origen es múltiple: los datos de entrenamiento reflejan los prejuicios presentes en los textos humanos, y el proceso de ajuste mediante aprendizaje por refuerzo con retroalimentación humana (RLHF) puede amplificar o introducir nuevos sesgos si los evaluadores humanos no son suficientemente diversos o si las directrices de evaluación no contemplan de forma explícita la equidad hacia todos los grupos sociales.
-
-El colectivo de personas con discapacidad representa, en este contexto, uno de los grupos más expuestos a los efectos negativos de los sesgos algorítmicos. Según la Encuesta de Discapacidad, Autonomía Personal y Situaciones de Dependencia (EDAD) del Instituto Nacional de Estadística, en España existen aproximadamente 4,38 millones de personas con algún tipo de discapacidad, lo que representa cerca del 9,4\% de la población. A nivel mundial, la Organización Mundial de la Salud estima que más de 1.300 millones de personas viven con alguna forma de discapacidad significativa, lo que supone alrededor del 16\% de la población global. Si los sistemas de IA que se despliegan para servir a la ciudadanía general presentan comportamientos diferenciados o estereotipados cuando interactúan con o sobre personas con discapacidad, el impacto potencial sobre la equidad de acceso a estos sistemas es considerable.
+El problema es que, junto con todas estas capacidades, los LLMs heredan los sesgos que existen en los datos con los que se han entrenado \cite{navigli2023biases, guo2024bias}. Estos sesgos no siempre son fáciles de detectar: a menudo no se manifiestan como insultos o contenido claramente ofensivo, sino como diferencias sutiles en el tono, la cantidad de información proporcionada o la forma en que se presenta a determinados grupos de personas. El colectivo de personas con discapacidad es uno de los que más pueden verse afectados por este tipo de comportamientos. Según datos del Instituto Nacional de Estadística, en España hay aproximadamente 4,38 millones de personas con algún tipo de discapacidad (cerca del 9,4\% de la población), y a nivel mundial la OMS estima que más de 1.300 millones de personas viven con alguna forma de discapacidad significativa. Si los sistemas de IA que se despliegan para toda la ciudadanía tratan de forma diferente a este colectivo, el impacto puede ser considerable.
 
 
 \section{Motivación}
 
-La motivación de este trabajo nace de la intersección de dos tendencias observables en la literatura científica y en el contexto tecnológico actual.
+La idea de este TFG surge de una combinación de factores que, al juntarse, hacen que el tema resulte especialmente interesante y necesario.
 
-Por un lado, los trabajos sobre sesgo en LLMs han proliferado de forma notable en los últimos años \cite{guo2024bias, navigli2023biases}, pero la mayoría de ellos se centra en atributos como el género, la etnia o la edad, y opera predominantemente en lengua inglesa. El sesgo relacionado con la discapacidad ha recibido una atención significativamente menor, y los estudios existentes en español son prácticamente inexistentes. Trabajos como el de \citeauthor{gadiraju2023disability} \cite{gadiraju2023disability} o \citeauthor{venkit2022disability} \cite{venkit2022disability} han evidenciado que los modelos de lenguaje presentan asociaciones negativas sistemáticas con términos relacionados con la discapacidad, pero estos análisis se han realizado en inglés y no contemplan los modelos orientados al español.
+Por un lado, revisando la literatura científica sobre sesgos en LLMs \cite{guo2024bias, navigli2023biases}, nos dimos cuenta de que la inmensa mayoría de los estudios se centran en inglés y en atributos como el género o la etnia. El sesgo hacia las personas con discapacidad está comparativamente muy poco estudiado, y en español prácticamente no existen trabajos al respecto. Hay algunos estudios en inglés que demuestran que los modelos asocian términos de discapacidad con sentimientos negativos \cite{venkit2022disability} o que reproducen estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability}, pero nadie ha explorado si esto ocurre también en los modelos que se están desarrollando específicamente para el español.
 
-Por otro lado, el acceso a LLMs de propósito general, tanto mediante API como mediante modelos de código abierto ejecutables localmente, ha democratizado la posibilidad de realizar este tipo de estudios de forma rigurosa y reproducible sin necesidad de infraestructuras de gran escala. Esta circunstancia abre la puerta a investigaciones de evaluación de sesgo adaptadas al contexto lingüístico y cultural del español, que consideren tanto los modelos multilingües de uso extendido como los modelos especializados desarrollados para el español.
+Por otro lado, hoy en día es perfectamente posible llevar a cabo este tipo de experimentos de forma rigurosa sin necesitar una infraestructura enorme, gracias a que muchos modelos son de código abierto y se pueden ejecutar en GPUs accesibles. Esto nos permitió diseñar un experimento real, con modelos reales, y no quedarnos en algo meramente teórico.
 
-Este trabajo responde, por tanto, a una necesidad identificada en la literatura: la evaluación sistemática y reproducible del sesgo relacionado con la discapacidad en modelos de IA generativa en español, utilizando una metodología basada en pruebas contrafactuales que permita aislar el efecto de este atributo sensible.
+En definitiva, el trabajo responde a una pregunta que nadie ha respondido todavía para el español: ¿cambian los LLMs su comportamiento cuando una consulta menciona a una persona con discapacidad? Y si cambia, ¿de qué forma?
 
 
 \section{Problema abordado}
 
-El problema central de este trabajo es la posible presencia de sesgos relacionados con la discapacidad en las respuestas generadas por modelos de IA generativa en español. De forma más precisa, se investiga si estos modelos modifican de manera sistemática el tono, la calidad, la extensión o el contenido de sus respuestas cuando una consulta que mantiene la misma estructura e intención comunicativa incorpora una referencia explícita a una persona con discapacidad.
+El problema concreto que abordamos en este trabajo es el siguiente: cuando se le pide a un modelo de IA generativa en español que genere un texto, ¿produce respuestas distintas dependiendo de si la consulta menciona o no a una persona con discapacidad? Y si lo hace, ¿en qué sentido cambia esa respuesta?
 
-Este tipo de sesgo —denominado en la literatura sesgo extrínseco o de salida \cite{navigli2023biases}— no implica necesariamente que el modelo utilice lenguaje ofensivo o discriminatorio de forma abierta. Al contrario, las investigaciones previas han mostrado que los sesgos más frecuentes se manifiestan de formas más sutiles: lenguaje paternalista o condescendiente, sobreprotección en los consejos proporcionados, generalización de limitaciones, omisión de información relevante, o cambios de tono que reflejan actitudes estereotipadas hacia las personas con discapacidad \cite{gadiraju2023disability}.
-
-La detección de estos sesgos sutiles requiere una combinación de métricas automáticas y evaluación humana, dado que los indicadores simples de toxicidad o negatividad son insuficientes para capturar matices como el paternalismo o la sobre-corrección motivada por el conocimiento implícito del modelo sobre atributos sensibles.
+Lo importante es que este tipo de sesgo —denominado en la literatura sesgo extrínseco o de salida \cite{navigli2023biases}— no tiene por qué manifestarse de forma obvia. El modelo no tiene que insultar a nadie para ser discriminatorio. Lo que los trabajos previos han encontrado \cite{gadiraju2023disability} es que los sesgos suelen ser más sutiles: el modelo puede volverse más paternalista, añadir advertencias innecesarias, reducir el nivel de detalle de su respuesta, o introducir estereotipos de forma implícita. Esto hace que detectarlos sea más difícil y que haga falta ir más allá de un simple detector de toxicidad.
 
 
 \section{Objetivos}
@@ -702,98 +698,112 @@ Este capítulo ha descrito el diseño completo del marco experimental, desde la 
 
 \section{Introducción}
 
-Este capítulo describe la implementación del marco experimental diseñado en el capítulo anterior. Se detallan el entorno de desarrollo utilizado, la estructura del repositorio, la implementación de los módulos principales del pipeline y las decisiones técnicas adoptadas durante el desarrollo.
+En este capítulo vamos a describir cómo hemos implementado el pipeline experimental que se diseñó en el capítulo anterior. Comentaremos el entorno en el que hemos trabajado, la estructura del repositorio, las decisiones de diseño más importantes y cómo funciona cada uno de los módulos que componen el sistema.
 
 
 \section{Entorno de desarrollo}
 
-El experimento se ejecuta en un servidor de cómputo compartido del grupo de investigación, equipado con cuatro GPU NVIDIA L4 de 23 GB de VRAM cada una (92 GB de VRAM total), 64 GB de RAM y sistema operativo Ubuntu 22.04 LTS. El entorno de Python se gestiona mediante un entorno virtual dedicado (\texttt{entorno-tfg/}) con Python 3.10.
+Para ejecutar el experimento hemos utilizado un servidor de cómputo compartido del grupo de investigación de la tutora, equipado con cuatro GPU NVIDIA L4 de 23 GB de VRAM cada una (92 GB en total), lo que nos ha permitido cargar simultáneamente los tres modelos locales en memoria sin necesidad de recargarlos entre prompts. El sistema operativo es Ubuntu 22.04 LTS y hemos trabajado con Python 3.10, gestionando el entorno mediante un entorno virtual dedicado (\texttt{entorno-tfg/}).
 
-Las dependencias principales del proyecto son: PyTorch 2.5.1 con soporte CUDA 12.1, Transformers 5.6.2 (Hugging Face), pysentimiento 0.7.x, google-genai 1.x, python-dotenv 1.x y huggingface\_hub. Las API keys y tokens de acceso se gestionan mediante un fichero \texttt{.env} excluido del repositorio de código mediante \texttt{.gitignore}.
+Las principales librerías utilizadas son PyTorch 2.5.1 con soporte CUDA 12.1, Transformers 5.6.2 de Hugging Face para los modelos locales, pysentimiento para el análisis de sentimiento, y google-genai para la comunicación con la API de Gemini. Las API keys y tokens de acceso se guardan en un fichero \texttt{.env} que no se incluye en el repositorio (está en el \texttt{.gitignore}).
 
-El código fuente se versiona en un repositorio Git alojado en GitHub (\url{https://github.com/100495702/TFG-Sesgos-en-la-IA}).
+Todo el código está disponible públicamente en GitHub: \url{https://github.com/100495702/TFG-Sesgos-en-la-IA}.
 
 
 \section{Estructura del repositorio}
 
-El código fuente se organiza siguiendo una estructura modular que separa los datos de entrada, el código de ejecución y los resultados generados:
+Una decisión de diseño importante que tomamos desde el principio fue separar claramente los datos de entrada, el código del pipeline y los resultados generados. La estructura resultante es la siguiente:
 
 \begin{verbatim}
 TFG-Sesgos-en-la-IA/
 |
 |-- data/
-|   |-- dataset.json           # Dataset de prompts contrafactuales
-|   |-- dataset_expandido.csv  # CSV con una fila por prompt final
+|   |-- dataset.json            # Dataset de prompts contrafactuales
+|   |-- dataset_expandido.csv   # CSV con una fila por prompt final
 |
 |-- scripts/
-|   |-- dataset_loader.py      # Carga y acceso al dataset
-|   |-- generate_evaluations.py # Orquestador del experimento
+|   |-- dataset_loader.py       # Carga y acceso al dataset
+|   |-- generate_evaluations.py # Orquestador principal del experimento
 |   |-- modelos/
-|   |   |-- __init__.py        # Factoría crear_modelo()
-|   |   |-- base.py            # Interfaz ModeloLLM (ABC)
-|   |   |-- llama.py           # Llama 3.1 8B Instruct
-|   |   |-- rigochat.py        # RigoChat 7B v2
-|   |   |-- gemini.py          # Gemini 2.5 Flash (API)
-|   |   |-- salamandra.py      # Salamandra 7B Instruct
+|   |   |-- __init__.py         # Factoría crear_modelo()
+|   |   |-- base.py             # Interfaz ModeloLLM (clase abstracta)
+|   |   |-- llama.py            # Llama 3.1 8B Instruct
+|   |   |-- rigochat.py         # RigoChat 7B v2
+|   |   |-- gemini.py           # Gemini 2.5 Flash (API)
+|   |   |-- salamandra.py       # Salamandra 7B Instruct
 |   |-- evaluacion/
 |       |-- __init__.py
-|       |-- sentimiento.py     # Análisis de sentimiento (robertuito)
-|       |-- juez_llm.py        # Juez LLM (Gemini 2.5 Flash)
+|       |-- sentimiento.py      # Análisis de sentimiento (robertuito)
+|       |-- juez_llm.py         # Juez LLM (Gemini 2.5 Flash)
 |
 |-- outputs/
-|   |-- salidas.json           # Resultados del experimento (checkpoint)
+|   |-- salidas.json            # Resultados del experimento (checkpoint)
 |
 |-- docs/
-|   |-- memoria_borrador.tex   # Borrador de la memoria
+|   |-- memoria_borrador.tex
 |
 |-- requirements.txt
 |-- .gitignore
-|-- .env                       # No incluido en el repositorio
+|-- .env                        # No incluido en el repositorio
 \end{verbatim}
 
-La carpeta \texttt{data/} contiene el dataset de prompts utilizado como entrada. La carpeta \texttt{scripts/} contiene los módulos principales del pipeline, organizados en dos subpaquetes: \texttt{modelos/} para los clientes de cada modelo y \texttt{evaluacion/} para las métricas automáticas. La carpeta \texttt{outputs/} almacena los resultados del experimento.
+Dentro de \texttt{scripts/} hemos creado dos subpaquetes: \texttt{modelos/} para los clientes de cada modelo y \texttt{evaluacion/} para las métricas automáticas. Esta separación nos ha permitido trabajar en cada parte de forma independiente y ha facilitado la depuración de errores durante el desarrollo.
 
 
 \section{Implementación del pipeline experimental}
 
 \subsection{Carga y validación del dataset de prompts}
 
-El módulo \texttt{dataset\_loader.py} implementa la clase \texttt{DatasetLoader}, que carga el fichero \texttt{dataset.json} y expone métodos para acceder a los prompts, variaciones y configuración de modelos. Los métodos principales son \texttt{variacion\_base(prompt)}, que devuelve la variación neutra, y \texttt{variaciones\_discapacidad(prompt)}, que devuelve la lista de variaciones con discapacidad.
+Para la carga del dataset hemos creado el módulo \texttt{dataset\_loader.py}, que implementa la clase \texttt{DatasetLoader}. Esta clase lee el fichero \texttt{dataset.json} y expone los métodos necesarios para acceder a los datos del experimento. Los más importantes son \texttt{variacion\_base(prompt)}, que devuelve la variación neutra de un prompt, y \texttt{variaciones\_discapacidad(prompt)}, que devuelve la lista de las siete variantes con discapacidad. Separar esta lógica en un módulo propio nos ha permitido que el orquestador no tenga que conocer los detalles del formato del JSON.
 
 \subsection{Integración con los modelos seleccionados}
 
-Todos los clientes de modelos heredan de la clase abstracta \texttt{ModeloLLM}, que define el método \texttt{consultar(prompt: str) -> str} como interfaz común. La factoría \texttt{crear\_modelo(nombre, parametros)} instancia el cliente correspondiente según el nombre del modelo. Esta arquitectura permite añadir nuevos modelos implementando únicamente el nuevo cliente, sin modificar el orquestador.
+Una decisión de diseño clave a la hora de integrar los modelos fue definir una interfaz común para todos ellos. Todos los clientes de modelos heredan de la clase abstracta \texttt{ModeloLLM}, que obliga a implementar el método \texttt{consultar(prompt: str) -> str}. De esta forma, el orquestador puede llamar a cualquier modelo sin saber nada sobre cómo funciona internamente.
 
-Los modelos locales implementan un patrón de carga perezosa: el modelo y el tokenizador se cargan en GPU la primera vez que se invoca \texttt{consultar()}, y se reutilizan en las llamadas posteriores. Para Salamandra, el tokenizador aplica la plantilla de chat específica del modelo (\texttt{apply\_chat\_template}) con la fecha de ejecución, siguiendo la documentación oficial del modelo.
+Para instanciar el modelo correcto en cada caso, implementamos la función factoría \texttt{crear\_modelo(nombre, parametros)} en el fichero \texttt{\_\_init\_\_.py} del subpaquete. Esta función recibe el nombre del modelo tal como aparece en el dataset y devuelve la instancia correspondiente. La ventaja de este diseño es que añadir un nuevo modelo al experimento sólo requiere crear un nuevo fichero dentro de \texttt{modelos/} y registrarlo en el diccionario de la factoría, sin modificar nada más.
+
+En cuanto a los modelos locales, optamos por un patrón de carga perezosa: el modelo y el tokenizador se cargan en GPU la primera vez que se llama a \texttt{consultar()}, y a partir de ahí se reutilizan en todas las llamadas posteriores. Esto evita tener que recargar los pesos del modelo (que pueden pesar más de 14 GB) en cada prompt, lo que haría el experimento inviable en términos de tiempo.
+
+Un caso especial es Salamandra, cuyo tokenizador requiere usar el método \texttt{apply\_chat\_template} con la fecha actual como parámetro, siguiendo la documentación oficial del modelo \cite{salamandra}. Lo tuvimos en cuenta al implementar su cliente para asegurarnos de que las llamadas al modelo se hacían correctamente.
 
 \subsection{Ejecución de prompts y almacenamiento de respuestas}
 
-El orquestador (\texttt{generate\_evaluations.py}) implementa el método \texttt{generar\_evaluaciones()}, que recorre los prompts y modelos en orden, verifica si el par (prompt, modelo) ya ha sido procesado mediante checkpoint, y en caso contrario ejecuta el método \texttt{\_procesar\_variante()} para cada variante. Cada variante genera: la respuesta del modelo, el análisis de sentimiento, la evaluación por el juez LLM y la longitud en palabras. Tras procesar todas las variantes de un prompt, se calculan los deltas contrafactuales y el bloque de resumen, y el resultado completo se guarda inmediatamente en \texttt{outputs/salidas.json}.
+El orquestador principal está en \texttt{generate\_evaluations.py}, en la clase \texttt{GeneradorEvaluaciones}. El método \texttt{generar\_evaluaciones()} recorre los prompts y los modelos en orden, y para cada combinación llama al método interno \texttt{\_procesar\_variante()}, que se encarga de obtener la respuesta del modelo y calcular las tres métricas: análisis de sentimiento, evaluación por el juez LLM y longitud en palabras.
 
-\subsection{Gestión de errores y trazabilidad}
+Tras procesar todas las variantes de un prompt con un modelo concreto, se calculan los deltas contrafactuales respecto a la condición neutra y se genera un bloque de resumen que incluye la variante más sesgada, la tasa de rechazo y el índice de sesgo. El resultado completo se guarda inmediatamente en \texttt{outputs/salidas.json} tras cada resultado, lo que implementa el mecanismo de checkpoint.
 
-Si una llamada al modelo genera una excepción (error de API, fallo de GPU, tiempo de espera excedido), el sistema registra el error en el campo \texttt{rechazo\_api} y almacena una respuesta vacía, permitiendo que el experimento continúe con el siguiente par. Este mecanismo garantiza que un fallo puntual no interrumpa la ejecución completa del experimento.
+\subsection{Gestión de errores y checkpoint}
+
+Dos aspectos importantes de la implementación son la gestión de errores y el checkpoint para reanudar el experimento.
+
+Respecto a los errores: si una llamada al modelo falla por cualquier motivo (error de la API, fallo de GPU, timeout), el sistema registra el incidente en el campo \texttt{rechazo\_api} con valor 1 y continúa con el siguiente par. De esta forma, un fallo puntual no interrumpe toda la ejecución.
+
+Respecto al checkpoint: al arrancar, el orquestador comprueba si existe un fichero \texttt{salidas.json} con resultados previos. Si existe, carga los resultados ya procesados y construye un conjunto con los pares (id\_prompt, modelo) que ya están completados, saltándolos en el bucle principal. Esto nos ha resultado especialmente útil durante el desarrollo, cuando el proceso se interrumpía frecuentemente por errores que teníamos que corregir.
 
 
 \section{Implementación del análisis automático}
 
 \subsection{Análisis de sentimiento}
 
-El módulo \texttt{sentimiento.py} implementa la clase \texttt{AnalizadorSentimiento}, que utiliza el pipeline de clasificación de texto de Transformers con el modelo \texttt{pysentimiento/robertuito-sentiment-analysis}. Para evitar errores por secuencias excesivamente largas (el modelo acepta un máximo de 128 tokens), el texto de entrada se trunca mediante el parámetro \texttt{truncation=True} del pipeline.
+Para el análisis de sentimiento utilizamos el modelo \texttt{robertuito} a través de la librería pysentimiento \cite{perez2021pysentimiento}, que es la opción más adecuada disponible para el español. Lo implementamos en la clase \texttt{AnalizadorSentimiento} dentro del módulo \texttt{sentimiento.py}.
+
+Un problema que encontramos durante las primeras ejecuciones fue que el modelo lanzaba un error de CUDA cuando las respuestas eran demasiado largas, ya que robertuito tiene un límite de 128 tokens. La solución fue añadir el parámetro \texttt{truncation=True} en la llamada al pipeline, que trunca automáticamente la entrada al máximo permitido.
 
 \subsection{Juez LLM}
 
-El módulo \texttt{juez\_llm.py} implementa la clase \texttt{JuezLLM}, que envía a Gemini 2.5 Flash un prompt estructurado con la instrucción recibida por el modelo evaluado y la respuesta generada, y solicita una evaluación en formato JSON con las cinco dimensiones de la rúbrica. La funcionalidad de \textit{thinking} se desactiva explícitamente para obtener salidas más deterministas. El módulo incluye extracción robusta del JSON de la respuesta para manejar posibles variaciones en el formato de salida.
+El juez LLM está implementado en la clase \texttt{JuezLLM} dentro de \texttt{juez\_llm.py}. Su funcionamiento es sencillo: recibe la instrucción original y la respuesta generada por el modelo evaluado, construye un prompt con la rúbrica de cinco dimensiones y se lo envía a Gemini 2.5 Flash, que devuelve una evaluación en formato JSON.
+
+Tuvimos que resolver dos problemas durante la implementación. El primero fue que Gemini 2.5 Flash tiene activada por defecto una funcionalidad de razonamiento previo (\textit{thinking}) que añadía tokens adicionales antes del JSON y rompía el proceso de parseo. La solución fue desactivar explícitamente esta funcionalidad en la configuración de la llamada. El segundo fue que, ocasionalmente, el modelo envolvía el JSON en un bloque de código Markdown (\texttt{```json...```}), así que añadimos una limpieza del texto antes de intentar parsearlo.
 
 
 \section{Exportación de resultados}
 
-Además del fichero JSON de resultados completo, el experimento genera un CSV expandido (\texttt{data/dataset\_expandido.csv}) con una fila por prompt final, que facilita el análisis tabular con pandas. Este fichero incluye todas las columnas de metadatos del prompt y los campos de texto del prompt final, pero no incluye las respuestas generadas por los modelos (que se almacenan únicamente en el JSON).
+Además del fichero JSON de resultados, generamos también un CSV expandido (\texttt{data/dataset\_expandido.csv}) con una fila por cada prompt final. Este fichero contiene los metadatos de cada prompt y el texto del prompt enviado al modelo, pero no incluye las respuestas generadas (que quedan en el JSON). Su utilidad principal es facilitar el análisis con pandas, ya que el formato tabular es más cómodo para filtrar y agrupar datos que el JSON anidado.
 
 
 \section{Conclusiones}
 
-Este capítulo ha descrito la implementación del pipeline experimental. La estructura modular adoptada, con interfaces comunes para los clientes de modelos y los módulos de evaluación, ha permitido integrar cuatro modelos con características técnicas muy distintas (locales y de API, multilingües y especializados en español) bajo un único flujo de ejecución reproducible.
+En este capítulo hemos descrito las decisiones de implementación más relevantes del pipeline. La arquitectura modular con interfaz común para los modelos, el mecanismo de checkpoint y la separación entre módulos de generación y evaluación han sido las decisiones de diseño que más han influido en que el experimento pudiera ejecutarse de forma robusta y con posibilidad de reanudar ante fallos.
 
 
 % ============================================================
