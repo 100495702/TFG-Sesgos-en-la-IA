@@ -416,21 +416,21 @@ La revisión de la literatura presentada en este capítulo permite extraer varia
 
 \section{Introducción}
 
-Este capítulo describe el problema abordado desde una perspectiva técnica y experimental, y establece los requisitos que debe cumplir el marco experimental diseñado para dar respuesta a las preguntas de investigación planteadas. Se parte de la descripción general del problema, se identifican los requisitos funcionales y no funcionales del sistema, se delimitan las restricciones y el alcance del experimento y se abordan las consideraciones éticas relevantes.
+En este capítulo analizamos el problema desde un punto de vista técnico y establecemos los requisitos que debe cumplir el sistema que vamos a construir. Aunque no estamos desarrollando una aplicación para usuarios finales, sí necesitamos definir qué tiene que hacer el pipeline y bajo qué restricciones tiene que funcionar, de la misma forma que se haría en cualquier proyecto software.
 
 
 \section{Descripción general del problema}
 
-El problema que se aborda en este trabajo puede formularse del siguiente modo: dado un modelo de IA generativa en español, ¿produce respuestas sistemáticamente distintas cuando una consulta que mantiene la misma estructura e intención comunicativa incorpora una referencia explícita a una discapacidad?
+El problema central que queremos resolver puede formularse de esta manera: dado un modelo de IA generativa en español, ¿genera respuestas distintas cuando una consulta menciona a una persona con discapacidad frente a cuando no lo hace?
 
-Para dar respuesta a esta pregunta es necesario resolver tres subproblemas interrelacionados. El primero es el de la \textbf{construcción del estímulo experimental}: diseñar un conjunto de consultas que permitan comparar respuestas ante condiciones neutras y con discapacidad, controlando todos los demás factores que podrían influir en la respuesta del modelo. El segundo es el de la \textbf{captura y almacenamiento de las respuestas}: ejecutar las consultas sobre los modelos seleccionados de forma sistemática y reproducible, conservando toda la información necesaria para el análisis posterior. El tercero es el de la \textbf{medición del sesgo}: definir y calcular indicadores cuantitativos que permitan comparar de forma objetiva las respuestas obtenidas ante las distintas condiciones experimentales.
+Para poder responder a esto necesitamos resolver tres subproblemas que están relacionados entre sí. El primero es \textbf{cómo diseñar las consultas}: necesitamos pares de prompts que sean idénticos en todo excepto en la referencia a la discapacidad, para que cualquier diferencia en las respuestas pueda atribuirse únicamente a ese factor. El segundo es \textbf{cómo ejecutar y almacenar el experimento}: hay que lanzar esas consultas sobre los modelos de forma sistemática y guardar los resultados de manera que podamos analizarlos después. El tercero es \textbf{cómo medir el sesgo}: hay que definir métricas cuantitativas que nos permitan comparar las respuestas de forma objetiva.
 
-Estos tres subproblemas determinan la arquitectura del marco experimental y los requisitos que se describen en las secciones siguientes.
+Estos tres subproblemas son los que determinan la arquitectura del sistema y los requisitos que describimos en las secciones siguientes.
 
 
 \section{Requisitos del marco experimental}
 
-Aunque el trabajo no consiste en el desarrollo de una aplicación final orientada a usuarios, sí requiere la definición de un conjunto de requisitos que permitan construir un proceso experimental sistemático, trazable y reproducible. Estos requisitos describen las funcionalidades mínimas que debe cumplir el pipeline para cargar el dataset de prompts, ejecutar los modelos seleccionados, almacenar las respuestas generadas y preparar los datos para su análisis posterior.
+A continuación definimos los requisitos funcionales y no funcionales del pipeline. Aunque el trabajo no es una aplicación para usuarios, tiene sentido definir estos requisitos para asegurarnos de que el sistema cumple con lo que necesitamos y para facilitar cualquier ampliación futura.
 
 \subsection{Flujo de trabajo experimental}
 
@@ -486,7 +486,7 @@ RNF10 & El experimento debe minimizar la intervención manual durante la ejecuci
 
 \subsection{Requisitos de datos}
 
-El pipeline experimental requiere almacenar información tanto de los prompts como de las respuestas generadas. Para garantizar la trazabilidad, cada respuesta debe poder relacionarse con el prompt exacto que la originó, el modelo utilizado y las condiciones experimentales asociadas.
+Para que el experimento sea trazable y reproducible, es importante que cada respuesta generada pueda relacionarse con el prompt exacto que la originó, el modelo que la produjo y las condiciones del experimento. A continuación se muestran los campos mínimos que almacenamos por cada resultado.
 
 \begin{table}[H]
 \centering
@@ -514,27 +514,29 @@ El pipeline experimental requiere almacenar información tanto de los prompts co
 
 \section{Restricciones y alcance del experimento}
 
-El diseño del experimento está condicionado por varias restricciones de naturaleza técnica, metodológica y de recursos. Desde el punto de vista técnico, los modelos locales requieren hardware con GPU de alta capacidad (mínimo 16 GB de VRAM por modelo) para poder ejecutarse en tiempos razonables. Esta restricción limita la posibilidad de ejecución en equipos convencionales y condiciona el entorno de desarrollo utilizado.
+A la hora de diseñar el experimento tuvimos que tener en cuenta varias restricciones que afectan tanto al alcance como a los resultados.
 
-Desde el punto de vista metodológico, el uso de prompts contrafactuales implica que el sesgo medido es el sesgo extrínseco de salida ante tareas de generación en contextos concretos. Los resultados no son directamente generalizables al comportamiento de los modelos en tareas distintas (como clasificación o traducción), ni al sesgo intrínseco de sus representaciones.
+La primera es técnica: los modelos locales necesitan GPUs con bastante VRAM (al menos 16 GB por modelo) para poder ejecutarse en tiempos razonables. Esto significa que el experimento no puede reproducirse en un ordenador convencional, y que dependemos de acceso a infraestructura de computación específica.
 
-Finalmente, el volumen del experimento (100 prompts × 4 modelos × 8 variaciones = 3.200 llamadas a modelos, más 3.200 llamadas al juez LLM) supone un tiempo de ejecución estimado de aproximadamente 19 horas en el entorno de cómputo utilizado, con un coste asociado a las llamadas a la API de Google estimado en menos de 10 euros al tipo de cambio vigente en el momento de la ejecución.
+La segunda es metodológica: al usar prompts contrafactuales para medir el sesgo extrínseco, los resultados que obtenemos son válidos para tareas de generación de texto en español, pero no son directamente extrapolables a otras tareas (clasificación, traducción) ni al sesgo intrínseco de las representaciones internas de los modelos.
+
+Por último, hay una restricción de escala: el experimento completo son 100 prompts × 4 modelos × 8 variantes = 3.200 llamadas a modelos, más otras 3.200 al juez LLM. En el entorno de cómputo que hemos utilizado, esto supone aproximadamente 12 horas de ejecución y un coste en llamadas a la API de Google inferior a 10 euros.
 
 
 \section{Consideraciones éticas}
 
-El estudio de los sesgos en IA es en sí mismo un trabajo de naturaleza ética: su objetivo es identificar comportamientos potencialmente discriminatorios para contribuir a su corrección. Sin embargo, el diseño del experimento requiere tomar algunas decisiones con implicaciones éticas propias.
+Aunque el objetivo del trabajo es precisamente detectar comportamientos discriminatorios para contribuir a su corrección, también hay que reflexionar sobre las implicaciones éticas del propio diseño del experimento.
 
-En primer lugar, los prompts utilizados en el experimento incluyen referencias explícitas a distintos tipos de discapacidad. Estas referencias se formulan de acuerdo con la terminología recomendada por las organizaciones de personas con discapacidad en España (CERMI, ONCE), utilizando el modelo del lenguaje basado en la persona ("persona con discapacidad visual", en lugar de "invidente") y evitando términos con connotaciones negativas o asistencialistas.
+Lo primero es la terminología. Los prompts incluyen referencias explícitas a distintos tipos de discapacidad, y nos aseguramos de redactarlos siguiendo las recomendaciones de las organizaciones representativas del colectivo en España (CERMI, ONCE), usando el modelo de lenguaje centrado en la persona: "persona con discapacidad visual" en lugar de "invidente", por ejemplo.
 
-En segundo lugar, el objetivo del estudio no es calificar ningún modelo de "bueno" o "malo", sino describir de forma objetiva y reproducible las diferencias observadas en sus respuestas. Los resultados se presentarán con las cautelas metodológicas necesarias para evitar conclusiones que excedan lo que los datos permiten afirmar.
+Lo segundo es la interpretación de los resultados. El objetivo no es calificar ningún modelo de bueno o malo, sino describir diferencias objetivas y reproducibles. Cualquier conclusión que saquemos tiene que estar respaldada por los datos y no ir más allá de lo que estos permiten afirmar.
 
-En tercer lugar, el uso de un modelo de IA como juez de las respuestas de otros modelos introduce una posible fuente de sesgo adicional: el propio juez puede presentar sesgos que afecten a sus evaluaciones. Para mitigar este riesgo, el juez opera en modo ciego (sin información sobre qué modelo generó la respuesta) y se valida su coherencia mediante la comparación con una muestra de evaluaciones humanas.
+Lo tercero es el uso del juez LLM. Utilizar Gemini para evaluar las respuestas de los modelos introduce una posible fuente de sesgo adicional: el propio juez tiene sus propios sesgos. Para minimizar este riesgo, el juez siempre opera en modo ciego —sin saber qué modelo generó la respuesta— y validamos su coherencia comparando una muestra de sus evaluaciones con valoraciones humanas.
 
 
 \section{Conclusiones}
 
-Este capítulo ha descrito el problema experimental desde una perspectiva técnica, ha establecido los requisitos funcionales y no funcionales del marco experimental, ha delimitado el alcance del estudio y ha reflexionado sobre sus implicaciones éticas. En el capítulo siguiente se presenta el diseño detallado del experimento, incluyendo el dataset de prompts, el esquema de almacenamiento y el protocolo de evaluación.
+En este capítulo hemos definido el problema técnicamente, establecido los requisitos del sistema y acotado el alcance del experimento. En el capítulo siguiente describimos el diseño concreto: cómo construimos el dataset, cómo estructuramos el almacenamiento y cómo diseñamos la evaluación.
 
 
 % ============================================================
@@ -543,40 +545,40 @@ Este capítulo ha descrito el problema experimental desde una perspectiva técni
 
 \section{Introducción}
 
-Este capítulo describe el diseño del marco experimental utilizado en este trabajo. Se detallan la arquitectura general del pipeline, el proceso de construcción del dataset de prompts contrafactuales, el esquema de almacenamiento de los resultados, el protocolo de ejecución y el diseño del sistema de evaluación automática.
+En este capítulo describimos el diseño del marco experimental: cómo está organizado el pipeline, cómo hemos construido el dataset, qué esquema de almacenamiento usamos y cómo hemos diseñado la evaluación automática.
 
 
 \section{Arquitectura general del pipeline experimental}
 
-La arquitectura propuesta se basa en un pipeline experimental modular. El objetivo de esta arquitectura es separar las distintas fases del experimento para facilitar la trazabilidad, la reutilización del código y la ampliación futura del sistema.
+Para diseñar el pipeline, la decisión más importante que tomamos fue organizarlo de forma modular: cada componente tiene una responsabilidad clara y está separado del resto. Esto nos ha permitido trabajar en cada parte de forma independiente y ha simplificado mucho la depuración de errores.
 
-El flujo comienza con un dataset de prompts contrafactuales almacenado en formato JSON. A continuación, un módulo de carga y validación comprueba que cada prompt contiene los campos necesarios para su ejecución y análisis posterior. Una vez validados los datos de entrada, el orquestador experimental ejecuta cada prompt sobre los modelos seleccionados.
+El flujo parte de un dataset de prompts en formato JSON. A continuación, un módulo de carga lee ese dataset y lo expone de forma estructurada al resto del sistema. El orquestador principal recorre los prompts y los modelos, invocando a cada cliente de modelo a través de una interfaz común. Las respuestas se evalúan automáticamente (sentimiento, juez LLM, longitud) y se guardan de forma incremental en un fichero JSON tras cada resultado, lo que implementa el mecanismo de checkpoint.
 
-La arquitectura contempla la integración de modelos locales y modelos accesibles mediante API. Para ello, se define una interfaz común de generaciónherramienta, de modo que todos los modelos puedan ser invocados de forma homogénea desde el pipeline. Las respuestas generadas se almacenan en formato JSON junto con los metadatos necesarios para reconstruir cada ejecución, guardándose de forma incremental tras cada resultado para garantizar la robustez ante fallos (checkpoint). Posteriormente, los resultados se procesan mediante módulos de análisis automático que calculan métricas sobre las respuestas y generan un bloque de resumen comparativo.
+Hemos optado por un diseño en el que los modelos locales y los de API se integran de la misma forma, de modo que el orquestador no necesita saber si está hablando con un modelo local o con una API. Esto facilita añadir nuevos modelos sin tocar el flujo principal.
 
 
 \section{Componentes principales}
 
-La arquitectura del pipeline se organiza en los siguientes componentes:
+El pipeline se divide en los siguientes componentes:
 
 \begin{itemize}
-    \item \textbf{Dataset de prompts} (\texttt{data/dataset.json}): contiene las plantillas de prompts y sus variaciones contrafactuales, organizadas por dominio y tipo de discapacidad.
+    \item \textbf{Dataset de prompts} (\texttt{data/dataset.json}): contiene las 100 plantillas y sus 800 variantes ya construidas, organizadas por dominio y tipo de discapacidad.
 
-    \item \textbf{Módulo de carga} (\texttt{scripts/dataset\_loader.py}): lee el dataset de entrada y expone métodos para acceder a los prompts, variaciones y configuración de modelos.
+    \item \textbf{Módulo de carga} (\texttt{scripts/dataset\_loader.py}): lee el dataset y expone métodos para acceder a prompts, variantes y configuración de los modelos.
 
-    \item \textbf{Orquestador experimental} (\texttt{scripts/generate\_evaluations.py}): coordina la ejecución de los prompts sobre los distintos modelos, el cálculo de métricas y el guardado incremental de resultados.
+    \item \textbf{Orquestador} (\texttt{scripts/generate\_evaluations.py}): coordina la ejecución, el cálculo de métricas y el guardado incremental de resultados.
 
-    \item \textbf{Clientes de modelos} (\texttt{scripts/modelos/}): encapsulan la lógica específica de acceso a cada modelo. Todos implementan una interfaz común (\texttt{ModeloLLM}) con el método \texttt{consultar(prompt: str) -> str}.
+    \item \textbf{Clientes de modelos} (\texttt{scripts/modelos/}): un fichero por modelo, todos implementando la misma interfaz (\texttt{ModeloLLM}) con el método \texttt{consultar(prompt) -> str}.
 
-    \item \textbf{Módulo de evaluación} (\texttt{scripts/evaluacion/}): contiene el analizador de sentimiento (\texttt{sentimiento.py}) y el juez LLM (\texttt{juez\_llm.py}).
+    \item \textbf{Módulo de evaluación} (\texttt{scripts/evaluacion/}): contiene el analizador de sentimiento y el juez LLM.
 
-    \item \textbf{Almacenamiento} (\texttt{outputs/salidas.json}): almacena los resultados en formato JSON con guardado incremental.
+    \item \textbf{Almacenamiento} (\texttt{outputs/salidas.json}): fichero JSON con guardado incremental (checkpoint).
 \end{itemize}
 
 
 \section{Flujo de ejecución}
 
-El flujo de ejecución del pipeline se organiza en varias fases secuenciales. En primer lugar, se carga el dataset de prompts y se verifica si existe un checkpoint previo con resultados parciales; si es así, se reanudan los pares (prompt, modelo) pendientes. En segundo lugar, el orquestador recorre los prompts y los modelos seleccionados, generando una respuesta para cada combinaciónmediante el cliente correspondiente. En tercer lugar, se calculan las métricas automáticas sobre la respuesta: análisis de sentimiento, evaluación por el juez LLM y longitud en palabras. Tras procesar cada variación, se calcula el delta contrafactual respecto a la condición neutra. Finalmente, se genera un bloque de resumen por prueba y se guarda el resultado de forma inmediata en el fichero de checkpoint.
+El flujo principal del experimento funciona de la siguiente manera: al arrancar, el orquestador comprueba si existe un checkpoint con resultados previos y, si es así, reanuda desde donde se quedó. A continuación, para cada combinación (prompt, modelo) pendiente, genera las ocho respuestas (la neutra más las siete con discapacidad), calcula las métricas sobre cada una, calcula los deltas contrafactuales respecto a la condición neutra y genera el bloque de resumen. Todo esto se guarda inmediatamente en el JSON antes de pasar al siguiente par.
 
 \begin{verbatim}
 1. Cargar dataset de prompts.
@@ -598,13 +600,11 @@ El flujo de ejecución del pipeline se organiza en varias fases secuenciales. En
 
 \section{Diseño del dataset de prompts contrafactuales}
 
-El dataset experimental se diseñó con el objetivo de analizar si los modelos generativos modifican sus respuestas cuando una consulta mantiene la misma intención comunicativa, pero incorpora una referencia explícita a una discapacidad. Para ello, se adoptó un enfoque basado en prompts contrafactuales, en el que cada caso se representa mediante una plantilla común y un conjunto de variaciones asociadas a distintas condiciones experimentales.
-
-Cada prompt base se define mediante una plantilla que contiene un espacio variable, representado como \texttt{\{condicion\}}, donde se introduce la referencia a la discapacidad. De este modo, se mantiene constante la estructura general de la consulta y se modifica únicamente el atributo objeto de estudio.
+El dataset es el núcleo del experimento, así que su diseño es una de las decisiones más importantes del trabajo. La idea base es sencilla: cada prompt se define como una plantilla con un marcador \texttt{\{condicion\}} que se sustituye por el texto de la discapacidad o se deja vacío para la condición neutra. De esta forma, la única diferencia entre las variantes de un mismo prompt es precisamente la referencia a la discapacidad, lo que nos permite aislar su efecto.
 
 \subsection{Dominios temáticos}
 
-El dataset se organiza en cinco dominios temáticos, seleccionados por su relevancia social y por representar contextos en los que las personas con discapacidad pueden verse afectadas de forma significativa por sesgos algorítmicos:
+Para organizar el dataset, elegimos cinco dominios temáticos que representan contextos donde las personas con discapacidad interactúan frecuentemente con sistemas de IA y donde los sesgos pueden tener consecuencias reales:
 
 \begin{itemize}
     \item \textbf{Empleo}: situaciones laborales como contratación, evaluación del desempeño, comunicaciones internas y gestión de recursos humanos.
@@ -614,11 +614,11 @@ El dataset se organiza en cinco dominios temáticos, seleccionados por su releva
     \item \textbf{Ocio}: actividades de tiempo libre, entretenimiento y vida social, incluyendo viajes, deportes y relaciones personales.
 \end{itemize}
 
-Para cada dominio se definieron veinte plantillas de prompts, dando lugar a un total de cien plantillas iniciales. El objetivo de sesgo de cada plantilla describe el tipo de sesgo que se pretende explorar (por ejemplo, \textit{presunción de incompetencia}, \textit{sobreprotección} o \textit{falta de accesibilidad}).
+Para cada dominio hemos redactado veinte plantillas de prompts, lo que da un total de cien plantillas. Cada una tiene asociado un \textit{objetivo de sesgo} que describe qué tipo de sesgo se pretende provocar o detectar con ese prompt concreto (por ejemplo, \textit{presunción de incompetencia}, \textit{sobreprotección} o \textit{falta de accesibilidad}).
 
 \subsection{Tipos de discapacidad considerados}
 
-El dataset contempla siete tipos de discapacidad, organizados en las siguientes categorías:
+Para las variantes de discapacidad, definimos siete tipos que cubren un rango amplio y representativo:
 
 \begin{itemize}
     \item \textbf{Física}: representada por la condición "en silla de ruedas".
@@ -630,11 +630,11 @@ El dataset contempla siete tipos de discapacidad, organizados en las siguientes 
     \item \textbf{Cognitiva}: representada por "con discapacidad cognitiva".
 \end{itemize}
 
-Junto con la condición neutra (sin referencia a discapacidad), cada plantilla genera ocho variantes, lo que da lugar a un total de 800 prompts finales (100 plantillas × 8 variantes). El dataset completo se almacena en formato JSON con una entrada por plantilla, incluyendo todas sus variaciones con los prompts finales ya construidos.
+Sumando la condición neutra, cada plantilla genera ocho variantes, lo que da un total de 800 prompts finales (100 × 8). El dataset completo se almacena en un fichero JSON donde cada entrada corresponde a una plantilla e incluye todas sus variantes con los prompts ya construidos, listos para enviar al modelo.
 
 \subsection{Estructura de los pares contrafactuales}
 
-Cada entrada del dataset incluye: el identificador del prompt (compuesto por el prefijo del dominio y un número secuencial, por ejemplo \texttt{EMP\_001}), el dominio temático, el objetivo de sesgo, la plantilla con el marcador \texttt{\{condicion\}}, y la lista de variaciones. Cada variación especifica la condición experimental (\textit{neutral} o \textit{discapacidad}), el tipo de discapacidad, el texto insertado y el prompt final.
+Cada entrada del dataset tiene: el identificador del prompt (prefijo del dominio + número, por ejemplo \texttt{EMP\_001}), el dominio, el objetivo de sesgo, la plantilla con el marcador \texttt{\{condicion\}}, y la lista de variantes. Cada variante incluye la condición (\textit{neutral} o \textit{discapacidad}), el tipo de discapacidad, el texto que se inserta y el prompt final ya construido.
 
 \subsection{Criterios de redacción y control de prompts}
 
@@ -645,51 +645,51 @@ La redacción de las plantillas siguió los siguientes criterios. En primer luga
 
 Los resultados del experimento se almacenan en un único fichero JSON (\texttt{outputs/salidas.json}), donde cada elemento de la lista corresponde a la ejecución de un prompt sobre un modelo. Esta estructura facilita la reanudación del experimento mediante checkpoint y la carga de los datos para su análisis con herramientas como pandas.
 
-Cada registro incluye los campos de identificación (id de prueba, id del prompt original, dominio, objetivo de sesgo, modelo evaluado, plantilla), las evaluaciones de cada variante (incluyendo el texto del prompt enviado, la respuesta generada, el indicador de rechazo, las métricas absolutas y los deltas respecto a la condición neutra), y un bloque de resumen que agrega los deltas de todas las variantes de discapacidad para facilitar la comparación visual.
+Cada resultado guardado incluye: los campos de identificación del prompt y el modelo, las evaluaciones de cada variante (texto enviado, respuesta generada, indicador de rechazo, métricas absolutas y deltas respecto a la condición neutra), y un bloque de resumen con la variante más sesgada, la tasa de rechazo y el índice de sesgo agregado. Este bloque de resumen fue una decisión que tomamos para facilitar la inspección visual de los resultados sin tener que recorrer todas las variantes una por una.
 
 
 \section{Diseño del protocolo de ejecución}
 
 \subsection{Ejecución sobre modelos locales}
 
-Los modelos locales (Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct) se ejecutan mediante la biblioteca Transformers de Hugging Face. Los pesos de los modelos se cargan en formato \texttt{bfloat16} para reducir el consumo de memoria de GPU, con \texttt{device\_map="auto"} para distribuir automáticamente las capas entre las GPU disponibles. El modelo se carga de forma perezosa la primera vez que se invoca y se mantiene en memoria durante toda la ejecución del experimento para evitar recargas.
+Para los modelos locales (Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct) usamos la librería Transformers de Hugging Face. Cargamos los pesos en formato \texttt{bfloat16} para reducir el uso de VRAM, con \texttt{device\_map="auto"} para que el modelo se distribuya automáticamente entre las GPUs disponibles. Como comentamos en el capítulo de implementación, optamos por carga perezosa: el modelo se carga la primera vez que se le llama y se mantiene en memoria durante toda la ejecución.
 
 \subsection{Ejecución mediante API}
 
-El modelo Gemini 2.5 Flash se invoca mediante la API de Google Generative AI. Cada llamada incluye los parámetros de generación definidos en la configuración del dataset (temperatura, top-p y límite de tokens de salida). La funcionalidad de razonamiento previo (\textit{thinking}) del modelo se desactiva en las llamadas del juez LLM para obtener salidas más deterministas y estructuradas.
+Para Gemini 2.5 Flash usamos la librería \texttt{google-genai}. Cada llamada incluye los parámetros de generación configurados en el dataset. Para las llamadas del juez LLM desactivamos explícitamente la funcionalidad de \textit{thinking} del modelo para que las respuestas sean más deterministas y el JSON de evaluación se genere de forma limpia.
 
 \subsection{Control de parámetros}
 
-Los parámetros de generación se configuran de forma homogénea para todos los modelos: temperatura de 0,1, top-p de 0,95 y repetition penalty de 1,1 (en modelos locales). El uso de temperatura baja busca reducir la variabilidad estocástica de las respuestas y maximizar la reproducibilidad del experimento. Se utiliza una semilla fija de 42 en los modelos locales cuando el framework lo permite.
+Para maximizar la reproducibilidad, usamos los mismos parámetros en todos los modelos: temperatura 0,1, top-p 0,95 y repetition penalty 1,1 en los modelos locales. La temperatura baja reduce la variabilidad entre ejecuciones. También fijamos una semilla de 42 en los modelos locales cuando el framework lo permite.
 
 
 \section{Diseño de la evaluación}
 
 \subsection{Evaluación automática}
 
-La evaluación automática de cada respuesta comprende tres métricas complementarias:
+Para evaluar cada respuesta de forma automática usamos tres métricas complementarias:
 
 \begin{enumerate}
-    \item \textbf{Análisis de sentimiento}: se calcula mediante el modelo \textit{robertuito} (\texttt{pysentimiento/robertuito-sentiment-analysis}), que devuelve probabilidades de sentimiento positivo (POS), negativo (NEG) y neutro (NEU). El score de sentimiento se calcula como $\text{score} = \text{POS} - \text{NEG} \in [-1, 1]$.
+    \item \textbf{Análisis de sentimiento}: usamos el modelo \textit{robertuito} \cite{perez2021pysentimiento} a través de pysentimiento, que devuelve probabilidades de sentimiento positivo (POS), negativo (NEG) y neutro (NEU). El score final se calcula como $\text{score} = \text{POS} - \text{NEG} \in [-1, 1]$.
 
-    \item \textbf{Evaluación por juez LLM}: se utiliza Gemini 2.5 Flash como juez ciego para evaluar cada respuesta según una rúbrica de cinco dimensiones, puntuadas de 1 a 5: relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipo. El juez recibe únicamente la instrucción y la respuesta generada, sin información sobre el modelo evaluado.
+    \item \textbf{Juez LLM}: usamos Gemini 2.5 Flash como juez ciego para puntuar cada respuesta según una rúbrica de cinco dimensiones (relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipo), de 1 a 5. El juez no sabe qué modelo generó la respuesta, solo recibe la instrucción y el texto generado.
 
-    \item \textbf{Longitud en palabras}: se cuenta el número de palabras de cada respuesta como indicador de la diferencia en la cantidad de información proporcionada.
+    \item \textbf{Longitud en palabras}: contamos el número de palabras de cada respuesta. Una diferencia sistemática en longitud entre la versión neutra y la versión con discapacidad puede indicar que el modelo proporciona más o menos información según la condición.
 \end{enumerate}
 
-Para cada par (respuesta neutra, respuesta con discapacidad), se calcula el delta contrafactual como la diferencia entre los valores de cada métrica en ambas condiciones. Un delta negativo en tono o ausencia de estereotipo indica que la respuesta con discapacidad fue evaluada peor en esa dimensión.
+Para cada par (respuesta neutra, respuesta con discapacidad) calculamos el delta contrafactual como la diferencia entre ambos valores. Un delta negativo en tono o en ausencia de estereotipo indica que la respuesta con discapacidad fue evaluada peor en esa dimensión.
 
 \subsection{Evaluación manual}
 
-La evaluación automática se complementa con una revisión manual de una muestra de respuestas, seleccionada para cubrir de forma equilibrada los distintos modelos, dominios y tipos de discapacidad. La revisión manual utiliza la misma rúbrica de cinco dimensiones que el juez LLM, lo que permite comparar la coherencia entre la evaluación automática y la humana.
+Como las métricas automáticas no son capaces de detectar todos los tipos de sesgo sutil \cite{gadiraju2023disability}, también hacemos una revisión manual de una muestra de respuestas. Usamos la misma rúbrica de cinco dimensiones que el juez LLM, lo que nos permite comparar ambas evaluaciones y tener una idea de hasta qué punto el juez automático es fiable para este tipo de análisis.
 
 \subsection{Selección de la muestra para revisión humana}
 
-% [Alejandro: completar con el tamaño y criterios de selección de la muestra]
+% [Alejandro: completar con el tamaño y criterios de selección de la muestra una vez terminado el experimento]
 
 \section{Conclusiones}
 
-Este capítulo ha descrito el diseño completo del marco experimental, desde la arquitectura del pipeline hasta el protocolo de evaluación. El diseño adoptado busca maximizar la reproducibilidad y la trazabilidad del experimento, y garantizar que las diferencias observadas en las respuestas puedan atribuirse de forma controlada a la presencia de la referencia a la discapacidad en los prompts.
+En este capítulo hemos descrito el diseño del experimento de principio a fin. Las decisiones más importantes han sido: el uso de plantillas con marcador \texttt{\{condicion\}} para garantizar que las variantes solo difieren en la referencia a la discapacidad, la organización en cinco dominios y siete tipos de discapacidad, y la combinación de tres métricas automáticas complementadas con revisión humana para cubrir tanto el sesgo cuantificable como el más sutil.
 
 
 % ============================================================
