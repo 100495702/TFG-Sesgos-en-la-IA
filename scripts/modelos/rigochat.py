@@ -29,15 +29,16 @@ class ModeloRigoChat(ModeloLLM):
                 _MODEL_NAME,
                 token=token,
                 dtype=torch.bfloat16,
-                device_map="cuda",
+                device_map="auto",  # distribuye entre todas las GPUs disponibles
                 trust_remote_code=True,
             )
+            self._device = next(self._model.parameters()).device
 
     def consultar(self, prompt: str) -> str:
         try:
             self._cargar()
 
-            inputs = self._tokenizer(prompt, return_tensors="pt").to("cuda")
+            inputs = self._tokenizer(prompt, return_tensors="pt").to(self._device)
 
             with torch.no_grad():
                 outputs = self._model.generate(

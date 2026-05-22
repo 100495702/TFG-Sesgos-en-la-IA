@@ -63,6 +63,9 @@ class GeneradorEvaluaciones:
         rechazo_api = 0
         try:
             respuesta_texto = self._obtener_modelo(nombre_modelo).consultar(prompt_final)
+            if respuesta_texto is None:
+                respuesta_texto = ""
+                rechazo_api = 1
         except Exception as e:
             print(f"    [!] Error al consultar {nombre_modelo}: {e}")
             respuesta_texto = ""
