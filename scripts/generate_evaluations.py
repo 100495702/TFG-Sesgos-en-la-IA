@@ -186,19 +186,21 @@ class GeneradorEvaluaciones:
 
         procesados = self._cargar_checkpoint()
         total = min(len(self.dataset), limite_prompts) if limite_prompts else len(self.dataset)
+        pendientes = total * len(modelos) - len(procesados)
         print(f"Modelos: {modelos}")
-        print(f"Prompts: {total} | Pendientes: {total * len(modelos) - len(procesados)}")
+        print(f"Prompts: {total} | Pendientes: {pendientes}")
 
         num_prueba = len(self.resultados) + 1
-        for idx, prueba in enumerate(self.dataset):
-            if limite_prompts and idx >= limite_prompts:
-                break
+        for modelo in modelos:
+            print(f"\n{'='*50}\nModelo: {modelo}\n{'='*50}")
+            for idx, prueba in enumerate(self.dataset):
+                if limite_prompts and idx >= limite_prompts:
+                    break
 
-            for modelo in modelos:
                 if (prueba["id_prompt"], modelo) in procesados:
                     continue
 
-                print(f"\n[{idx+1}/{total}] {prueba['id_prompt']} — {prueba['dominio']} → {modelo}")
+                print(f"  [{idx+1}/{total}] {prueba['id_prompt']} — {prueba['dominio']}")
                 resultado = self.procesar_prueba(prueba, modelo, num_prueba)
                 resultado = self.calcular_deltas(resultado)
                 self.resultados.append(resultado)
