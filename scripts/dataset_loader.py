@@ -3,6 +3,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, List
 
 
+_CAMPOS_PROMPT = {"id_prompt", "dominio", "plantilla", "variaciones"}
+_CAMPOS_VARIANTE = {"condicion", "tipo_discapacidad", "texto_condicion", "prompt_final"}
+
+
 class DatasetLoader:
     """Carga dataset.json y expone los datos del experimento."""
 
@@ -13,6 +17,20 @@ class DatasetLoader:
 
         self.prompts: List[Dict[str, Any]] = datos["dataset"]
         self.config_modelos: Dict[str, Any] = datos.get("configuracion_modelos", {})
+        self._validar()
+
+    def _validar(self) -> None:
+        """RF2: valida que cada prompt y variante contiene los campos mínimos requeridos."""
+        for i, prompt in enumerate(self.prompts):
+            faltantes = _CAMPOS_PROMPT - prompt.keys()
+            if faltantes:
+                raise ValueError(f"Prompt #{i} le faltan campos: {faltantes}")
+            for j, var in enumerate(prompt.get("variaciones", [])):
+                faltantes_var = _CAMPOS_VARIANTE - var.keys()
+                if faltantes_var:
+                    raise ValueError(
+                        f"Prompt #{i} variante #{j} le faltan campos: {faltantes_var}"
+                    )
 
     # ---- Modelos ----
 

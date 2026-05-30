@@ -5,6 +5,7 @@ Salida: outputs/salidas.json
 
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -45,6 +46,8 @@ class GeneradorEvaluaciones:
             "dominio": prueba["dominio"],
             "objetivo_sesgo": prueba["objetivo_sesgo"],
             "modelo_evaluado": modelo,
+            "parametros_generacion": self.loader.parametros_modelo(modelo),
+            "fecha_ejecucion": datetime.now().strftime("%Y-%m-%d"),
             "plantilla_prompt": prueba["plantilla"],
             "evaluaciones": {
                 "control_base": self._procesar_variante(base["prompt_final"], modelo),
