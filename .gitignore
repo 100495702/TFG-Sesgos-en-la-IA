@@ -2,5 +2,6 @@
 __pycache__/
 *.pyc
 entorno-tfg/
-outputs/
+outputs/experimento.log
+outputs/figuras/
 *.json.bak

@@ -1165,6 +1165,7 @@ El protocolo de evaluación combina métricas automáticas y revisión manual. L
 % Evaluación automática
 %-
 \subsection{Evaluación automática}
+\label{sec:eval_automatica}
 
 Para evaluar cada respuesta de forma automática se utilizaron tres métricas complementarias:
 
@@ -1184,13 +1185,15 @@ Para comparar cada variante con discapacidad con su versión neutra, se calcula 
 
 donde $m$ es la dimensión evaluada (relevancia, exactitud, utilidad, tono respetuoso o ausencia de estereotipo). Un valor negativo indica que la respuesta con referencia a discapacidad fue evaluada peor que la respuesta neutra; un valor cercano a cero indica que apenas hubo diferencia entre ambas condiciones.
 
-A partir de los deltas de cada variante, se define un \textbf{índice de sesgo} que agrega las dos dimensiones más directamente relacionadas con la discriminación: el tono respetuoso y la ausencia de estereotipo. Para cada variante $v$ de un resultado, el índice de sesgo se calcula como:
+A partir de los deltas de cada variante, se define un \textbf{índice de sesgo} que agrega las dos dimensiones más directamente relacionadas con la discriminación: el tono respetuoso y la ausencia de estereotipo. Para cada variante $v$ de un resultado, el índice de sesgo se calcula como la suma normalizada de ambas caídas:
 
 \[
-IS_v = \Delta_{tono\_respetuoso,v} + \Delta_{ausencia\_estereotipo,v}
+IS_v = \frac{\Delta_{tono\_respetuoso,v} + \Delta_{ausencia\_estereotipo,v}}{10}
 \]
 
-El resultado queda en sesgo detectado si $IS_v < -2$, es decir, si la suma de las caídas en esas dos dimensiones supera dos puntos sobre la escala de 5. Este umbral fue elegido de forma operativa, como punto de corte que diferencia degradaciones de calidad puntuales (valores próximos a cero) de degradaciones sistemáticas y consistentes (valores negativos de mayor magnitud). No debe interpretarse como una definición universal de sesgo, sino como un criterio exploratorio dentro de este experimento: indica qué pares presentan una degradación suficientemente marcada en las dimensiones más sensibles como para merecer análisis adicional.
+El denominador 10 normaliza el índice al intervalo $[-1, 1]$, dado que cada delta individual varía entre $-5$ y $+5$ sobre la escala del juez. Un resultado se clasifica como \textit{sesgo detectado} cuando la peor variante del prompt satisface $IS_v < -0{,}2$, es decir, cuando la caída combinada en las dos dimensiones más sensibles supera el 20\% del máximo posible.
+
+Este umbral fue elegido de forma operativa: valores muy próximos a cero corresponden a diferencias puntuales atribuibles a variabilidad del modelo, mientras que valores por debajo de $-0{,}2$ indican una degradación sistemática y consistente. No debe interpretarse como una definición universal de sesgo, sino como un criterio exploratorio dentro de este experimento que permite identificar los pares más susceptibles de análisis cualitativo posterior.
 
 %--
 % Evaluación manual
@@ -1512,7 +1515,7 @@ Salamandra 7B Instruct & 800 & 0 & 0,0\% \\
 
 \subsection{Sesgo detectado por modelo}
 
-El índice de sesgo se define como la caída combinada en las dimensiones de tono respetuoso y ausencia de estereotipo respecto a la condición neutra. Un valor inferior a $-0{,}2$ en este índice se considera sesgo detectable. Este umbral se utiliza como criterio operativo para comparar los modelos dentro del experimento.
+El índice de sesgo, definido en el capítulo de diseño (sección~\ref{sec:eval_automatica}), agrega las caídas en tono respetuoso y ausencia de estereotipo, normalizadas al intervalo $[-1, 1]$. Un valor inferior a $-0{,}2$ clasifica el resultado como sesgo detectable. Este umbral se aplica sobre la variante más desfavorable de cada par (prompt, modelo).
 
 Bajo este criterio, los tres modelos locales muestran sesgo en entre el 85\% y el 88\% de los prompts, mientras que Gemini 2.5 Flash lo hace en el 11\%. La Tabla~\ref{tab:sesgo_modelo} recoge los valores por modelo.
 

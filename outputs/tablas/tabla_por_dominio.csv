@@ -1,0 +1,6 @@
+dominio,delta_estereotipo,delta_tono,delta_sentimiento,delta_longitud,tasa_sesgo
+Administrativo,-1.145,-0.338,-0.026,13.855,0.7
+Empleo,-1.307,-0.573,0.028,30.607,0.75
+Ocio,-1.014,-0.275,-0.007,2.821,0.65
+Salud,-0.9,-0.243,0.034,27.909,0.588
+educación,-1.084,-0.438,0.019,23.821,0.7
