@@ -43,7 +43,8 @@ hmargin=3cm
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,
 	linkcolor=black, % enlaces a partes del documento (p.e. índice) en color negro
-	urlcolor=blue} % enlaces a recursos fuera del documento en azul
+	urlcolor=blue,  % enlaces a recursos fuera del documento en azul
+	breaklinks=true}
 
 % EXPRESIONES MATEMÁTICAS
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
@@ -721,8 +722,8 @@ La Tabla~\ref{tab:campos_trazabilidad} recoge los campos mínimos que deben cons
 \texttt{parametros\_generacion} & Temperatura, top-p, repetition penalty y semilla. \\
 \texttt{fecha\_ejecucion} & Fecha en que se ejecutó el par (prompt, modelo). \\
 \texttt{plantilla\_prompt} & Plantilla original con el marcador \texttt{\{condicion\}}. \\
-\texttt{evaluaciones.control\_base} & Prompt enviado, respuesta, rechazo y métricas de la condición neutra. \\
-\texttt{evaluaciones.variantes\_}\linebreak\texttt{contrafactuales} & Ídem para cada variante con discapacidad, más los deltas. \\
+\nolinkurl{evaluaciones.control_base} & Prompt enviado, respuesta, rechazo y métricas de la condición neutra. \\
+\nolinkurl{evaluaciones.variantes_contrafactuales} & Ídem para cada variante con discapacidad, más los deltas. \\
 \texttt{rechazo\_api} & Indicador de error o rechazo (0 = correcto, 1 = error). \\
 \texttt{resumen} & Variante más sesgada, tasa de rechazo e índice de sesgo. \\
 \hline
@@ -749,7 +750,7 @@ RF3 & \texttt{dataset.json} y \texttt{dataset\_loader.py} & Agrupa las variantes
 RF4, RF5 & \texttt{generate\_evaluations.py} y \texttt{modelos/} & Ejecuta los prompts sobre modelos locales y modelos accesibles mediante API usando una interfaz común. \\
 RF6, RF7 & \texttt{generate\_evaluations.py} y \texttt{outputs/salidas.json} & Guarda cada respuesta junto con el modelo, los parámetros, la fecha de ejecución y los metadatos necesarios. \\
 RF8, RNF4 & Checkpoint en \texttt{outputs/salidas.json} & Registra errores y permite continuar la ejecución sin perder los resultados ya generados. \\
-RF9, RNF9 & \texttt{outputs/salidas.json}, \texttt{outputs/tablas/} y \texttt{data/dataset\_expandido.csv} & Exporta los resultados en formatos reutilizables para su análisis con herramientas como Python y pandas. \\
+RF9, RNF9 & \texttt{outputs/salidas.json}, \texttt{outputs/tablas/} y \nolinkurl{data/dataset_expandido.csv} & Exporta los resultados en formatos reutilizables para su análisis con herramientas como Python y pandas. \\
 RF10 & \texttt{evaluacion/} & Calcula métricas automáticas mediante análisis de sentimiento, juez LLM y longitud de las respuestas. \\
 RF11 & \texttt{seleccionar\_muestra.py} & Selecciona una muestra de respuestas para revisión manual. \\
 RF12 & \texttt{analisis\_resultados.py} & Genera tablas y figuras comparativas por modelo, dominio y tipo de discapacidad. \\
@@ -849,9 +850,9 @@ La arquitectura del pipeline se organiza en los siguientes componentes:
 \begin{itemize}
     \item \textbf{Dataset de prompts} (\texttt{data/dataset.json}): contiene las 100 plantillas y sus 800 variantes ya construidas, organizadas por dominio y tipo de discapacidad.
 
-    \item \textbf{Módulo de carga} (\texttt{scripts/dataset\_loader.py}): lee el dataset y expone métodos para acceder a prompts, variantes y configuración de los modelos.
+    \item \textbf{Módulo de carga} (\nolinkurl{scripts/dataset_loader.py}): lee el dataset y expone métodos para acceder a prompts, variantes y configuración de los modelos.
 
-    \item \textbf{Orquestador} (\texttt{scripts/generate\_evaluations.py}): coordina la ejecución, el cálculo de métricas y el guardado incremental de resultados.
+    \item \textbf{Orquestador} (\nolinkurl{scripts/generate_evaluations.py}): coordina la ejecución, el cálculo de métricas y el guardado incremental de resultados.
 
     \item \textbf{Clientes de modelos} (\texttt{scripts/modelos/}): un fichero por modelo, todos implementando la misma interfaz (\texttt{ModeloLLM}) con el método \texttt{consultar(prompt) -> str}.
 
@@ -859,9 +860,9 @@ La arquitectura del pipeline se organiza en los siguientes componentes:
 
     \item \textbf{Almacenamiento} (\texttt{outputs/salidas.json}): fichero JSON con guardado incremental, utilizado como checkpoint.
 
-    \item \textbf{Módulo de análisis} (\texttt{scripts/analisis\_resultados.py}): lee los resultados almacenados y genera tablas en CSV y figuras en PNG comparativas por modelo, dominio y tipo de discapacidad. Se ejecuta de forma independiente del pipeline de generación.
+    \item \textbf{Módulo de análisis} (\nolinkurl{scripts/analisis_resultados.py}): lee los resultados almacenados y genera tablas en CSV y figuras en PNG comparativas por modelo, dominio y tipo de discapacidad. Se ejecuta de forma independiente del pipeline de generación.
 
-    \item \textbf{Selección de muestra} (\texttt{scripts/seleccionar\_muestra.py}): extrae un subconjunto de casos del fichero de resultados para su revisión manual, con tres criterios disponibles: casos más extremos, aleatorio y estratificado.
+    \item \textbf{Selección de muestra} (\nolinkurl{scripts/seleccionar_muestra.py}): extrae un subconjunto de casos del fichero de resultados para su revisión manual, con tres criterios disponibles: casos más extremos, aleatorio y estratificado.
 \end{itemize}
 
 La Tabla~\ref{tab:componentes_sistema} describe los componentes del sistema, sus ficheros, sus entradas y salidas y su responsabilidad dentro del pipeline.
@@ -1100,7 +1101,7 @@ Se optó por un único fichero JSON (\texttt{outputs/salidas.json}) en el que ca
 
 El orquestador escribe el fichero completo tras cada resultado, implementando así el mecanismo de checkpoint. Si la ejecución se interrumpe, basta con relanzar el script y el sistema continúa desde donde se quedó.
 
-Además del fichero principal, el pipeline genera dos tipos de salidas secundarias: \texttt{outputs/muestra\_evaluacion\_manual.json}, con los casos seleccionados para revisión humana, y los ficheros CSV en \texttt{outputs/tablas/}, con los agregados calculados por el módulo de análisis. Separar estas salidas del fichero principal permite regenerarlas cuantas veces sea necesario sin modificar los resultados originales.
+Además del fichero principal, el pipeline genera dos tipos de salidas secundarias: \nolinkurl{outputs/muestra_evaluacion_manual.json}, con los casos seleccionados para revisión humana, y los ficheros CSV en \texttt{outputs/tablas/}, con los agregados calculados por el módulo de análisis. Separar estas salidas del fichero principal permite regenerarlas cuantas veces sea necesario sin modificar los resultados originales.
 
 El siguiente fragmento ilustra la estructura de un resultado en \texttt{salidas.json} (simplificado):
 
@@ -1235,7 +1236,7 @@ Para la revisión manual se implementó un script independiente (\texttt{selecci
     \item \textbf{Estratificado}: selecciona $n$ casos por cada combinación de modelo y dominio, lo que garantiza una representación uniforme en ambas dimensiones.
 \end{itemize}
 
-Para la revisión de esta memoria, se seleccionaron los cinco casos más sesgados por modelo ($n = 5$, criterio de sesgo), lo que da una muestra de veinte pares de prompt y respuesta que cubren los cuatro modelos. La muestra se guarda en \texttt{outputs/muestra\_evaluacion\_manual.json} con todos los campos necesarios para la revisión: prompt enviado, respuesta generada, métricas absolutas y deltas respecto a la condición neutra.
+Para la revisión de esta memoria, se seleccionaron los cinco casos más sesgados por modelo ($n = 5$, criterio de sesgo), lo que da una muestra de veinte pares de prompt y respuesta que cubren los cuatro modelos. La muestra se guarda en \nolinkurl{outputs/muestra_evaluacion_manual.json} con todos los campos necesarios para la revisión: prompt enviado, respuesta generada, métricas absolutas y deltas respecto a la condición neutra.
 
 %--
 % Conclusiones
@@ -1418,7 +1419,7 @@ El segundo problema fue que, en algunas ocasiones, el modelo envolvía el JSON e
 %-
 \section{Exportación de resultados}
 
-Además del fichero JSON de resultados, se generó un CSV expandido (\texttt{data/dataset\_expandido.csv}) con una fila por cada prompt final. Este fichero contiene los metadatos de cada prompt y el texto enviado al modelo, pero no incluye las respuestas generadas, que quedan almacenadas en el JSON.
+Además del fichero JSON de resultados, se generó un CSV expandido (\nolinkurl{data/dataset_expandido.csv}) con una fila por cada prompt final. Este fichero contiene los metadatos de cada prompt y el texto enviado al modelo, pero no incluye las respuestas generadas, que quedan almacenadas en el JSON.
 
 Su utilidad principal es facilitar el análisis con pandas, ya que el formato tabular resulta más cómodo para filtrar y agrupar datos que el JSON anidado.
 
@@ -1426,14 +1427,15 @@ La Tabla~\ref{tab:scripts_principales} resume los scripts principales del proyec
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{3.5cm}p{3cm}p{3cm}p{3.5cm}}
+\footnotesize
+\begin{tabular}{p{4cm}p{2.5cm}p{3.5cm}p{3.5cm}}
 \hline
 \textbf{Script} & \textbf{Entrada} & \textbf{Salida} & \textbf{Responsabilidad} \\
 \hline
-\texttt{generate\_evaluations.py} & \texttt{dataset.json} & \texttt{salidas.json} & Orquesta la ejecución completa del experimento con checkpoint \\
-\texttt{dataset\_loader.py} & \texttt{dataset.json} & Objetos Python & Carga y validación del dataset \\
-\texttt{seleccionar\_muestra.py} & \texttt{salidas.json} & \texttt{muestra\_evaluacion\_manual.json} & Extrae casos para revisión manual \\
-\texttt{analisis\_resultados.py} & \texttt{salidas.json} & CSV en \texttt{tablas/}, PNG en \texttt{imagenes/} & Genera tablas y figuras comparativas \\
+\nolinkurl{generate_evaluations.py} & \nolinkurl{dataset.json} & \nolinkurl{salidas.json} & Orquesta la ejecución completa del experimento con checkpoint \\
+\nolinkurl{dataset_loader.py} & \nolinkurl{dataset.json} & Objetos Python & Carga y validación del dataset \\
+\nolinkurl{seleccionar_muestra.py} & \nolinkurl{salidas.json} & \nolinkurl{muestra_evaluacion_manual.json} & Extrae casos para revisión manual \\
+\nolinkurl{analisis_resultados.py} & \nolinkurl{salidas.json} & CSV en \nolinkurl{tablas/}, PNG en \nolinkurl{imagenes/} & Genera tablas y figuras comparativas \\
 \hline
 \end{tabular}
 \caption{Scripts principales del proyecto: entradas, salidas y responsabilidades}
@@ -1670,7 +1672,7 @@ Gemini 2.5 Flash es el modelo que más incrementa la longitud de las respuestas 
 
 \section{Resultados visuales}
 
-Las Figuras~\ref{fig:tasa_sesgo_modelo}, \ref{fig:dims_juez_modelo}, \ref{fig:heatmap_modelo_dominio} y \ref{fig:delta_discapacidad} resumen los resultados cuantitativos de las secciones anteriores. Han sido generadas por \texttt{scripts/analisis\_resultados.py} a partir de los 400 resultados almacenados en \texttt{outputs/salidas.json}. Las tablas CSV completas se guardan en \texttt{outputs/tablas/}.
+Las Figuras~\ref{fig:tasa_sesgo_modelo}, \ref{fig:dims_juez_modelo}, \ref{fig:heatmap_modelo_dominio} y \ref{fig:delta_discapacidad} resumen los resultados cuantitativos de las secciones anteriores. Han sido generadas por \nolinkurl{scripts/analisis_resultados.py} a partir de los 400 resultados almacenados en \texttt{outputs/salidas.json}. Las tablas CSV completas se guardan en \texttt{outputs/tablas/}.
 
 \begin{figure}[H]
 \centering
@@ -1860,25 +1862,26 @@ A lo largo de las fases descritas en la sección anterior, el proyecto produce u
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{5.5cm}p{3cm}p{4.5cm}}
+\footnotesize
+\begin{tabular}{p{5cm}p{2.8cm}p{5.2cm}}
 \hline
 \textbf{Hito} & \textbf{Fase} & \textbf{Entregable} \\
 \hline
 Definición del problema y preguntas de investigación & Revisión bibliográfica & Informe bibliográfico inicial \\
 \hline
-Dataset validado: 100 plantillas × 8 variantes & Diseño del dataset & \texttt{data/dataset.json} \\
+Dataset validado: 100 plantillas × 8 variantes & Diseño del dataset & \nolinkurl{data/dataset.json} \\
 \hline
-Pipeline completo con checkpoint & Implementación & \texttt{scripts/} (todos los módulos) \\
+Pipeline completo con checkpoint & Implementación & \nolinkurl{scripts/} (todos los módulos) \\
 \hline
-Experimento ejecutado al 100\% (400 evaluaciones) & Ejecución & \texttt{outputs/salidas.json} \\
+Experimento ejecutado al 100\% (400 evaluaciones) & Ejecución & \nolinkurl{outputs/salidas.json} \\
 \hline
-Muestra seleccionada y evaluación manual realizada & Ejecución y análisis & \texttt{outputs/muestra\_evaluacion\_manual.json} \\
+Muestra seleccionada y evaluación manual realizada & Ejecución y análisis & \nolinkurl{outputs/muestra_evaluacion_manual.json} \\
 \hline
-Análisis cuantitativo: tablas y visualizaciones & Ejecución y análisis & \texttt{outputs/tablas/} + \texttt{docs/imagenes/} \\
+Análisis cuantitativo: tablas y visualizaciones & Ejecución y análisis & \nolinkurl{outputs/tablas/} + \nolinkurl{docs/imagenes/} \\
 \hline
-Informe de resultados para la tutora & Redacción & \texttt{docs/informe\_resultados\_tutora.docx} \\
+Informe de resultados para la tutora & Redacción & \nolinkurl{docs/informe_resultados_tutora.docx} \\
 \hline
-Memoria del TFG completada & Redacción & \texttt{docs/memoria\_borrador.tex} (PDF final) \\
+Memoria del TFG completada & Redacción & \nolinkurl{docs/memoria_borrador.tex} (PDF final) \\
 \hline
 \end{tabular}
 \caption{Hitos y entregables del proyecto}
