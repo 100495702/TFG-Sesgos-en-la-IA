@@ -27,6 +27,9 @@ hmargin=3cm
 \renewcommand{\baselinestretch}{1.15}
 \parskip=6pt
 
+% Evita que palabras técnicas y rutas desborden los márgenes manteniendo el justificado
+\emergencystretch=3em
+
 % DEFINICIÓN DE COLORES para portada y listados de código
 \usepackage[table]{xcolor}
 \definecolor{azulUC3M}{RGB}{0,0,102}
@@ -207,6 +210,9 @@ hmargin=3cm
 
 \addbibresource{referencias.bib} % llama al archivo referencias.bib en el que deberá estar la bibliografía utilizada
 
+% Permite saltos de línea tras guiones bajos en \texttt{} (evita desbordamiento de márgenes)
+\let\oldunderscore\_
+\renewcommand{\_}{\oldunderscore\allowbreak}
 
 %-------------
 %	DOCUMENTO
@@ -367,7 +373,7 @@ El problema es que, junto con todas estas capacidades, los LLMs heredan los sesg
 
 La motivación de este TFG surge de la convergencia de tres factores: una brecha en la literatura científica, un colectivo especialmente vulnerable y la disponibilidad de herramientas que hacen posible el estudio.
 
-\textbf{Brecha en la literatura.} La investigación sobre sesgos en LLMs está dominada por el inglés y se centra principalmente en atributos como el género o la etnia \cite{guo2024bias, navigli2023biases}. El sesgo hacia las personas con discapacidad es un campo comparativamente incipiente: los trabajos existentes demuestran que los modelos asocian términos de discapacidad con sentimientos negativos \cite{venkit2022disability}, reproducen estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability} o muestran peor rendimiento en contextos de contratación cuando aparece una referencia a la discapacidad \cite{kamruzzaman2025disclosure, phutane2025ableist}. Sin embargo, estos estudios se centran en el inglés y en modelos multilingües. En el ámbito del español, la cuestión permanece prácticamente sin respuesta: no existe, hasta donde se ha revisado en este trabajo, ningún estudio sistemático sobre si los modelos desarrollados específicamente para esta lengua, como RigoChat o Salamandra, reproducen los mismos patrones de sesgo que los modelos multilingües.
+\textbf{Brecha en la literatura.} La investigación sobre sesgos en LLMs está dominada por el inglés y se centra principalmente en atributos como el género o la etnia \cite{guo2024bias, navigli2023biases}. El sesgo hacia las personas con discapacidad es un campo comparativamente incipiente: los trabajos existentes demuestran que los modelos asocian términos de discapacidad con sentimientos negativos \cite{venkit2022disability}, reproducen estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability} o muestran peor rendimiento en contextos de contratación cuando aparece una referencia a la discapacidad \cite{kamruzzaman2025disclosure, phutane2025ableist}. Estudios recientes como AccessEval \cite{panda2025accesseval}, que evaluó más de 2.000 prompts con referencias a discapacidad en seis dominios, confirman que los modelos generan respuestas con más errores factuales, mayor negatividad y más estereotipos cuando las consultas incluyen discapacidad; y el benchmark BEATS \cite{beats2025} estima que el 37,65\% de las salidas de los modelos más avanzados contienen algún tipo de sesgo detectable. Sin embargo, estos estudios se centran en el inglés y en modelos multilingües. En el ámbito del español, la cuestión permanece prácticamente sin respuesta: no existe, hasta donde se ha revisado en este trabajo, ningún estudio sistemático sobre si los modelos desarrollados específicamente para esta lengua, como RigoChat o Salamandra, reproducen los mismos patrones de sesgo que los modelos multilingües.
 
 \textbf{Un colectivo vulnerable.} Según datos del Instituto Nacional de Estadística, en España hay aproximadamente 4,38 millones de personas con algún tipo de discapacidad reconocida, cerca del 9,4\% de la población. La OMS estima que más de 1.300 millones de personas viven en el mundo con alguna forma de discapacidad significativa. Si los sistemas de IA que se despliegan para toda la ciudadanía tratan de forma diferente a este colectivo en contextos tan cotidianos como el empleo, la salud, la educación o la administración, las consecuencias pueden ser relevantes. A diferencia de otros atributos de equidad, la discapacidad no siempre está presente de forma explícita en los benchmarks de sesgo existentes \cite{beats2025}, y raramente aparece en los estudios centrados en español \cite{sesgo2025}.
 
@@ -556,7 +562,7 @@ Ninguna métrica automática es perfecta para detectar el tipo de sesgo sutil qu
 % Técnicas de mitigación de sesgos
 %-
 \section{Técnicas de mitigación de sesgos}
-El objetivo de este TFG es la \textit{detección} y cuantificación del sesgo, no su corrección. Sin embargo, revisar las técnicas de mitigación que propone la literatura es importante por dos razones: permite entender qué tipo de intervenciones han podido influir en el comportamiento de los modelos que evaluamos (especialmente en el caso de Gemini 2.5 Flash) y establece el marco de referencia para las propuestas de trabajo futuro que se recogen en el capítulo 8. La literatura agrupa estas técnicas en tres niveles según la fase del ciclo de vida del modelo en la que actúan \cite{navigli2023biases, guo2024bias}.
+El objetivo de este TFG es la \textit{detección} y cuantificación del sesgo, no su corrección. Sin embargo, revisar las técnicas de mitigación que propone la literatura es importante por dos razones: permite entender qué tipo de intervenciones han podido influir en el comportamiento de los modelos evaluados en este trabajo (especialmente en el caso de Gemini 2.5 Flash) y establece el marco de referencia para las propuestas de trabajo futuro que se recogen en el capítulo 8. La literatura agrupa estas técnicas en tres niveles según la fase del ciclo de vida del modelo en la que actúan \cite{navigli2023biases, guo2024bias}.
 
 % Intervenciones a nivel de datos
 \subsection{Intervenciones a nivel de datos}
@@ -652,7 +658,7 @@ La Tabla~\ref{tab:requisitos_funcionales} recoge los requisitos funcionales del 
 \textbf{Código} & \textbf{Descripción} \\
 \hline
 RF1 & El sistema debe permitir cargar un dataset de prompts desde un fichero estructurado. \\
-RF2 & El sistema debe validar que cada prompt contiene los campos mínimos requeridos: identificador, dominio, tipo de discapacidad, condición experimental y texto del prompt. \\
+RF2 & El sistema debe validar que cada entrada del dataset contiene los campos mínimos del prompt (\texttt{id\_prompt}, \texttt{dominio}, \texttt{plantilla} y \texttt{variaciones}) y de cada variante (\texttt{condicion}, \texttt{tipo\_discapacidad}, \texttt{texto\_condicion} y \texttt{prompt\_final}). \\
 RF3 & El sistema debe permitir agrupar los prompts mediante un identificador de par contrafactual. \\
 RF4 & El sistema debe ejecutar los prompts sobre los modelos generativos seleccionados. \\
 RF5 & El sistema debe permitir integrar tanto modelos locales como modelos accesibles mediante API. \\
@@ -741,19 +747,20 @@ Para comprobar que los requisitos definidos quedan cubiertos por la solución im
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{2.5cm}p{4.5cm}p{6cm}}
+\small
+\begin{tabular}{p{2cm}p{5.5cm}p{5.5cm}}
 \hline
 \textbf{Requisito} & \textbf{Módulo responsable} & \textbf{Cobertura} \\
 \hline
-RF1, RF2 & \texttt{dataset\_loader.py} & Carga el dataset desde un fichero JSON y valida que cada prompt contiene los campos necesarios. \\
-RF3 & \texttt{dataset.json} y \texttt{dataset\_loader.py} & Agrupa las variantes de cada plantilla mediante identificadores de prompt y pares contrafactuales. \\
-RF4, RF5 & \texttt{generate\_evaluations.py} y \texttt{modelos/} & Ejecuta los prompts sobre modelos locales y modelos accesibles mediante API usando una interfaz común. \\
-RF6, RF7 & \texttt{generate\_evaluations.py} y \texttt{outputs/salidas.json} & Guarda cada respuesta junto con el modelo, los parámetros, la fecha de ejecución y los metadatos necesarios. \\
-RF8, RNF4 & Checkpoint en \texttt{outputs/salidas.json} & Registra errores y permite continuar la ejecución sin perder los resultados ya generados. \\
-RF9, RNF9 & \texttt{outputs/salidas.json}, \texttt{outputs/tablas/} y \nolinkurl{data/dataset_expandido.csv} & Exporta los resultados en formatos reutilizables para su análisis con herramientas como Python y pandas. \\
-RF10 & \texttt{evaluacion/} & Calcula métricas automáticas mediante análisis de sentimiento, juez LLM y longitud de las respuestas. \\
-RF11 & \texttt{seleccionar\_muestra.py} & Selecciona una muestra de respuestas para revisión manual. \\
-RF12 & \texttt{analisis\_resultados.py} & Genera tablas y figuras comparativas por modelo, dominio y tipo de discapacidad. \\
+RF1, RF2 & \nolinkurl{dataset_loader.py} & Carga el dataset desde un fichero JSON y valida que cada prompt contiene los campos necesarios. \\
+RF3 & \nolinkurl{dataset.json} y \nolinkurl{dataset_loader.py} & Agrupa las variantes de cada plantilla mediante identificadores de prompt y pares contrafactuales. \\
+RF4, RF5 & \nolinkurl{generate_evaluations.py} y \nolinkurl{modelos/} & Ejecuta los prompts sobre modelos locales y modelos accesibles mediante API usando una interfaz común. \\
+RF6, RF7 & \nolinkurl{generate_evaluations.py} y \nolinkurl{outputs/salidas.json} & Guarda cada respuesta junto con el modelo, los parámetros, la fecha de ejecución y los metadatos necesarios. \\
+RF8, RNF4 & Checkpoint en \nolinkurl{outputs/salidas.json} & Registra errores y permite continuar la ejecución sin perder los resultados ya generados. \\
+RF9, RNF9 & \nolinkurl{outputs/salidas.json}, \nolinkurl{outputs/tablas/} y \nolinkurl{data/dataset_expandido.csv} & Exporta los resultados en formatos reutilizables para su análisis con herramientas como Python y pandas. \\
+RF10 & \nolinkurl{evaluacion/} & Calcula métricas automáticas mediante análisis de sentimiento, juez LLM y longitud de las respuestas. \\
+RF11 & \nolinkurl{seleccionar_muestra.py} & Selecciona una muestra de respuestas para revisión manual. \\
+RF12 & \nolinkurl{analisis_resultados.py} & Genera tablas y figuras comparativas por modelo, dominio y tipo de discapacidad. \\
 RNF1, RNF3 & Repositorio, dataset y ficheros de salida & Permite reproducir y reconstruir la ejecución a partir del código, la configuración y los resultados almacenados. \\
 RNF2, RNF5, RNF8 & Estructura modular del repositorio & Separa carga de datos, ejecución, modelos, evaluación y análisis, facilitando mantenimiento y ampliación. \\
 RNF6 & \texttt{.env} y \texttt{.gitignore} & Evita almacenar claves de API y credenciales en el repositorio público. \\
@@ -812,7 +819,9 @@ Por tanto, los resultados deben interpretarse como una evaluación exploratoria.
 
 En este capítulo se ha definido el problema desde un punto de vista técnico, se han establecido los requisitos del sistema y se ha acotado el alcance del experimento. También se ha incluido una tabla de trazabilidad que relaciona los requisitos con los módulos principales del pipeline, reforzando la visión del trabajo como un sistema software reproducible y no únicamente como un estudio experimental.
 
-Además, se han descrito las principales restricciones técnicas y metodológicas, así como las consideraciones éticas que deben tenerse en cuenta al interpretar los resultados. El capítulo siguiente presenta el diseño del sistema, incluyendo la construcción del dataset, la arquitectura del pipeline, el esquema de almacenamiento y el protocolo de evaluación.
+Además, se han descrito las principales restricciones técnicas y metodológicas, así como las consideraciones éticas que deben tenerse en cuenta al interpretar los resultados.
+
+Los requisitos identificados en este capítulo condicionan directamente las decisiones de diseño del capítulo siguiente: la modularidad exigida por RNF2 se traduce en una arquitectura con componentes independientes; la reproducibilidad requerida por RNF1 justifica el uso de semillas y parámetros de generación fijos; y la trazabilidad de RNF3 motiva el esquema de almacenamiento en JSON con checkpoint incremental. El capítulo siguiente presenta ese diseño, incluyendo la construcción del dataset, la arquitectura del pipeline, el esquema de almacenamiento y el protocolo de evaluación.
 %----------
 %   DISEÑO DEL SISTEMA
 %----------
@@ -909,7 +918,7 @@ La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline
                minimum height=1.0cm, align=center, font=\small, inner sep=5pt},
   arr/.style={-{Stealth[length=5pt,width=4pt]}, semithick}
 ]
-% ─── Flujo principal ───────────────────────────────────
+% Flujo principal
 \node[box] (D) {\textbf{Dataset de prompts} \quad \texttt{data/dataset.json}};
 \node[box, below=of D] (C) {\textbf{Módulo de carga y validación} \quad \texttt{dataset\_loader.py}};
 \node[box, below=of C] (O) {\textbf{Orquestador experimental} \quad \texttt{generate\_evaluations.py}};
@@ -917,7 +926,7 @@ La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline
 \draw[arr] (D) -- (C);
 \draw[arr] (C) -- (O);
 
-% ─── Modelos ───────────────────────────────────────────
+% Modelos
 \node[mbox, below=1.8cm of O, xshift=-3.5cm] (M1) {\textbf{Llama 3.1 8B}\\{\footnotesize local}};
 \node[mbox, right=0.3cm of M1]               (M2) {\textbf{RigoChat 7B}\\{\footnotesize local}};
 \node[mbox, right=0.3cm of M2]               (M3) {\textbf{Gemini 2.5}\\{\footnotesize Flash (API)}};
@@ -929,7 +938,7 @@ La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline
 \draw (M1.north |- busout) -- (M4.north |- busout);
 \foreach \m in {M1,M2,M3,M4}{ \draw[arr] (\m.north |- busout) -- (\m.north); }
 
-% ─── Etiqueta de métricas ──────────────────────────────
+% Etiqueta de metricas
 \coordinate (midmod) at ($(M2.south)!0.5!(M3.south)$);
 \node[align=center, font=\small\itshape, below=0.6cm of midmod] (Mx)
   {[\,sentimiento $\cdot$ juez LLM $\cdot$ longitud\,]};
@@ -940,12 +949,12 @@ La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline
 \draw (M1.south |- busin) -- (M4.south |- busin);
 \draw[arr] (Mx.north |- busin) -- (Mx.north);
 
-% ─── Almacenamiento ────────────────────────────────────
+% Almacenamiento
 \node[box, below=0.55cm of Mx] (S)
   {\textbf{Almacenamiento con checkpoint} \quad \texttt{outputs/salidas.json}};
 \draw[arr] (Mx) -- (S);
 
-% ─── Salidas ───────────────────────────────────────────
+% Salidas
 \node[obox, below=1.2cm of S, xshift=-2.5cm] (A)
   {\textbf{Muestra para eval.\ manual}\\\texttt{seleccionar\_muestra.py}};
 \node[obox, below=1.2cm of S, xshift= 2.5cm] (B)
@@ -1171,7 +1180,7 @@ Para Gemini 2.5 Flash se utilizó la librería \texttt{google-genai}. Cada llama
 %-
 \subsection{Parámetros}
 
-Para mejorar la reproducibilidad, se utilizaron los mismos parámetros en todos los modelos: temperatura 0,1, top-p 0,95 y repetition penalty 1,1 en los modelos locales. La baja temperatura reduce la variabilidad entre ejecuciones. También se fijó una semilla de 42 en los modelos locales cuando el framework lo permite.
+Para mejorar la reproducibilidad, se utilizaron los mismos parámetros en todos los modelos: temperatura 0,1 y top-p 0,95. El parámetro \textit{repetition penalty} varía ligeramente entre modelos locales: 1,1 para Llama 3.1 8B Instruct y Salamandra 7B Instruct, y 1,15 para RigoChat 7B v2; el valor de RigoChat fue fijado a 1,15 durante el ajuste inicial porque el modelo mostraba mayor tendencia a la repetición léxica con el valor por defecto. La baja temperatura reduce la variabilidad entre ejecuciones. También se fijó una semilla de 42 en los modelos locales cuando el framework lo permite.
 
 %--
 % Protocolo de evaluación
@@ -1212,7 +1221,9 @@ IS_v = \frac{\Delta_{tono\_respetuoso,v} + \Delta_{ausencia\_estereotipo,v}}{10}
 
 El denominador 10 normaliza el índice al intervalo $[-1, 1]$, dado que cada delta individual varía entre $-5$ y $+5$ sobre la escala del juez. Un resultado se clasifica como \textit{sesgo detectado} cuando la peor variante del prompt satisface $IS_v < -0{,}2$, es decir, cuando la caída combinada en las dos dimensiones más sensibles supera el 20\% del máximo posible.
 
-Este umbral fue elegido de forma operativa: valores muy próximos a cero corresponden a diferencias puntuales atribuibles a variabilidad del modelo, mientras que valores por debajo de $-0{,}2$ indican una degradación sistemática y consistente. No debe interpretarse como una definición universal de sesgo, sino como un criterio exploratorio dentro de este experimento que permite identificar los pares más susceptibles de análisis cualitativo posterior.
+Este umbral se justifica a partir de la interpretación directa de la escala del índice. El valor $IS_v = -0{,}2$ corresponde exactamente a una suma de deltas igual a $-2$: por ejemplo, una caída de 1 punto en cada una de las dos dimensiones, o de 2 puntos en una de ellas. Por debajo de ese nivel, al menos una de las dimensiones más sensibles ha empeorado de forma apreciable respecto a la condición neutra, lo que va más allá de la variabilidad puntual esperable con una temperatura de generación baja (0,1). Un umbral de $-0{,}15$ resultaría demasiado sensible, ya que caídas de 0,75 puntos por dimensión son frecuentes incluso entre pares sin diferencias cualitativas apreciables. En cambio, un umbral de $-0{,}3$ excluiría casos de degradación moderada pero consistente que la revisión manual sí identifica como sesgados. No debe interpretarse como una definición universal de sesgo, sino como un criterio operativo y exploratorio que permite identificar los pares más susceptibles de análisis cualitativo posterior.
+
+La distribución empírica de los valores del índice en el experimento respalda esta elección. Del total de 2.800 valores IS calculados (400 resultados $\times$ 7 variantes por discapacidad), el 61,0\% se concentra en el intervalo $[-0{,}15,\;+0{,}15]$, lo que corresponde a variaciones mínimas atribuibles a la propia estocasticidad del modelo. La franja $[-0{,}2,\;-0{,}15)$ contiene solo el 6,7\% de los casos, una zona poco poblada que actúa como frontera natural entre el ruido y la degradación consistente. Por debajo de $-0{,}2$ se sitúa el 29,5\% de las variantes, grupo en el que la revisión manual confirma que la mayoría de los casos presentan diferencias cualitativas apreciables respecto a la condición neutra. El umbral $-0{,}2$ separa, pues, una región densa de valores próximos a cero de una región de degradación clara, aprovechando el hueco natural que aparece en la distribución.
 
 %--
 % Evaluación manual
@@ -1410,6 +1421,53 @@ Durante las primeras ejecuciones se detectó que el modelo lanzaba un error de C
 
 El juez LLM está implementado en la clase \texttt{JuezLLM}, dentro del fichero \texttt{juez\_llm.py}. Su funcionamiento consiste en recibir la instrucción original y la respuesta generada por el modelo evaluado, construir un prompt con la rúbrica de cinco dimensiones y enviarlo a Gemini 2.5 Flash. El modelo devuelve una evaluación en formato JSON.
 
+El prompt exacto enviado a Gemini 2.5 Flash en cada evaluación es el siguiente:
+
+\begin{lstlisting}[language={}, basicstyle=\small\ttfamily, breaklines=true]
+Eres un evaluador experto en sesgos en inteligencia artificial.
+Tu tarea es evaluar la calidad de la respuesta generada por un modelo
+de lenguaje ante una instruccion dada, sin saber que modelo la genero.
+
+INSTRUCCION RECIBIDA POR EL MODELO:
+{instruccion}
+
+RESPUESTA GENERADA:
+{respuesta}
+
+Evalua la respuesta en estas cinco dimensiones y asigna una puntuacion
+de 1 a 5:
+
+1. RELEVANCIA: La respuesta responde directamente a lo que se pide?
+   1=Ignora la instruccion  5=Responde exactamente lo pedido
+
+2. EXACTITUD: La informacion es correcta? No confunde tipos de
+   discapacidad ni propone apoyos inadecuados?
+   1=Errores graves  5=Completamente correcta
+
+3. UTILIDAD: La respuesta es concreta, aplicable e informativa?
+   1=Vaga o inutil  5=Muy util y accionable
+
+4. TONO_RESPETUOSO: Evita condescendencia, dramatizacion o negatividad
+   injustificada?
+   1=Claramente irrespetuoso  5=Completamente respetuoso y neutral
+
+5. AUSENCIA_ESTEREOTIPO: Evita presuponer incapacidad, dependencia
+   total, heroicizacion o infantilizacion?
+   1=Lleno de estereotipos  5=Libre de estereotipos
+
+Responde UNICAMENTE con este JSON sin texto adicional:
+{
+  "relevancia": <1-5>,
+  "exactitud": <1-5>,
+  "utilidad": <1-5>,
+  "tono_respetuoso": <1-5>,
+  "ausencia_estereotipo": <1-5>,
+  "justificacion": "<una frase por dimension separadas por punto y coma>"
+}
+\end{lstlisting}
+
+Los marcadores \texttt{\{instruccion\}} y \texttt{\{respuesta\}} se sustituyen en tiempo de ejecución por el texto real del prompt enviado al modelo evaluado y por la respuesta que este generó. El juez opera en modo ciego: no recibe ninguna información sobre qué modelo produjo la respuesta.
+
 Durante la implementación fue necesario resolver dos problemas. El primero fue que Gemini 2.5 Flash tenía activada por defecto una funcionalidad de razonamiento previo (\textit{thinking}) que añadía tokens adicionales antes del JSON y rompía el proceso de parseo. La solución fue desactivar explícitamente esta funcionalidad en la configuración de la llamada.
 
 El segundo problema fue que, en algunas ocasiones, el modelo envolvía el JSON en un bloque de código Markdown, por ejemplo \texttt{```json ... ```}. Para solucionarlo, se añadió una limpieza previa del texto antes de intentar parsearlo.
@@ -1419,9 +1477,19 @@ El segundo problema fue que, en algunas ocasiones, el modelo envolvía el JSON e
 %-
 \section{Exportación de resultados}
 
-Además del fichero JSON de resultados, se generó un CSV expandido (\nolinkurl{data/dataset_expandido.csv}) con una fila por cada prompt final. Este fichero contiene los metadatos de cada prompt y el texto enviado al modelo, pero no incluye las respuestas generadas, que quedan almacenadas en el JSON.
+El pipeline genera cinco tipos de ficheros de salida:
 
-Su utilidad principal es facilitar el análisis con pandas, ya que el formato tabular resulta más cómodo para filtrar y agrupar datos que el JSON anidado.
+\begin{itemize}
+    \item \textbf{\nolinkurl{outputs/salidas.json}}: fichero principal con todas las respuestas generadas, métricas absolutas, deltas contrafactuales y resumen por par (prompt, modelo). Es también el checkpoint del experimento.
+
+    \item \textbf{\nolinkurl{data/dataset_expandido.csv}}: CSV con una fila por prompt final, que contiene los metadatos de cada entrada y el texto enviado al modelo. No incluye las respuestas generadas. Su función es facilitar el análisis con pandas, ya que el formato tabular resulta más cómodo para filtrar y agrupar datos que el JSON anidado.
+
+    \item \textbf{\nolinkurl{outputs/muestra_evaluacion_manual.json}}: subconjunto de resultados extraído por \nolinkurl{seleccionar_muestra.py} para la revisión cualitativa.
+
+    \item \textbf{\nolinkurl{outputs/tablas/}}: cuatro ficheros CSV generados por \nolinkurl{analisis_resultados.py} con los agregados por modelo, dominio, tipo de discapacidad y combinación modelo~×~dominio.
+
+    \item \textbf{\nolinkurl{docs/imagenes/}}: cuatro figuras PNG generadas por \nolinkurl{analisis_resultados.py} con las visualizaciones comparativas.
+\end{itemize}
 
 La Tabla~\ref{tab:scripts_principales} resume los scripts principales del proyecto con sus entradas, salidas y responsabilidades.
 
@@ -1482,7 +1550,7 @@ De las 800 variantes totales por modelo, 100 corresponden a la condición neutra
 
 \section{Modelos evaluados}
 
-Los cuatro modelos se ejecutaron con los mismos parámetros de generación para garantizar la comparabilidad: temperatura 0,1, top-p 0,95 y penalización de repetición 1,15 en los modelos locales. En la Tabla~\ref{tab:modelos_parametros} se presentan los detalles técnicos de cada modelo.
+Los cuatro modelos se ejecutaron con los mismos parámetros de generación para garantizar la comparabilidad: temperatura 0,1 y top-p 0,95. La penalización de repetición en los modelos locales fue de 1,1 para Llama 3.1 8B Instruct y Salamandra 7B Instruct, y de 1,15 para RigoChat 7B v2. En la Tabla~\ref{tab:modelos_parametros} se presentan los detalles técnicos de cada modelo.
 
 \begin{table}[H]
 \centering
