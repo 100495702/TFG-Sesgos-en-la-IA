@@ -128,9 +128,11 @@ hmargin=3cm
 	font=small
 }
 
-% DISEÑO DE FIGURAS. 
+% DISEÑO DE FIGURAS.
 \usepackage{graphicx}
 \graphicspath{{imagenes/}} % ruta a la carpeta de imágenes
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
 
 % Diseño de figuras para ingeniería
 \captionsetup[figure]{
@@ -361,19 +363,22 @@ El problema es que, junto con todas estas capacidades, los LLMs heredan los sesg
 % Motivación
 %-
 \section{Motivación}
-La idea de este TFG surge de la combinación de factores que, al unirse, hacen que el tema resulte especialmente interesante y necesario.
 
-Por un lado, al revisar la literatura científica sobre sesgos en LLMs \cite{guo2024bias, navigli2023biases}, nos dimos cuenta de que la inmensa mayoría de los estudios se centra en el inglés y en atributos como el género o la etnia. El sesgo hacia las personas con discapacidad está comparativamente muy poco estudiado, y en español prácticamente no existen trabajos al respecto. Hay algunos estudios en inglés que demuestran que los modelos asocian términos de discapacidad con sentimientos negativos \cite{venkit2022disability} o reproducen estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability}, pero, hasta donde se ha revisado en este trabajo, existen pocos estudios sistemáticos sobre si esto ocurre también en los modelos que se están desarrollando específicamente para el español.
+La motivación de este TFG surge de la convergencia de tres factores: una brecha en la literatura científica, un colectivo especialmente vulnerable y la disponibilidad de herramientas que hacen posible el estudio.
 
-Por otro lado, hoy en día es perfectamente posible llevar a cabo este tipo de experimentos de forma rigurosa sin necesitar una infraestructura enorme, gracias a que muchos modelos son de código abierto y se pueden ejecutar en GPUs accesibles. Esto nos ha permitido diseñar un experimento real, con modelos reales, y no quedarnos en algo meramente teórico.
+\textbf{Brecha en la literatura.} La investigación sobre sesgos en LLMs está dominada por el inglés y se centra principalmente en atributos como el género o la etnia \cite{guo2024bias, navigli2023biases}. El sesgo hacia las personas con discapacidad es un campo comparativamente incipiente: los trabajos existentes demuestran que los modelos asocian términos de discapacidad con sentimientos negativos \cite{venkit2022disability}, reproducen estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability} o muestran peor rendimiento en contextos de contratación cuando aparece una referencia a la discapacidad \cite{kamruzzaman2025disclosure, phutane2025ableist}. Sin embargo, estos estudios se centran en el inglés y en modelos multilingües. En el ámbito del español, la cuestión permanece prácticamente sin respuesta: no existe, hasta donde se ha revisado en este trabajo, ningún estudio sistemático sobre si los modelos desarrollados específicamente para esta lengua, como RigoChat o Salamandra, reproducen los mismos patrones de sesgo que los modelos multilingües.
 
-En definitiva, el trabajo responde a una pregunta que nadie ha respondido todavía en español: ¿cambian los LLMs su comportamiento cuando una consulta menciona a una persona con discapacidad? Y si cambia, ¿de qué forma?
+\textbf{Un colectivo vulnerable.} Según datos del Instituto Nacional de Estadística, en España hay aproximadamente 4,38 millones de personas con algún tipo de discapacidad reconocida, cerca del 9,4\% de la población. La OMS estima que más de 1.300 millones de personas viven en el mundo con alguna forma de discapacidad significativa. Si los sistemas de IA que se despliegan para toda la ciudadanía tratan de forma diferente a este colectivo en contextos tan cotidianos como el empleo, la salud, la educación o la administración, las consecuencias pueden ser relevantes. A diferencia de otros atributos de equidad, la discapacidad no siempre está presente de forma explícita en los benchmarks de sesgo existentes \cite{beats2025}, y raramente aparece en los estudios centrados en español \cite{sesgo2025}.
+
+\textbf{Viabilidad técnica.} El experimento descrito en este trabajo es posible porque muchos modelos de calidad son de código abierto y pueden ejecutarse en infraestructura de computación accesible. Esto permite diseñar un estudio empírico con modelos reales en condiciones controladas, sin depender exclusivamente de APIs externas, y hace que los resultados sean reproducibles por otros investigadores.
+
+En conjunto, el trabajo responde a una pregunta que no tiene respuesta documentada en español: ¿modifican los LLMs su comportamiento cuando una consulta incluye una referencia explícita a la discapacidad? Y si lo hacen, ¿de qué forma y con qué intensidad?
 
 %--
 % Problema abordado
 %-
 \section{Problema abordado}
-El problema concreto que abordamos en este trabajo es el siguiente: cuando se le pide a un modelo de IA generativa en español que genere un texto, ¿produce respuestas distintas dependiendo de si la consulta menciona o no a una persona con discapacidad? Y si lo hace, ¿en qué sentido cambia esa respuesta?
+El problema concreto que aborda este trabajo es el siguiente: cuando se le pide a un modelo de IA generativa en español que genere un texto, ¿produce respuestas distintas dependiendo de si la consulta menciona o no a una persona con discapacidad? Y si lo hace, ¿en qué sentido cambia esa respuesta?
 
 Lo importante es que este tipo de sesgo ,denominado en la literatura sesgo extrínseco o de salida \cite{navigli2023biases}, no tiene por qué manifestarse de forma obvia. El modelo no tiene que insultar a nadie para ser discriminatorio. Lo que los trabajos previos han encontrado \cite{gadiraju2023disability} es que los sesgos suelen ser más sutiles: el modelo puede volverse más paternalista, añadir advertencias innecesarias, reducir el nivel de detalle de su respuesta o introducir estereotipos de forma implícita. Esto hace que sea más difícil detectarlos y que haga falta ir más allá de un simple detector de toxicidad.
 
@@ -891,54 +896,65 @@ La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline
 
 \begin{figure}[H]
 \centering
-\begin{verbatim}
-+--------------------------------------+
-| Dataset de prompts                   |
-| data/dataset.json                    |
-+------------------+-------------------+
-                   |
-                   v
-+--------------------------------------+
-| Módulo de carga y validación         |
-| dataset_loader.py                    |
-+------------------+-------------------+
-                   |
-                   v
-+--------------------------------------+
-| Orquestador experimental             |
-| generate_evaluations.py              |
-+----+--------+--------+-----------+---+
-     |        |        |           |
-     v        v        v           v
-+--------++--------++--------++----------+
-|Llama   ||RigoChat||Gemini  ||Salamandra|
-|3.1 8B  ||7B v2   ||2.5     ||7B        |
-|(local) ||(local) ||Flash   ||(local)   |
-|        ||        ||(API)   ||          |
-+---+----++---+----++---+----++-----+----+
-     |        |        |           |
-     +--------+--------+-----------+
-                   |
-     [sentimiento · juez LLM · longitud]
-                   |
-                   v
-+--------------------------------------+
-| Almacenamiento con checkpoint        |
-| outputs/salidas.json                 |
-+------------------+-------------------+
-                   |
-          +--------+--------+
-          |                 |
-          v                 v
- +----------------+  +--------------------+
- | Muestra para   |  | Análisis           |
- | eval. manual   |  | comparativo        |
- | seleccionar_   |  | tablas CSV         |
- | muestra.py     |  | + figuras PNG      |
- +----------------+  | analisis_          |
-                     | resultados.py      |
-                     +--------------------+
-\end{verbatim}
+\begin{tikzpicture}[
+  node distance=0.65cm,
+  box/.style={draw, rounded corners=4pt, fill=gray!10, minimum width=9.2cm,
+              minimum height=0.9cm, align=center, font=\small, inner sep=6pt},
+  mbox/.style={draw, rounded corners=4pt, fill=blue!8, minimum width=2.1cm,
+               minimum height=1.1cm, align=center, font=\small, inner sep=5pt},
+  obox/.style={draw, rounded corners=4pt, fill=green!7, minimum width=3.9cm,
+               minimum height=1.0cm, align=center, font=\small, inner sep=5pt},
+  arr/.style={-{Stealth[length=5pt,width=4pt]}, semithick}
+]
+% ─── Flujo principal ───────────────────────────────────
+\node[box] (D) {\textbf{Dataset de prompts} \quad \texttt{data/dataset.json}};
+\node[box, below=of D] (C) {\textbf{Módulo de carga y validación} \quad \texttt{dataset\_loader.py}};
+\node[box, below=of C] (O) {\textbf{Orquestador experimental} \quad \texttt{generate\_evaluations.py}};
+
+\draw[arr] (D) -- (C);
+\draw[arr] (C) -- (O);
+
+% ─── Modelos ───────────────────────────────────────────
+\node[mbox, below=1.8cm of O, xshift=-3.5cm] (M1) {\textbf{Llama 3.1 8B}\\{\footnotesize local}};
+\node[mbox, right=0.3cm of M1]               (M2) {\textbf{RigoChat 7B}\\{\footnotesize local}};
+\node[mbox, right=0.3cm of M2]               (M3) {\textbf{Gemini 2.5}\\{\footnotesize Flash (API)}};
+\node[mbox, right=0.3cm of M3]               (M4) {\textbf{Salamandra 7B}\\{\footnotesize local}};
+
+% Bus de salida: O → modelos
+\coordinate (busout) at ([yshift=-0.6cm]O.south);
+\draw (O.south) -- (busout);
+\draw (M1.north |- busout) -- (M4.north |- busout);
+\foreach \m in {M1,M2,M3,M4}{ \draw[arr] (\m.north |- busout) -- (\m.north); }
+
+% ─── Etiqueta de métricas ──────────────────────────────
+\coordinate (midmod) at ($(M2.south)!0.5!(M3.south)$);
+\node[align=center, font=\small\itshape, below=0.6cm of midmod] (Mx)
+  {[\,sentimiento $\cdot$ juez LLM $\cdot$ longitud\,]};
+
+% Bus de entrada: modelos → métricas
+\coordinate (busin) at ([yshift=0.35cm]Mx.north);
+\foreach \m in {M1,M2,M3,M4}{ \draw (\m.south) -- (\m.south |- busin); }
+\draw (M1.south |- busin) -- (M4.south |- busin);
+\draw[arr] (Mx.north |- busin) -- (Mx.north);
+
+% ─── Almacenamiento ────────────────────────────────────
+\node[box, below=0.55cm of Mx] (S)
+  {\textbf{Almacenamiento con checkpoint} \quad \texttt{outputs/salidas.json}};
+\draw[arr] (Mx) -- (S);
+
+% ─── Salidas ───────────────────────────────────────────
+\node[obox, below=1.2cm of S, xshift=-2.5cm] (A)
+  {\textbf{Muestra para eval.\ manual}\\\texttt{seleccionar\_muestra.py}};
+\node[obox, below=1.2cm of S, xshift= 2.5cm] (B)
+  {\textbf{Análisis comparativo}\\tablas CSV $+$ figuras PNG};
+
+\coordinate (busout2) at ([yshift=-0.5cm]S.south);
+\draw (S.south) -- (busout2);
+\draw (A.north |- busout2) -- (B.north |- busout2);
+\draw[arr] (A.north |- busout2) -- (A.north);
+\draw[arr] (B.north |- busout2) -- (B.north);
+
+\end{tikzpicture}
 \caption{Arquitectura general del sistema}
 \label{fig:pipeline_arquitectura}
 \end{figure}
@@ -1913,18 +1929,18 @@ El proyecto ha tenido un coste económico reducido gracias al acceso a infraestr
 %----------
 \chapter{Conclusiones}
 \section{Conclusiones generales}
-En este TFG hemos diseñado, implementado y ejecutado un marco experimental reproducible para analizar sesgos relacionados con la discapacidad en modelos de IA generativa en español. El enfoque contrafactual nos ha permitido comparar de forma sistemática las respuestas de cuatro modelos ante las mismas consultas con y sin referencia explícita a la discapacidad, obteniendo evidencia cuantitativa clara sobre la existencia y la magnitud de estos sesgos.
+Este TFG ha diseñado, implementado y ejecutado un marco experimental reproducible para analizar sesgos relacionados con la discapacidad en modelos de IA generativa en español. El enfoque contrafactual ha permitido comparar de forma sistemática las respuestas de cuatro modelos ante las mismas consultas con y sin referencia explícita a la discapacidad, obteniendo evidencia cuantitativa sobre la existencia y la magnitud de estos sesgos.
 
 El resultado más importante del experimento es que los tres modelos locales evaluados ,Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct, presentan sesgo detectable en más del 85\% de los prompts, mientras que Gemini 2.5 Flash solo lo hace en el 11\%. La dimensión más afectada en los modelos locales es la ausencia de estereotipo, con caídas medias de entre $-1{,}41$ y $-1{,}44$ puntos sobre 5. Los tipos de discapacidad cognitiva e intelectual son los más estigmatizados (caídas del 70-71\% de los casos), y el dominio de empleo es el más vulnerable de los cinco analizados (75\% de prompts con sesgo).
 
 El análisis cualitativo de los casos más extremos revela que el sesgo raramente toma la forma de insultos o contenido abiertamente ofensivo. Lo más común es que los modelos simplifiquen implícitamente sus respuestas, introduzcan advertencias no solicitadas, asuman limitaciones de la persona que no se derivan del prompt, o directamente rechacen preguntas perfectamente legítimas por el simple hecho de mencionar una discapacidad. En el caso más extremo del experimento, Salamandra rechazó responder a una pregunta sobre los requisitos bancarios para conceder una hipoteca a una persona con discapacidad cognitiva, calificando la pregunta de «ofensiva y discriminatoria», mientras que al mismo prompt sin referencia a discapacidad respondía con normalidad. Esto ilustra bien que el problema no es solo cuantitativo sino también cualitativo: los modelos pueden llegar a excluir activamente a las personas con discapacidad de información que tienen todo el derecho a recibir.
 
-Un resultado que no esperábamos de antemano es el comportamiento de Gemini en cuanto a la extensión de sus respuestas: a pesar de no mostrar degradación en calidad, produce respuestas un promedio de 50 palabras más largas cuando la consulta incluye una referencia a la discapacidad. Esto sugiere que incluso el modelo con menor tasa de sesgo puede tener comportamientos que tratan a las personas con discapacidad como un caso especial, aunque en este caso sea en un sentido positivo.
+Un resultado notable es el comportamiento de Gemini en cuanto a la extensión de sus respuestas: a pesar de no mostrar degradación en calidad, produce respuestas un promedio de 50 palabras más largas cuando la consulta incluye una referencia a la discapacidad. Esto sugiere que incluso el modelo con menor tasa de sesgo puede tener comportamientos que tratan a las personas con discapacidad como un caso especial, aunque en este caso sea en un sentido positivo.
 
 Por último, el resultado sobre la especialización en español es un hallazgo relevante por sí solo: los dos modelos específicamente orientados al español (RigoChat y Salamandra) no presentan mejor comportamiento que Llama, un modelo multilingüe de propósito general, en ninguna de las métricas de sesgo analizadas. La especialización lingüística no implica mayor equidad.
 
 \section{Cumplimiento de objetivos}
-A continuación repasamos cómo hemos ido cumpliendo cada uno de los objetivos específicos que nos planteamos al principio:
+A continuación se describe cómo cada uno de los objetivos específicos planteados al inicio del trabajo ha quedado cubierto:
 
 \begin{itemize}
     \item El estudio de los trabajos relacionados y los fundamentos teóricos se recoge en el capítulo 2.
@@ -1935,7 +1951,7 @@ A continuación repasamos cómo hemos ido cumpliendo cada uno de los objetivos e
 \end{itemize}
 
 \section{Principales aportaciones}
-Lo que creemos que aporta este trabajo es lo siguiente:
+Las principales aportaciones de este trabajo son las siguientes:
 
 \begin{enumerate}
     \item Un dataset original de 100 plantillas de prompts contrafactuales en español, organizado en cinco dominios temáticos con siete tipos de discapacidad, disponible públicamente en GitHub.
@@ -1945,7 +1961,7 @@ Lo que creemos que aporta este trabajo es lo siguiente:
 \end{enumerate}
 
 \section{Limitaciones}
-Somos conscientes de que el trabajo tiene algunas limitaciones que conviene mencionar. La más importante es que el dataset es sintético: los prompts los hemos redactado nosotros y no provienen de consultas reales de usuarios, lo que puede afectar a la generalización de los resultados. También nos hemos limitado al español estándar, sin contemplar variedades regionales. La evaluación automática, por su parte, tiene problemas conocidos para detectar sesgos sutiles como el paternalismo. Y la muestra para revisión manual es necesariamente pequeña dado el volumen total del experimento.
+El trabajo presenta algunas limitaciones que conviene mencionar. La más importante es que el dataset es sintético: los prompts fueron redactados siguiendo criterios de diseño experimental y no provienen de consultas reales de usuarios, lo que puede afectar a la generalización de los resultados. El estudio se limita también al español estándar, sin contemplar variedades regionales. La evaluación automática tiene problemas conocidos para detectar sesgos sutiles como el paternalismo. Y la muestra para revisión manual es necesariamente pequeña dado el volumen total del experimento.
 
 \section{Líneas futuras}
 Hay varias direcciones en las que podría continuarse este trabajo:
@@ -1953,7 +1969,7 @@ Hay varias direcciones en las que podría continuarse este trabajo:
 \begin{itemize}
     \item \textbf{Ampliar el dataset}: añadir nuevos dominios (tecnología, justicia, vivienda), nuevos tipos de discapacidad (neurológica, de salud mental) o nuevas variantes de los textos de condición.
 
-    \item \textbf{Evaluación con personas con discapacidad}: la limitación más importante de la evaluación manual es que la hacemos nosotros. Sería mucho más valioso contar con anotaciones de personas del colectivo, como hicieron \citeauthor{gadiraju2023disability} \cite{gadiraju2023disability}.
+    \item \textbf{Evaluación con personas con discapacidad}: sería mucho más valioso contar con anotaciones de personas del colectivo, como hicieron \citeauthor{gadiraju2023disability} \cite{gadiraju2023disability}, en lugar de limitarse a una revisión interna.
 
     \item \textbf{Más modelos}: incluir GPT-4o, ALIA-40b u otros modelos futuros especializados en español para ampliar la comparativa.
 
