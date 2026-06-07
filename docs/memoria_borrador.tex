@@ -708,22 +708,23 @@ La Tabla~\ref{tab:campos_trazabilidad} recoge los campos mínimos que deben cons
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{4cm}p{9cm}}
+\footnotesize
+\begin{tabular}{p{5.2cm}p{8.3cm}}
 \hline
 \textbf{Campo en \texttt{salidas.json}} & \textbf{Descripción} \\
 \hline
 \texttt{id\_prueba} & Identificador secuencial de la combinación (prompt, modelo). \\
-\texttt{id\_prompt\_original} & Identificador del prompt base, por ejemplo \texttt{EMP\_001}. \\
+\texttt{id\_prompt\_original} & Identificador del prompt base, p.ej.\ \texttt{EMP\_001}. \\
 \texttt{dominio} & Dominio temático: empleo, educacion, salud, administrativo u ocio. \\
 \texttt{objetivo\_sesgo} & Tipo de sesgo que se pretende detectar con ese prompt. \\
-\texttt{modelo\_evaluado} & Nombre del modelo utilizado, tal como aparece en la factoría. \\
-\texttt{parametros\_generacion} & Parámetros de generación: temperatura, top-p, repetition penalty y semilla. \\
+\texttt{modelo\_evaluado} & Nombre del modelo tal como aparece en la factoría. \\
+\texttt{parametros\_generacion} & Temperatura, top-p, repetition penalty y semilla. \\
 \texttt{fecha\_ejecucion} & Fecha en que se ejecutó el par (prompt, modelo). \\
 \texttt{plantilla\_prompt} & Plantilla original con el marcador \texttt{\{condicion\}}. \\
 \texttt{evaluaciones.control\_base} & Prompt enviado, respuesta, rechazo y métricas de la condición neutra. \\
-\texttt{evaluaciones.variantes\_contrafactuales} & Ídem para cada variante con discapacidad, más los deltas. \\
-\texttt{rechazo\_api} & Indicador de error o rechazo (0 = correcto, 1 = error o rechazo). \\
-\texttt{resumen} & Variante más sesgada, tasa de rechazo e índice de sesgo del resultado. \\
+\texttt{evaluaciones.variantes\_}\linebreak\texttt{contrafactuales} & Ídem para cada variante con discapacidad, más los deltas. \\
+\texttt{rechazo\_api} & Indicador de error o rechazo (0 = correcto, 1 = error). \\
+\texttt{resumen} & Variante más sesgada, tasa de rechazo e índice de sesgo. \\
 \hline
 \end{tabular}
 \caption{Campos almacenados en \texttt{outputs/salidas.json} para la trazabilidad del experimento}
@@ -867,13 +868,14 @@ La Tabla~\ref{tab:componentes_sistema} describe los componentes del sistema, sus
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{2.8cm}p{3.5cm}p{2.2cm}p{2.2cm}p{2.8cm}}
+\footnotesize
+\begin{tabular}{p{2.4cm}p{3.8cm}p{2cm}p{2cm}p{3.3cm}}
 \hline
 \textbf{Componente} & \textbf{Fichero / carpeta} & \textbf{Entrada} & \textbf{Salida} & \textbf{Responsabilidad} \\
 \hline
-Dataset & \texttt{data/dataset.json} & -- & Prompts y variantes & Fuente de datos del experimento \\
+Dataset & \texttt{data/dataset.json} & -- & Prompts y variantes & Fuente de datos \\
 \hline
-Módulo de carga & \texttt{dataset\_loader.py} & \texttt{dataset.json} & Objetos Python & Carga y validación de campos \\
+Módulo de carga & \texttt{dataset\_loader.py} & \texttt{dataset.json} & Objetos Python & Carga y validación \\
 \hline
 Orquestador & \texttt{generate\_evaluations.py} & Dataset, modelos & \texttt{salidas.json} & Coordina ejecución y métricas \\
 \hline
@@ -883,7 +885,7 @@ Módulo de evaluación & \texttt{evaluacion/} & Prompt + respuesta & Métricas &
 \hline
 Almacenamiento & \texttt{outputs/salidas.json} & Resultados & JSON persistido & Checkpoint incremental \\
 \hline
-Selección de muestra & \texttt{seleccionar\_muestra.py} & \texttt{salidas.json} & \texttt{muestra\_.json} & Extrae casos para revisión manual \\
+Selección de muestra & \texttt{seleccionar\_muestra.py} & \texttt{salidas.json} & \texttt{muestra.json} & Extrae casos para revisión manual \\
 \hline
 Módulo de análisis & \texttt{analisis\_resultados.py} & \texttt{salidas.json} & CSV + PNG & Tablas y figuras comparativas \\
 \hline
@@ -1345,14 +1347,15 @@ La Tabla~\ref{tab:clientes_modelos} resume los cuatro clientes implementados, su
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{2.5cm}p{1.5cm}p{2.5cm}p{2cm}p{4cm}}
+\footnotesize
+\begin{tabular}{p{2.2cm}p{2.2cm}p{1.6cm}p{2.2cm}p{5.3cm}}
 \hline
 \textbf{Fichero} & \textbf{Modelo} & \textbf{Acceso} & \textbf{Librería} & \textbf{Observaciones} \\
 \hline
 \texttt{llama.py} & Llama 3.1 8B & Local & Transformers (HF) & Carga perezosa; \texttt{bfloat16}; \texttt{device\_map="auto"} \\
-\texttt{rigochat.py} & RigoChat 7B & Local & Transformers (HF) & Ídem; requiere \texttt{device\_map="auto"} para no colisionar con Llama en GPU 0 \\
-\texttt{salamandra.py} & Salamandra 7B & Local & Transformers (HF) & Requiere \texttt{apply\_chat\_template} con fecha actual según documentación del modelo \\
-\texttt{gemini.py} & Gemini 2.5 Flash & API & google-genai & \textit{Thinking} desactivado para el juez LLM; limpieza de bloques Markdown en el JSON devuelto \\
+\texttt{rigochat.py} & RigoChat 7B & Local & Transformers (HF) & Ídem; \texttt{device\_map="auto"} para no colisionar con Llama en GPU~0 \\
+\texttt{salamandra.py} & Salamandra 7B & Local & Transformers (HF) & Requiere \texttt{apply\_chat\_template} con fecha actual \\
+\texttt{gemini.py} & Gemini 2.5 Flash & API & google-genai & \textit{Thinking} desactivado; limpieza de bloques Markdown en el JSON \\
 \hline
 \end{tabular}
 \caption{Clientes de modelos implementados en \texttt{scripts/modelos/}}
