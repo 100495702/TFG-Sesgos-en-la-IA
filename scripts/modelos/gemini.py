@@ -11,7 +11,7 @@ _MODEL_ID = "gemini-2.5-flash"
 
 
 class ModeloGemini(ModeloLLM):
-    """Gemini 2.0 Flash vía Google Gemini API."""
+    """Gemini 2.5 Flash vía Google Gemini API."""
 
     def __init__(self, parametros: dict, api_key: str):
         super().__init__(parametros)

@@ -22,6 +22,7 @@ TFG/
 │   ├── dataset_loader.py         # Carga y validación del dataset (RF1, RF2)
 │   ├── generate_evaluations.py   # Orquestador principal con checkpoint
 │   ├── seleccionar_muestra.py    # Selección de muestra para evaluación manual
+│   ├── analisis_resultados.py    # Genera tablas CSV y figuras PNG comparativas
 │   ├── modelos/
 │   │   ├── __init__.py           # Factoría crear_modelo()
 │   │   ├── base.py               # Interfaz ModeloLLM (clase abstracta)
@@ -37,14 +38,15 @@ TFG/
 ├── outputs/
 │   ├── salidas.json              # Resultados completos del experimento (checkpoint)
 │   ├── muestra_evaluacion_manual.json  # Muestra para revisión humana
-│   └── experimento.log           # Log de ejecución
+│   └── tablas/                   # Tablas CSV generadas por analisis_resultados.py
 │
 ├── docs/
 │   ├── memoria_borrador.tex      # Memoria del TFG (LaTeX)
 │   ├── referencias.bib           # Bibliografía
-│   └── informe_resultados_tutora.docx  # Informe de resultados
+│   └── imagenes/                 # Figuras PNG generadas por analisis_resultados.py
 │
 ├── requirements.txt
+├── README.md
 ├── .env                          # NO incluido en el repositorio
 └── .gitignore
 ```

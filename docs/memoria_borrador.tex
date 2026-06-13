@@ -1434,6 +1434,7 @@ TFG-Sesgos-en-la-IA/
 |   |-- imagenes/                # Figuras PNG generadas por analisis_resultados
 |
 |-- requirements.txt
+|-- README.md
 |-- .gitignore
 |-- .env                         # No incluido en el repositorio
 \end{verbatim}
@@ -1476,7 +1477,7 @@ La Tabla~\ref{tab:clientes_modelos} resume los cuatro clientes implementados, su
 \texttt{llama.py} & Llama 3.1 8B & Local & Transformers (HF) & Carga perezosa; \texttt{bfloat16}; \texttt{device\_map="auto"} \\
 \texttt{rigochat.py} & RigoChat 7B & Local & Transformers (HF) & Ídem; \texttt{device\_map="auto"} para no colisionar con Llama en GPU~0 \\
 \texttt{salamandra.py} & Salamandra 7B & Local & Transformers (HF) & Requiere \texttt{apply\_chat\_template} con fecha actual \\
-\texttt{gemini.py} & Gemini 2.5 Flash & API & google-genai & \textit{Thinking} desactivado; limpieza de bloques Markdown en el JSON \\
+\texttt{gemini.py} & Gemini 2.5 Flash & API & google-genai & Sin carga de pesos local; \texttt{max\_output\_tokens=8192} fijado explícitamente \\
 \hline
 \end{tabular}
 \caption{Clientes de modelos implementados en \texttt{scripts/modelos/}}
@@ -1492,9 +1493,9 @@ Un caso especial es Salamandra, cuyo tokenizador requiere usar el método \textt
 %-
 \subsection{Ejecución y almacenamiento}
 
-El orquestador principal se encuentra en \texttt{generate\_evaluations.py}, dentro de la clase \texttt{GeneradorEvaluaciones}. El método \texttt{generar\_evaluaciones()} recorre los prompts y los modelos en orden. Para cada combinación, llama al método interno \texttt{\_procesar\_variante()}, que se encarga de obtener la respuesta del modelo y calcular las tres métricas: análisis de sentimiento, evaluación por el juez LLM y longitud en palabras.
+El orquestador principal se encuentra en \texttt{generate\_evaluations.py}, dentro de la clase \texttt{GeneradorEvaluaciones}. El método \texttt{generar\_evaluaciones()} recorre los modelos y, para cada uno, los prompts del dataset en orden. Para cada combinación (prompt, modelo), llama al método \texttt{procesar\_prueba()}, que a su vez invoca al método interno \texttt{\_procesar\_variante()} una vez para la condición neutra y una vez por cada una de las siete variantes con discapacidad. Cada llamada a \texttt{\_procesar\_variante()} obtiene la respuesta del modelo y calcula las tres métricas: análisis de sentimiento, evaluación por el juez LLM y longitud en palabras.
 
-Tras procesar todas las variantes de un prompt con un modelo concreto, se calculan los deltas contrafactuales respecto a la condición neutra y se genera un bloque de resumen. Este bloque incluye la variante más sesgada, la tasa de rechazo y el índice de sesgo.
+Tras procesar todas las variantes de un prompt con un modelo concreto, el método \texttt{calcular\_deltas()} calcula los deltas contrafactuales respecto a la condición neutra y genera, mediante \texttt{\_calcular\_resumen()}, un bloque de resumen. Este bloque incluye la variante más sesgada, la tasa de rechazo y el índice de sesgo.
 
 El resultado completo se guarda inmediatamente en \texttt{outputs/salidas.json} tras cada resultado, lo que implementa el mecanismo de checkpoint.
 
@@ -2360,6 +2361,8 @@ pip install -r requirements.txt
 \end{verbatim}
 
 Las credenciales necesarias para acceder a los modelos (token de Hugging Face y clave de la API de Google) se configuran en un fichero \texttt{.env} en la raíz del proyecto. Este fichero no se incluye en el repositorio, ya que contiene credenciales, y está excluido mediante \texttt{.gitignore}.
+
+El token de Hugging Face (\texttt{HF\_TOKEN}) se obtiene desde una cuenta de Hugging Face, en la sección de tokens de acceso del perfil de usuario (\url{https://huggingface.co/settings/tokens}), creando un token de tipo \textit{read}. La clave de la API de Google (\texttt{GOOGLE\_API\_KEY}) se obtiene desde Google AI Studio (\url{https://aistudio.google.com/app/apikey}), generando una clave de API asociada a una cuenta de Google.
 
 Para la reproducibilidad conviene tener en cuenta que Llama 3.1 8B Instruct es un modelo de acceso restringido (\textit{gated}) en Hugging Face: para descargarlo es necesario disponer de una cuenta de Hugging Face que haya aceptado la licencia del modelo en su página oficial, y configurar la variable \texttt{HF\_TOKEN} con un token de acceso asociado a esa cuenta. Sin este paso, la carga del modelo \texttt{meta-llama/Meta-Llama-3.1-8B-Instruct} fallará aunque el resto de la configuración sea correcta.
 
