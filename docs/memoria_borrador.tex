@@ -3,7 +3,7 @@
 %----------
 
 % Esta plantilla está basada en las recomendaciones de la guía "Trabajo fin de Grado: Escribir el TFG", que encontrarás en http://uc3m.libguides.com/TFG/escribir
-% contiene recomendaciones de la Biblioteca basadas principalmente en estilos APA e IEEE, pero debes seguir siempre las orientaciones de tu Tutor de TFG y la normativa de TFG para tu titulación.
+% Contiene recomendaciones de la Biblioteca basadas principalmente en estilos APA e IEEE, pero debes seguir siempre las orientaciones de tu Tutor de TFG y la normativa de TFG para tu titulación.
 
 
 
@@ -137,6 +137,7 @@ hmargin=3cm
 \graphicspath{{imagenes/}} % ruta a la carpeta de imágenes
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{pgfgantt} % para el diagrama de Gantt de la planificación
 
 % Diseño de figuras para ingeniería
 \captionsetup[figure]{
@@ -247,7 +248,7 @@ hmargin=3cm
 			{\LARGE Alejandro López Sancho}\\ 
 			\vspace*{1cm}
 		\begin{Large}
-			Tutor/es\\
+			Tutor/es:\\
 			Lourdes Moreno López\\
 			Universidad Carlos III de Madrid (Leganés)\\
             15/6/2026\\
@@ -275,13 +276,16 @@ hmargin=3cm
 \setcounter{page}{3}
 	
 	% ESCRIBIR EL RESUMEN AQUÍ
-En estos últimos años ha crecido el uso de los modelos de lenguaje de gran escala (LLMs) en contextos que afectan directamente a la vida de las personas: asistencia sanitaria, empleo, educación y servicios públicos. Sin embargo, existe una evidencia cada vez más notoria de que estos modelos pueden generar respuestas sesgadas cuando las consultas incluyen referencias a grupos sociales específicos. De estos grupos, el colectivo de personas con discapacidad representa una de las poblaciones más vulnerables a este tipo de sesgo, y el estudio de este fenómeno en lengua española ha recibido escasa atención en la literatura científica.
 
-Este Trabajo de Fin de Grado diseña, implementa y ejecuta un marco experimental reproducible para analizar si los modelos de IA generativa en español modifican de forma sistemática su comportamiento cuando una consulta incorpora una referencia explícita a la discapacidad. Para realizar este experimento, se ha construido un dataset compuesto por 100 plantillas de prompts contrafactuales, organizadas en cinco dominios temáticos (empleo, educación, salud, administración y ocio) y enriquecidas con siete tipos de discapacidad, lo que da como resultado un total de 800 prompts finales.
+En los últimos años ha aumentado el uso de los modelos de lenguaje de gran escala, o LLMs, en contextos que pueden afectar directamente a la vida de las personas, como la asistencia sanitaria, el empleo, la educación o los servicios públicos. Aunque estos modelos ofrecen muchas posibilidades, también pueden generar respuestas diferentes cuando las consultas incluyen referencias a determinados grupos sociales. Entre estos grupos, las personas con discapacidad pueden verse especialmente afectadas, y el estudio de este tipo de sesgo en modelos generativos en español todavía es limitado.
 
-El experimento se ejecuta sobre cuatro modelos de IA diferentes: \textit{Llama 3.1 8B Instruct} (Meta), \textit{RigoChat 7B v2} (IIC), \textit{Gemini 2.5 Flash} (Google) y \textit{Salamandra 7B Instruct} (BSC-LT). Las respuestas de cada modelo se evalúan mediante tres métricas automáticas complementarias: análisis de sentimiento con el modelo \textit{robertuito} de pysentimiento, evaluación mediante un juez LLM basado en una rúbrica de cinco dimensiones (relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipo), y diferencia de extensión entre las respuestas neutras y las con discapacidad. Además de realizarse una revisión manual para comprobar que las valoraciones del LLM juez son correctas.
+Este Trabajo de Fin de Grado diseña, implementa y evalúa un pipeline experimental reproducible para analizar posibles sesgos relacionados con la discapacidad en modelos de IA generativa en español. El sistema desarrollado permite cargar un conjunto de prompts, ejecutar esos prompts sobre distintos modelos locales y mediante API, almacenar las respuestas generadas de forma trazable y aplicar varias métricas automáticas de evaluación. Además de analizar resultados, se presenta una herramienta experimental que pueda repetirse y ampliarse en futuros estudios.
 
-Los resultados muestran que los tres modelos locales evaluados (Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct) presentan un sesgo detectable en más del 85\% de los prompts, frente al 11\% de Gemini 2.5 Flash. La dimensión más afectada en todos los modelos locales es la ausencia de estereotipo, con caídas medias de entre $-1{,}41$ y $-1{,}44$ puntos sobre 5. Las discapacidades cognitivas e intelectuales resultan las más estigmatizadas, y el dominio de empleo el más vulnerable. Estos resultados sugieren, en el conjunto experimental analizado, que la especialización en español no garantiza un comportamiento más equitativo y que el sesgo hacia las personas con discapacidad es un problema real y cuantificable en los modelos de IA generativa actuales.
+Como entrada del pipeline, se construyó un dataset formado por 100 situaciones base, organizadas en cinco dominios temáticos: empleo, educación, salud, administración y ocio. Siguiendo un enfoque de evaluación contrafactual, cada situación se compara en una versión neutra y en versiones equivalentes que incorporan referencias explícitas a siete tipos de discapacidad. De esta forma, el experimento trabaja con un total de 800 prompts finales.
+
+El experimento se ejecuta sobre cuatro modelos de IA generativa: Llama 3.1 8B Instruct (Meta), RigoChat 7B v2 (IIC), Gemini 2.5 Flash (Google) y Salamandra 7B Instruct (BSC-LT). Las respuestas se evalúan mediante análisis de sentimiento, un evaluador automático basado en un LLM con una rúbrica de cinco dimensiones y la comparación entre la condición neutra y la condición con discapacidad. Además, se revisa manualmente una muestra de respuestas para comprobar la coherencia de las valoraciones automáticas.
+
+Los resultados muestran que algunos modelos modifican su respuesta cuando la consulta incluye una referencia explícita a la discapacidad. Las diferencias aparecen principalmente en el tono, en la presencia de estereotipos y en la forma de presentar la información, especialmente en los modelos locales, en las discapacidades cognitivas e intelectuales y en el dominio de empleo. Además, el pipeline desarrollado puede reutilizarse para futuras evaluaciones con otros modelos, datasets o métricas.
 
 	\textbf{Palabras clave: }sesgos en IA, modelos de lenguaje, discapacidad, prompts contrafactuales, evaluación automática, español, análisis de sentimiento, LLM-as-judge.
 
@@ -298,7 +302,17 @@ Los resultados muestran que los tres modelos locales evaluados (Llama 3.1 8B Ins
 %	DEDICATORIA
 %----------	
 \chapter*{Dedicatoria} % \chapter* evita que aparezca en el índice
+Me gustaría usar este espacio de la memoria no solo para agradecer a las personas que me han acompañado durante el desarrollo de este trabajo de fin de grado, sino para dar las gracias a todos los que han estado presentes en algún momento de este largo viaje. Aunque no los nombre a continuación, los tengo presentes a todos.
 
+Primero que nada, me gustaría agradecer a mis padres y mis hermanos; sin ellos no habría sido posible nada de esto. Ellos fueron los que me permitieron abrir las alas y comenzar a volar en otro mundo: la universidad. Gracias por acompañarme en los buenos momentos y ayudarme y guiarme en los no tan buenos. Sé que no lo habría logrado sin todas las facilidades que me fueron poniendo: el pago del alquiler, los tuppers para comer durante la semana, las llamadas muchas tardes hasta arriba de estrés...
+
+En segundo lugar me gustaría agradecer a mis amigos de Operación Albacete, que me han acompañado durante estos cuatro años. Su compañía lo ha hecho todo mucho más fácil de llevar y ha convertido la carrera en una experiencia que recordaré toda la vida. En especial quiero agradecer a María, por ser mi mayor confidente y apoyo dentro de la universidad; a Javi, por pelear los proyectos juntos y compartir aficiones; a Lara, por ser el mejor dúo a la hora de trabajar y, sobre todo, al Consejo, por todas las noches de diversión jugando juntos y hablando de cualquier cosa.
+
+También quiero dar las gracias a mis amigos del pueblo, de Torrijos. El paso de dejar de verles todos los días en clase no fue fácil, pero gracias a ellos siempre que bajaba al pueblo me seguía sintiendo como en esa época. Cada uno abrió las alas y se fue buscando seguir aprendiendo, pero todos volvíamos los viernes para continuar compartiendo momentos juntos y seguir siendo la familia que somos. 
+
+En cuarto lugar, quiero agradecer a Lourdes, mi tutora. Gracias por guiarme durante toda la realización de este trabajo, desde la selección de fuentes para comenzar el proyecto hasta la revisión final y entrega de esta memoria. Gracias por las conversaciones buscando enfocar de la mejor manera el desarrollo del proyecto en las reuniones, por aguantar mis correos cargados de estrés hablando del trabajo y por acompañarme en este difícil camino que es la realización del TFG.
+
+Por último, quiero dedicarle y darle las gracias a la persona que menos me esperaba conocer este año y que ha ganado tanta importancia en tan poco tiempo, a Emma. Gracias por aguantarme todas esas tardes quejándome de los exámenes finales, del TFG, del temario, etc. Gracias por acompañarme tantos días en los que el estrés entre las prácticas, la universidad, mis amigos y todo lo demás parecía no tener fin. Y gracias por ser mi punto de apoyo este último cuatrimestre. Gracias de verdad.
 \setcounter{page}{5}
 	
 	% ESCRIBIR LA DEDICATORIA AQUÍ	
@@ -360,11 +374,12 @@ Los resultados muestran que los tres modelos locales evaluados (Llama 3.1 8B Ins
 % Contexto
 %-
 \section{Contexto}
-En los últimos años, los modelos de lenguaje de gran escala ,o LLMs, como se les conoce habitualmente, han pasado a ser una herramienta cotidiana para millones de personas en todo el mundo. Gracias a la arquitectura \textit{transformer} \cite{vaswani2017attention} y a su entrenamiento sobre enormes cantidades de texto, sistemas como GPT-4, Llama o Gemini son capaces de generar texto coherente, responder preguntas, redactar documentos o mantener conversaciones de una forma que hace unos años habría parecido imposible.
+En los últimos años, los modelos de lenguaje de gran escala, o LLMs, como se les conoce habitualmente, han pasado a ser una herramienta cotidiana para millones de personas en todo el mundo. Gracias a la arquitectura \textit{transformer} \cite{vaswani2017attention} y a su entrenamiento sobre enormes cantidades de texto, sistemas como GPT-4, Llama o Gemini son capaces de generar texto coherente, responder preguntas, redactar documentos o mantener conversaciones de una forma que hace unos años habría parecido imposible.
 
-Como consecuencia de ello, estos modelos se están integrando en ámbitos que afectan directamente a la vida de las personas: atención sanitaria, educación, servicios públicos, selección de personal o asesoría legal, entre otros. En el contexto del español, esto es especialmente relevante dado que es la segunda lengua más hablada del mundo, y ha surgido un ecosistema propio de modelos orientados específicamente a esta lengua, como RigoChat (desarrollado por el IIC), Salamandra (del Barcelona Supercomputing Center) o ALIA.
+Como consecuencia de ello, estos modelos se están integrando en ámbitos que afectan directamente a la vida de las personas: atención sanitaria, educación, servicios públicos, selección de personal o asesoría legal, entre otros. En el contexto del español, esto es especialmente relevante dado que es la segunda lengua más hablada del mundo, y ha surgido un ecosistema propio de modelos orientados específicamente a esta lengua, como RigoChat \cite{rigochat} (desarrollado por el IIC), Salamandra \cite{salamandra} (del Barcelona Supercomputing Center) o ALIA \cite{alia2025}.
 
-El problema es que, junto con todas estas capacidades, los LLMs heredan los sesgos presentes en los datos con los que se han entrenado \cite{navigli2023biases, guo2024bias}. Estos sesgos no siempre son fáciles de detectar: a menudo no se manifiestan como insultos o contenido claramente ofensivo, sino como diferencias sutiles en el tono, la cantidad de información proporcionada o la forma en que se presenta a determinados grupos de personas. El colectivo de personas con discapacidad es uno de los que más pueden verse afectados por este tipo de comportamientos. Según datos del Instituto Nacional de Estadística, en España hay aproximadamente 4,38 millones de personas con algún tipo de discapacidad (cerca del 9,4\% de la población), y a nivel mundial la OMS estima que más de 1.300 millones de personas viven con alguna forma de discapacidad significativa. Si los sistemas de IA que se despliegan para toda la ciudadanía tratan de forma diferente a este colectivo, el impacto puede ser considerable. 
+
+Sin embargo, junto con estas capacidades, los LLMs también pueden reproducir los sesgos presentes en los datos con los que han sido entrenados \cite{navigli2023biases, guo2024bias}. Estos sesgos no siempre son fáciles de detectar: a menudo no se manifiestan como insultos o contenido claramente ofensivo, sino como diferencias sutiles en el tono, la cantidad de información proporcionada o la forma en que se presenta a determinados grupos de personas. El colectivo de personas con discapacidad es uno de los que más pueden verse afectados por este tipo de comportamientos. Según datos del Instituto Nacional de Estadística, en España hay aproximadamente 4,38 millones de personas con algún tipo de discapacidad (cerca del 9,4\% de la población) \cite{ine2022edad}, y a nivel mundial la OMS estima que más de 1.300 millones de personas viven con alguna forma de discapacidad significativa \cite{who2023disability}. Si los sistemas de IA que se despliegan para toda la ciudadanía tratan a este colectivo de forma diferente, el impacto puede ser considerable. 
 
 %--
 % Motivación
@@ -373,10 +388,12 @@ El problema es que, junto con todas estas capacidades, los LLMs heredan los sesg
 
 La motivación de este TFG surge de la convergencia de tres factores: una brecha en la literatura científica, un colectivo especialmente vulnerable y la disponibilidad de herramientas que hacen posible el estudio.
 
-\textbf{Brecha en la literatura.} La investigación sobre sesgos en LLMs está dominada por el inglés y se centra principalmente en atributos como el género o la etnia \cite{guo2024bias, navigli2023biases}. El sesgo hacia las personas con discapacidad es un campo comparativamente incipiente: los trabajos existentes demuestran que los modelos asocian términos de discapacidad con sentimientos negativos \cite{venkit2022disability}, reproducen estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability} o muestran peor rendimiento en contextos de contratación cuando aparece una referencia a la discapacidad \cite{kamruzzaman2025disclosure, phutane2025ableist}. Estudios recientes como AccessEval \cite{panda2025accesseval}, que evaluó más de 2.000 prompts con referencias a discapacidad en seis dominios, confirman que los modelos generan respuestas con más errores factuales, mayor negatividad y más estereotipos cuando las consultas incluyen discapacidad; y el benchmark BEATS \cite{beats2025} estima que el 37,65\% de las salidas de los modelos más avanzados contienen algún tipo de sesgo detectable. Sin embargo, estos estudios se centran en el inglés y en modelos multilingües. En el ámbito del español, la cuestión permanece prácticamente sin respuesta: no existe, hasta donde se ha revisado en este trabajo, ningún estudio sistemático sobre si los modelos desarrollados específicamente para esta lengua, como RigoChat o Salamandra, reproducen los mismos patrones de sesgo que los modelos multilingües.
 
-\textbf{Un colectivo vulnerable.} Según datos del Instituto Nacional de Estadística, en España hay aproximadamente 4,38 millones de personas con algún tipo de discapacidad reconocida, cerca del 9,4\% de la población. La OMS estima que más de 1.300 millones de personas viven en el mundo con alguna forma de discapacidad significativa. Si los sistemas de IA que se despliegan para toda la ciudadanía tratan de forma diferente a este colectivo en contextos tan cotidianos como el empleo, la salud, la educación o la administración, las consecuencias pueden ser relevantes. A diferencia de otros atributos de equidad, la discapacidad no siempre está presente de forma explícita en los benchmarks de sesgo existentes \cite{beats2025}, y raramente aparece en los estudios centrados en español \cite{sesgo2025}.
+\textbf{Brecha en la literatura.} La investigación sobre sesgos en LLMs está dominada por el inglés y se centra principalmente en atributos como el género o la etnia \cite{guo2024bias, navigli2023biases}. El sesgo hacia las personas con discapacidad es un campo comparativamente incipiente: los trabajos existentes muestran que los modelos pueden asociar términos de discapacidad con sentimientos negativos \cite{venkit2022disability}, reproducir estereotipos sutiles hacia este colectivo \cite{gadiraju2023disability} o mostrar comportamientos problemáticos en contextos de contratación cuando aparece una referencia a la discapacidad \cite{kamruzzaman2025disclosure}. 
 
+En el ámbito del español, la cuestión permanece poco estudiada. Hasta donde se ha revisado en este trabajo, no se han encontrado estudios sistemáticos que analicen si modelos desarrollados o adaptados específicamente para esta lengua, como RigoChat \cite{rigochat} o Salamandra \cite{salamandra}, reproducen patrones de sesgo relacionados con la discapacidad similares a los observados en modelos multilingües.
+
+\textbf{Un colectivo vulnerable.} Como se ha indicado en el contexto, las personas con discapacidad representan una parte significativa de la población y pueden verse afectadas por sistemas de IA utilizados en ámbitos cotidianos como el empleo, la salud, la educación o la administración. A diferencia de otros atributos de equidad, la discapacidad no siempre está presente de forma explícita en los benchmarks de sesgo existentes \cite{beats2025} y raramente aparece en los estudios centrados en español \cite{sesgo2025}.
 \textbf{Viabilidad técnica.} El experimento descrito en este trabajo es posible porque muchos modelos de calidad son de código abierto y pueden ejecutarse en infraestructura de computación accesible. Esto permite diseñar un estudio empírico con modelos reales en condiciones controladas, sin depender exclusivamente de APIs externas, y hace que los resultados sean reproducibles por otros investigadores.
 
 En conjunto, el trabajo responde a una pregunta que no tiene respuesta documentada en español: ¿modifican los LLMs su comportamiento cuando una consulta incluye una referencia explícita a la discapacidad? Y si lo hacen, ¿de qué forma y con qué intensidad?
@@ -387,7 +404,7 @@ En conjunto, el trabajo responde a una pregunta que no tiene respuesta documenta
 \section{Problema abordado}
 El problema concreto que aborda este trabajo es el siguiente: cuando se le pide a un modelo de IA generativa en español que genere un texto, ¿produce respuestas distintas dependiendo de si la consulta menciona o no a una persona con discapacidad? Y si lo hace, ¿en qué sentido cambia esa respuesta?
 
-Lo importante es que este tipo de sesgo ,denominado en la literatura sesgo extrínseco o de salida \cite{navigli2023biases}, no tiene por qué manifestarse de forma obvia. El modelo no tiene que insultar a nadie para ser discriminatorio. Lo que los trabajos previos han encontrado \cite{gadiraju2023disability} es que los sesgos suelen ser más sutiles: el modelo puede volverse más paternalista, añadir advertencias innecesarias, reducir el nivel de detalle de su respuesta o introducir estereotipos de forma implícita. Esto hace que sea más difícil detectarlos y que haga falta ir más allá de un simple detector de toxicidad.
+Lo importante es que este tipo de sesgo, denominado en la literatura sesgo extrínseco o de salida \cite{navigli2023biases}, no tiene por qué manifestarse de forma obvia. El modelo no tiene que insultar a nadie para ser discriminatorio. Lo que los trabajos previos han encontrado \cite{gadiraju2023disability} es que los sesgos suelen ser más sutiles: el modelo puede volverse más paternalista, añadir advertencias innecesarias, reducir el nivel de detalle de su respuesta o introducir estereotipos de forma implícita. Esto hace que sea más difícil detectarlos y que haga falta ir más allá de un simple detector de toxicidad.
 
 %--
 % Objetivos
@@ -396,7 +413,7 @@ Lo importante es que este tipo de sesgo ,denominado en la literatura sesgo extr�
 
 % Objetivo general
 \subsection{Objetivo general}
-El objetivo general de este Trabajo de Fin de Grado es diseñar, implementar y evaluar un marco experimental reproducible para analizar posibles sesgos relacionados con la discapacidad en modelos de inteligencia artificial generativa en español, mediante el uso de prompts contrafactuales y la comparación sistemática de las respuestas generadas por distintos modelos.
+El objetivo general de este Trabajo de Fin de Grado es diseñar, implementar y evaluar un marco experimental reproducible para analizar posibles sesgos relacionados con la discapacidad en modelos de inteligencia artificial generativa en español, mediante un enfoque de evaluación contrafactual basado en la comparación sistemática entre prompts neutros y prompts equivalentes con referencias explícitas a la discapacidad.
 
 % Objetivos específicos
 \subsection{Objetivos específicos}
@@ -405,13 +422,13 @@ Los objetivos específicos de este Trabajo de Fin de Grado son los siguientes:
 \begin{itemize}
     \item Estudiar los fundamentos y los trabajos relacionados con los sesgos en modelos generativos, con especial atención a los sesgos vinculados a la discapacidad.
 
-    \item Definir un diseño experimental basado en prompts contrafactuales que permita comparar las respuestas generadas ante consultas neutras y consultas con referencias explícitas a la discapacidad.
+    \item Definir un diseño experimental de evaluación contrafactual que permita comparar las respuestas generadas ante consultas neutras y consultas con referencias explícitas a la discapacidad.
 
     \item Diseñar la arquitectura del pipeline experimental, incluyendo la organización del dataset, la ejecución en distintos modelos, el almacenamiento de las respuestas y la preparación de los datos para su análisis.
 
     \item Implementar un proceso reproducible para ejecutar los prompts en los modelos seleccionados y conservar las respuestas generadas, junto con la información necesaria para su trazabilidad.
 
-    \item Evaluar los resultados obtenidos mediante una combinación de análisis automático y revisión manual, y comparar el comportamiento de los modelos analizados.
+    \item Evaluar los resultados obtenidos mediante una combinación de análisis automático y revisión manual y comparar el comportamiento de los modelos analizados.
 
     \item Analizar las limitaciones del trabajo y proponer posibles líneas de mejora para futuras ampliaciones.
 \end{itemize}
@@ -424,6 +441,8 @@ El presente trabajo abarca el diseño del dataset de prompts contrafactuales, la
 
 Quedan fuera del alcance de este trabajo los siguientes aspectos: el desarrollo de técnicas de mitigación de sesgos, la evaluación de modelos de generación de imágenes o audio, la generalización de resultados a todos los contextos hispanohablantes (dado que el español presenta variación geográfica y cultural significativa), la validación estadística con evaluadores humanos a gran escala (aunque sí se incluye una revisión manual de una muestra), y el análisis de sesgos en tareas de comprensión lectora o clasificación (el estudio se limita a la generación de texto).
 
+Este trabajo se desarrolla en el contexto del proyecto PID2023-148577OB-C21, \textit{Human-Centered AI: User-Driven Adapted Language Models} (HUMAN\_AI), financiado por MICIU/AEI/10.13039/501100011033 y por FEDER/UE, con el que comparte el interés por los modelos de lenguaje adaptados, la accesibilidad y la inteligencia artificial centrada en las personas.
+
 %--
 % Estructura de la memoria
 %-
@@ -432,7 +451,7 @@ Quedan fuera del alcance de este trabajo los siguientes aspectos: el desarrollo 
 El resto de la memoria se organiza del siguiente modo:
 
 \begin{itemize}
-    \item El capítulo 2 presenta el estado del arte, revisando los conceptos fundamentales sobre modelos de lenguaje de gran escala, los tipos de sesgos identificados en la literatura, los trabajos previos sobre sesgos relacionados con la discapacidad, las metodologías de evaluación disponibles, las técnicas de mitigación propuestas en la literatura y los modelos seleccionados para el estudio.
+    \item El capítulo 2 presenta el estado del arte, revisando los conceptos fundamentales sobre modelos de lenguaje de gran escala, los tipos de sesgos identificados en la literatura, los trabajos previos sobre sesgos relacionados con la discapacidad, las metodologías de evaluación disponibles, las técnicas de mitigación propuestas en la literatura, el marco regulador aplicable y los modelos seleccionados para el estudio.
 
     \item El capítulo 3 describe el análisis del problema y los requisitos del sistema experimental.
 
@@ -444,9 +463,13 @@ El resto de la memoria se organiza del siguiente modo:
 
     \item El capítulo 7 analiza e interpreta los resultados, comparando el comportamiento de los modelos, los dominios y los tipos de discapacidad, y recoge las principales amenazas a la validez.
 
-    \item El capítulo 8 incluye la planificación, el presupuesto y el impacto del trabajo.
+    \item El capítulo 8 incluye la planificación temporal del proyecto, el presupuesto, el entorno socioeconómico y el impacto social, ético y de sostenibilidad del trabajo.
 
     \item El capítulo 9 cierra la memoria con las conclusiones generales, el cumplimiento de objetivos, las principales aportaciones, las limitaciones y las líneas de trabajo futuro.
+
+    \item El anexo \textit{Repositorio y ejecución} describe la estructura del repositorio público del proyecto y los pasos necesarios para instalar y ejecutar el sistema desarrollado.
+
+    \item Por último, el anexo \textit{Uso de la IA generativa} describe de forma transparente cómo se han utilizado herramientas de inteligencia artificial generativa durante la realización de este trabajo.
 \end{itemize}
 %----------
 %	ESTADO DEL ARTE
@@ -457,17 +480,17 @@ El resto de la memoria se organiza del siguiente modo:
 % Introducción
 %-
 \section{Introducción}
-Para entender bien el trabajo presentado en esta memoria, conviene revisar primero qué se sabe sobre los temas que lo rodean. Este capítulo empieza explicando qué son los modelos de lenguaje de gran escala y cómo funcionan a grandes rasgos, y después se centra en el problema de los sesgos: de dónde provienen, qué tipos existen y cómo se miden. Se dedica especial atención a los trabajos que han estudiado específicamente los sesgos hacia las personas con discapacidad, los más directamente relacionados con este TFG. También se repasan las metodologías de evaluación disponibles, los benchmarks de referencia y las herramientas utilizadas para medir el sesgo en este trabajo. El capítulo termina con una descripción de los cuatro modelos seleccionados para el experimento.
+Para entender bien el trabajo presentado en esta memoria, conviene revisar primero qué se sabe sobre los temas que lo rodean. Este capítulo empieza explicando qué son los modelos de lenguaje de gran escala y cómo funcionan a grandes rasgos, y después se centra en el problema de los sesgos: de dónde provienen, qué tipos existen y cómo se miden. Se dedica especial atención a los trabajos que han estudiado específicamente los sesgos hacia las personas con discapacidad, los más directamente relacionados con este TFG. También se repasan las metodologías de evaluación disponibles, los benchmarks de referencia, las técnicas de mitigación propuestas en la literatura y el marco regulador europeo y español aplicable a este tipo de sistemas. El capítulo termina con una descripción de los cuatro modelos seleccionados para el experimento.
 
 %--
 % Modelos generativos de lenguaje
 %-
 \section{Modelos generativos de lenguaje}
-Los modelos de lenguaje de gran escala ,o LLMs, por sus siglas en inglés, son el tipo de sistema de inteligencia artificial que se analiza en este trabajo. Se trata de redes neuronales entrenadas con enormes volúmenes de texto, con el objetivo de aprender a generar texto coherente y útil. La arquitectura que los sustenta desde 2017 es el \textit{transformer} \cite{vaswani2017attention}, que introdujo el mecanismo de atención para captar relaciones entre palabras distantes en una misma secuencia. Este avance resultó clave: permitió escalar los modelos a un número de parámetros antes impensable y alcanzar una capacidad de generación muy superior a la de las arquitecturas anteriores basadas en redes recurrentes.
+Los modelos de lenguaje de gran escala, o LLMs, por sus siglas en inglés, son el tipo de sistema de inteligencia artificial que se analiza en este trabajo. Se trata de redes neuronales entrenadas con enormes volúmenes de texto, con el objetivo de aprender a generar texto coherente y útil. La arquitectura que los sustenta desde 2017 es el \textit{transformer} \cite{vaswani2017attention}, que introdujo el mecanismo de atención para captar relaciones entre palabras distantes en una misma secuencia. Este avance resultó clave: permitió escalar los modelos a un número de parámetros antes impensable y alcanzar una capacidad de generación muy superior a la de las arquitecturas anteriores basadas en redes recurrentes.
 
 El entrenamiento de estos modelos suele dividirse en dos grandes fases. En la primera, llamada \textit{pretraining}, el modelo aprende a predecir el siguiente token de un texto a partir de corpus masivos obtenidos de internet, libros y otras fuentes. El resultado es un modelo con mucho ``conocimiento'' sobre el lenguaje, pero sin orientación concreta hacia ninguna tarea. En la segunda fase, el modelo se ajusta para seguir instrucciones de forma útil y segura, principalmente mediante \textit{fine-tuning} supervisado y aprendizaje por refuerzo a partir de retroalimentación humana (RLHF) \cite{ouyang2022instructgpt}. Esta segunda etapa es especialmente importante desde el punto de vista de los sesgos: si los evaluadores humanos que proporcionan la retroalimentación no son lo suficientemente diversos o si las directrices de evaluación no contemplan explícitamente la equidad, el proceso puede consolidar o incluso amplificar sesgos presentes en los datos \cite{guo2024bias}.
 
-En paralelo al desarrollo de modelos multilingües de propósito general, en los últimos años han surgido iniciativas orientadas específicamente al español. El Instituto de Ingeniería del Conocimiento (IIC) ha desarrollado RigoChat \cite{rigochat}, el Barcelona Supercomputing Center (BSC-LT) ha publicado Salamandra \cite{salamandra}; y proyectos como ALIA buscan potenciar el ecosistema de modelos en lengua española. Estos modelos se distinguen de los grandes modelos multilingües por haber puesto un mayor énfasis en la calidad y el volumen de datos en español durante el entrenamiento, lo que en teoría debería resultar en un mejor rendimiento en tareas en castellano. Sin embargo, si esas mejoras también se traducen en un comportamiento más equitativo hacia colectivos como las personas con discapacidad es una pregunta que no tiene una respuesta clara a priori, y que precisamente este trabajo pretende explorar.
+En paralelo al desarrollo de modelos multilingües de propósito general, en los últimos años han surgido iniciativas orientadas específicamente al español. El Instituto de Ingeniería del Conocimiento (IIC) ha desarrollado RigoChat \cite{rigochat}, el Barcelona Supercomputing Center (BSC-LT) ha publicado Salamandra \cite{salamandra}; y proyectos como ALIA \cite{alia2025} buscan potenciar el ecosistema de modelos en lengua española. Estos modelos se distinguen de los grandes modelos multilingües por haber puesto un mayor énfasis en la calidad y el volumen de datos en español durante el entrenamiento, lo que en teoría debería resultar en un mejor rendimiento en tareas en castellano. Sin embargo, si esas mejoras también se traducen en un comportamiento más equitativo hacia colectivos como las personas con discapacidad es una pregunta que no tiene una respuesta clara a priori, y que precisamente este trabajo pretende explorar.
 
 %--
 % Sesgos en modelos de inteligencia artificial
@@ -478,7 +501,7 @@ En paralelo al desarrollo de modelos multilingües de propósito general, en los
 \subsection{Origen de los sesgos}
 Entender de dónde vienen los sesgos en los LLMs es el primer paso para poder evaluarlos y, en su caso, corregirlos. La literatura identifica tres grandes fuentes \cite{navigli2023biases, guo2024bias}. La primera y más obvia es la de los datos de entrenamiento: si los textos con los que se entrena un modelo contienen estereotipos, asociaciones negativas hacia ciertos grupos o una representación desequilibrada de determinadas poblaciones, el modelo los aprenderá e incorporará a sus salidas. No es algo intencionado, sino una consecuencia directa de que los modelos aprenden de lo que hay en internet y en los libros, y esos textos reflejan la sociedad con todos sus prejuicios.
 
-La segunda fuente se refiere al proceso de ajuste. Durante el RLHF, personas reales evalúan las respuestas del modelo y deciden cuáles son las mejores. Si esos evaluadores tienen sus propios sesgos ,algo prácticamente inevitable, o si las instrucciones de evaluación no contemplan explícitamente la equidad hacia todos los grupos, el modelo puede aprender a tratar de forma diferente a personas en función de sus características. Esto es especialmente problemático porque suele ocurrir de forma inadvertida y resulta difícil de detectar durante el desarrollo.
+La segunda fuente se refiere al proceso de ajuste. Durante el RLHF, personas reales evalúan las respuestas del modelo y deciden cuáles son las mejores. Si esos evaluadores tienen sus propios sesgos, algo prácticamente inevitable, o si las instrucciones de evaluación no contemplan explícitamente la equidad hacia todos los grupos, el modelo puede aprender a tratar de forma diferente a personas en función de sus características. Esto es especialmente problemático porque suele ocurrir de forma inadvertida y resulta difícil de detectar durante el desarrollo.
 
 Por último, la propia tarea puede desencadenar comportamientos sesgados que no se observan en otros contextos. Un modelo puede comportarse de forma aparentemente neutra en una conversación general y mostrar un sesgo claro cuando se le pide que redacte un correo de rechazo laboral a un candidato con discapacidad.
 
@@ -492,7 +515,7 @@ Otra distinción que conviene tener clara es la que separa los sesgos intrínsec
 
 Los \textbf{sesgos intrínsecos} están en las representaciones internas del modelo: en cómo organiza el espacio semántico, qué palabras considera similares o qué asociaciones establece entre conceptos. Se pueden medir con técnicas como WEAT (\textit{Word Embedding Association Test}), que compara la proximidad entre términos demográficos y valorativos en ese espacio. Son interesantes desde un punto de vista teórico, pero no siempre se traducen directamente en comportamientos problemáticos cuando el modelo genera texto.
 
-Los \textbf{sesgos extrínsecos}, en cambio, se manifiestan en las salidas concretas del modelo ante tareas reales. Son los que tienen un impacto más directo en las personas que usan el sistema, y son los que se estudian en este trabajo. El enfoque adoptado aquí ,comparar las respuestas ante consultas neutras y consultas con referencia a la discapacidad, es precisamente un método de evaluación extrínseca.
+Los \textbf{sesgos extrínsecos}, en cambio, se manifiestan en las salidas concretas del modelo ante tareas reales. Son los que tienen un impacto más directo en las personas que usan el sistema, y son los que se estudian en este trabajo. El enfoque adoptado aquí, comparar las respuestas ante consultas neutras y consultas con referencia a la discapacidad, es precisamente un método de evaluación extrínseca.
 
 %--
 % Sesgos relacionados con la discapacidad
@@ -500,7 +523,7 @@ Los \textbf{sesgos extrínsecos}, en cambio, se manifiestan en las salidas concr
 \section{Sesgos relacionados con la discapacidad}
 El sesgo hacia las personas con discapacidad en los modelos de lenguaje es un área de investigación relativamente reciente. Aunque el problema lleva años siendo una preocupación en los estudios de accesibilidad e inclusión digital, su análisis específico en LLMs no empezó a recibir atención significativa hasta principios de los años 2020.
 
-Uno de los primeros trabajos sistemáticos en esta línea es el de \citeauthor{venkit2022disability} \cite{venkit2022disability}, que construyeron más de 15.000 frases combinando adjetivos de uso común con términos relacionados con distintos tipos de discapacidad y sin ellos. Los resultados fueron bastante contundentes: todos los modelos analizados asignaban puntuaciones de sentimiento más negativas a las frases que incluían referencias a la discapacidad. En el caso de un modelo preentrenado sobre datos de Twitter, el sesgo llegaba a invertir el sentimiento de la frase ,de positivo a negativo, en el 86\% de los casos cuando se añadía un término de discapacidad. Esto sugiere que el sesgo no es un fenómeno marginal sino algo bastante consistente y extendido.
+Uno de los primeros trabajos sistemáticos en esta línea es el de \citeauthor{venkit2022disability} \cite{venkit2022disability}, que construyeron más de 15.000 frases combinando adjetivos de uso común con términos relacionados con distintos tipos de discapacidad y sin ellos. Los resultados mostraron un patrón claro: todos los modelos analizados asignaban puntuaciones de sentimiento más negativas a las frases que incluían referencias a la discapacidad. En el caso de un modelo preentrenado sobre datos de Twitter, el sesgo llegaba a invertir el sentimiento de la frase, de positivo a negativo, en el 86\% de los casos cuando se añadía un término de discapacidad. Esto sugiere que el sesgo no es un fenómeno marginal sino algo bastante consistente y extendido.
 
 Lo interesante del trabajo de \citeauthor{gadiraju2023disability} \cite{gadiraju2023disability} es que pone el foco no en las métricas sino en la experiencia real de las personas con discapacidad. Realizaron 19 grupos de discusión con 56 participantes, quienes interactuaron directamente con un modelo de diálogo y luego discutieron sus respuestas. La conclusión más importante de su estudio es que los participantes rara vez encontraron respuestas abiertamente ofensivas o tóxicas, pero sí identificaron formas más sutiles y molestas de sesgo: el modelo tendía a presentarlos como fuente de inspiración para otras personas (\textit{inspiration porn}), a asumir que necesitaban ayuda constante de personas sin discapacidad, o a reproducir estereotipos que habían visto también en medios convencionales. Esto es relevante para este TFG porque muestra que medir el sesgo mediante detectores de toxicidad no basta: hace falta ir más allá.
 
@@ -508,17 +531,17 @@ En 2025 se publicaron varios trabajos más que avanzan en esta dirección. \cite
 
 \citeauthor{dash2025leftbehind} \cite{dash2025leftbehind} auditan 17 modelos en cuanto a su capacidad de dar respuestas inclusivas sobre diferentes tipos de discapacidad y encuentran que los modelos cubren razonablemente bien la discapacidad visual, auditiva y motriz, pero dejan muy atrás a personas con discapacidades del habla, del desarrollo o de salud mental. Este resultado es útil como referencia comparativa para los análisis por tipo de discapacidad de este trabajo.
 
-Más en la línea del dominio de empleo ,uno de los cinco dominios que analiza este TFG, \citeauthor{kamruzzaman2025disclosure} \cite{kamruzzaman2025disclosure} demuestran que revelar información sobre discapacidades en procesos de selección automatizados introduce sesgos discriminatorios sistemáticos. Por su parte, \citeauthor{phutane2025ableist} \cite{phutane2025ableist} introducen el concepto de \textit{capacitismo} (\textit{ableism}) en LLMs y proponen el marco ABLEIST, que identifica cinco tipos específicos de daño hacia personas con discapacidad en escenarios de contratación, incluyendo fenómenos como la superhumanización o el tokenismo.
+Más en la línea del dominio de empleo, uno de los cinco dominios que analiza este TFG, \citeauthor{kamruzzaman2025disclosure} \cite{kamruzzaman2025disclosure} demuestran que revelar información sobre discapacidades en procesos de selección automatizados introduce sesgos discriminatorios sistemáticos. Por su parte, \citeauthor{phutane2025ableist} \cite{phutane2025ableist} introducen el concepto de \textit{capacitismo} (\textit{ableism}) en LLMs y proponen el marco ABLEIST, que identifica cinco tipos específicos de daño hacia personas con discapacidad en escenarios de contratación, incluyendo fenómenos como la superhumanización o el tokenismo.
 
 %--
 % Evaluación de sesgos mediante prompts contrafactuales
 %-
-\section{Evaluación de sesgos mediante prompts contrafactuales}
-La metodología que subyace a todo el diseño experimental de este trabajo es la evaluación mediante pruebas contrafactuales. La idea, en realidad, es bastante intuitiva: si quiero saber si un modelo trata de forma diferente a las personas con discapacidad, lo más directo es presentarle exactamente la misma situación dos veces ,una con referencia a la discapacidad y otra sin ella, y comparar las respuestas.
+\section{Evaluación contrafactual mediante prompts emparejados}
+La metodología que subyace al diseño experimental de este trabajo es la evaluación contrafactual mediante prompts emparejados. Este enfoque consiste en comparar la respuesta del modelo ante una misma situación formulada en dos condiciones: una versión neutra, sin referencia a discapacidad, y una o varias versiones equivalentes que incorporan una referencia explícita a distintos tipos de discapacidad. De este modo, la comparación no se basa en prompts aislados, sino en pares o grupos de prompts diseñados para diferir únicamente en el atributo sensible analizado.
 
-Esta técnica tiene sus raíces en el estudio de los sesgos de género en los sistemas de procesamiento del lenguaje. \citeauthor{zhao2018winobias} \cite{zhao2018winobias} la aplicaron para demostrar que los sistemas de resolución de correferencias asignaban pronombres de manera estereotipada según la ocupación de las personas en la oración. La adaptación al estudio de sesgos hacia la discapacidad es directa: en lugar de cambiar el género, se cambia (o se introduce) la referencia a un tipo de discapacidad, manteniendo todo lo demás igual.
+Esta técnica tiene sus raíces en el estudio de los sesgos de género en los sistemas de procesamiento del lenguaje. \citeauthor{zhao2018winobias} \cite{zhao2018winobias} la aplicaron para demostrar que los sistemas de resolución de correferencias asignaban pronombres de manera estereotipada según la ocupación de las personas en la oración. En este trabajo, esta lógica se adapta al estudio de la discapacidad: se mantiene constante la situación de partida y se modifica únicamente la referencia a la discapacidad, comparando después las respuestas generadas por el modelo.
 
-La principal ventaja de este enfoque es que permite aislar el efecto del atributo sensible en estudio. Si las respuestas del modelo son diferentes entre la versión neutra y la versión con discapacidad, la única explicación posible ,dado que todo lo demás es idéntico, es que el modelo está reaccionando de forma diferente ante esa referencia. Esto convierte los resultados en evidencia bastante directa de sesgo, a diferencia de otros métodos que requieren más supuestos. \citeauthor{guo2024bias} \cite{guo2024bias} señalan precisamente el \textit{counterfactual testing} como una de las técnicas más sólidas disponibles para la evaluación extrínseca de sesgos en LLMs.
+La principal ventaja de este enfoque es que permite aislar el efecto del atributo sensible en estudio. Si las respuestas del modelo son diferentes entre la versión neutra y la versión con discapacidad, la única explicación posible, dado que todo lo demás es idéntico, es que el modelo está reaccionando de forma diferente ante esa referencia. Esto convierte los resultados en evidencia bastante directa de sesgo, a diferencia de otros métodos que requieren más supuestos. \citeauthor{guo2024bias} \cite{guo2024bias} señalan precisamente el \textit{counterfactual testing} como una de las técnicas más sólidas disponibles para la evaluación extrínseca de sesgos en LLMs.
 
 %--
 % Benchmarks y trabajos relacionados
@@ -531,7 +554,7 @@ Existen varios benchmarks que abordan el sesgo en LLMs desde una perspectiva má
 
 % Benchmarks específicos sobre discapacidad
 \subsection{Benchmarks específicos sobre discapacidad}
-En el contexto específico de la discapacidad, \textit{AccessEval} \cite{panda2025accesseval} es el benchmark más relevante y el que más influye en el diseño de este trabajo. En español, el benchmark \textit{SESGO} \cite{sesgo2025} cubre más de 4.000 prompts con estereotipos de género, raza y clase socioeconómica, aunque no aborda la discapacidad de forma específica. Esta laguna es precisamente uno de los argumentos que justifican el presente trabajo: hasta donde sabemos, no existe ningún benchmark en español centrado en el sesgo hacia la discapacidad.
+En el contexto específico de la discapacidad, \textit{AccessEval} \cite{panda2025accesseval} es el benchmark más relevante y el que más influye en el diseño de este trabajo. En español, el benchmark \textit{SESGO} \cite{sesgo2025} cubre más de 4.000 prompts con estereotipos de género, raza y clase socioeconómica, aunque no aborda la discapacidad de forma específica. Esta laguna es precisamente uno de los argumentos que justifican el presente trabajo: hasta donde se ha revisado en este trabajo, no se ha encontrado un benchmark en español centrado específicamente en el sesgo hacia la discapacidad.
 
 
 %--
@@ -540,7 +563,7 @@ En el contexto específico de la discapacidad, \textit{AccessEval} \cite{panda20
 \section{Métricas y estrategias de evaluación}
 % Métricas automáticas
 \subsection{Métricas automáticas}
-Una de las métricas más utilizadas en la literatura para cuantificar el sesgo en las respuestas generadas es el análisis de sentimiento \cite{venkit2022disability, panda2025accesseval}. La idea es sencilla: si el modelo genera respuestas sistemáticamente más negativas cuando se menciona una discapacidad, eso es una señal de sesgo. En inglés, herramientas como VADER permiten realizar este análisis de forma rápida, aunque con limitaciones propias de su naturaleza léxica. Para el español, la opción más adecuada es el modelo \textit{robertuito}, disponible a través de la librería pysentimiento \cite{perez2021pysentimiento}. Se trata de un modelo basado en RoBERTa, entrenado específicamente en texto en español, que devuelve probabilidades de los sentimientos positivo (POS), negativo (NEG) y neutro (NEU). En este trabajo se utiliza el score $\text{POS} - \text{NEG} \in [-1, 1]$ como indicador cuantitativo del tono de cada respuesta.
+Una de las métricas más utilizadas en la literatura para cuantificar el sesgo en las respuestas generadas es el análisis de sentimiento \cite{venkit2022disability, panda2025accesseval}. La idea es sencilla: si el modelo genera respuestas sistemáticamente más negativas al mencionar una discapacidad, eso es una señal de sesgo. En inglés, herramientas como VADER permiten realizar este análisis de forma rápida, aunque con limitaciones propias de su naturaleza léxica. Para el español, la opción más adecuada es el modelo \textit{robertuito}, disponible a través de la librería pysentimiento \cite{perez2021pysentimiento}. Se trata de un modelo basado en RoBERTa, entrenado específicamente en texto en español, que devuelve probabilidades de los sentimientos positivos (POS), negativos (NEG) y neutros (NEU). En este trabajo se utiliza el score $\text{POS} - \text{NEG} \in [-1, 1]$ como indicador cuantitativo del tono de cada respuesta.
 
 Otra métrica relevante es \textit{Regard}, propuesta por \citeauthor{sheng2019regard} \cite{sheng2019regard} para medir específicamente la percepción social hacia grupos demográficos en el texto generado. A diferencia del sentimiento general, Regard está pensado para capturar si el texto presenta a un grupo de forma positiva, negativa o neutra, lo que lo hace conceptualmente más adecuado para el estudio del sesgo. Aunque en este trabajo se utiliza el sentimiento como proxy debido a la disponibilidad de modelos en español, la lógica subyacente es la misma que la que propone Regard.
 
@@ -552,7 +575,9 @@ Hay dimensiones del sesgo ,como el paternalismo, la condescendencia o el uso de 
 
 \citeauthor{zheng2023llmjudge} \cite{zheng2023llmjudge} estudiaron la viabilidad de este enfoque y encontraron que modelos como GPT-4 alcanzan más del 80\% de acuerdo con las preferencias humanas en evaluaciones abiertas. También identificaron algunos sesgos del propio juez ,tendencia a preferir respuestas largas, a favorecer su propio estilo, lo que hay que tener en cuenta al interpretar los resultados.
 
-En este trabajo se utiliza Gemini 2.5 Flash como juez, con una rúbrica de cinco dimensiones puntuadas de 1 a 5: relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipos. Para minimizar el riesgo de autoevaluación, el juez opera en modo ciego ,sin información sobre qué modelo generó la respuesta, y con la función de \textit{thinking} desactivada para obtener salidas más deterministas.
+En este trabajo se utiliza Gemini 2.5 Flash como evaluador automático basado en un LLM con rol de juez, con una rúbrica de cinco dimensiones puntuadas de 1 a 5: relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipos. Para minimizar el riesgo de autoevaluación, el juez opera en modo ciego, sin información sobre qué modelo generó la respuesta, y con la función de \textit{thinking} desactivada para obtener salidas más deterministas. 
+
+Aun así, el uso de Gemini 2.5 Flash como evaluador automático debe tenerse en cuenta al interpretar los resultados, ya que uno de los modelos evaluados pertenece al mismo proveedor. Por este motivo, las comparaciones que incluyen a Gemini se interpretan con cautela y se complementan con una revisión manual de una muestra de respuestas.
 
 % Evaluación humana
 \subsection{Evaluación humana}
@@ -562,7 +587,7 @@ Ninguna métrica automática es perfecta para detectar el tipo de sesgo sutil qu
 % Técnicas de mitigación de sesgos
 %-
 \section{Técnicas de mitigación de sesgos}
-El objetivo de este TFG es la \textit{detección} y cuantificación del sesgo, no su corrección. Sin embargo, revisar las técnicas de mitigación que propone la literatura es importante por dos razones: permite entender qué tipo de intervenciones han podido influir en el comportamiento de los modelos evaluados en este trabajo (especialmente en el caso de Gemini 2.5 Flash) y establece el marco de referencia para las propuestas de trabajo futuro que se recogen en el capítulo 8. La literatura agrupa estas técnicas en tres niveles según la fase del ciclo de vida del modelo en la que actúan \cite{navigli2023biases, guo2024bias}.
+El objetivo de este TFG es la \textit{detección} y cuantificación del sesgo, no su corrección. Sin embargo, revisar las técnicas de mitigación que propone la literatura es importante por dos razones: permite entender qué tipo de intervenciones han podido influir en el comportamiento de los modelos que evaluamos (especialmente en el caso de Gemini 2.5 Flash) y establece el marco de referencia para las propuestas de trabajo futuro que se recogen en el capítulo de conclusiones. La literatura agrupa estas técnicas en tres niveles según la fase del ciclo de vida del modelo en la que actúan \cite{navigli2023biases, guo2024bias}.
 
 % Intervenciones a nivel de datos
 \subsection{Intervenciones a nivel de datos}
@@ -589,6 +614,19 @@ Por encima de los tres niveles anteriores, la literatura destaca que ninguna té
 Esta última técnica también es la que resulta más difícil de escalar, lo que explica por qué la mayor parte de los modelos actuales todavía presentan los patrones de sesgo sutiles que recoge este trabajo.
 
 %--
+% Marco regulador
+%-
+\section{Marco regulador}
+
+Además de su interés científico, la detección de sesgos hacia las personas con discapacidad en sistemas de IA está directamente relacionada con varios marcos normativos vigentes, tanto a nivel europeo como español, que conviene situar para entender la relevancia práctica de este trabajo.
+
+A nivel europeo, el Reglamento de Inteligencia Artificial (Reglamento (UE) 2024/1689) \cite{aiact2024} considera de alto riesgo determinados sistemas utilizados en ámbitos como el empleo, la educación o el acceso a servicios públicos esenciales, varios de los cuales están representados en el dataset de este trabajo. Para estos sistemas, el Reglamento exige medidas de gestión de riesgos y de gobernanza de datos orientadas a detectar y mitigar posibles sesgos discriminatorios, así como evaluaciones que tengan en cuenta a los colectivos potencialmente afectados, entre ellos las personas con discapacidad. Un trabajo como este, que propone una metodología sistemática para detectar ese tipo de sesgos, se alinea con el tipo de evaluaciones que el Reglamento espera de los sistemas que entren dentro de su ámbito de aplicación.
+
+A nivel internacional, la \textbf{Convención sobre los derechos de las personas con discapacidad} de las Naciones Unidas \cite{cdpd2008}, ratificada por España en 2008, establece el principio de no discriminación y de accesibilidad universal como derechos fundamentales del colectivo, incluyendo el acceso a la información y a las tecnologías de la comunicación. En el ámbito estatal, el \textbf{Real Decreto Legislativo 1/2013}, por el que se aprueba el Texto Refundido de la Ley General de derechos de las personas con discapacidad y de su inclusión social \cite{lgd2013}, traspone estos principios al ordenamiento jurídico español y prohíbe explícitamente cualquier forma de discriminación por razón de discapacidad, incluida la discriminación indirecta, es decir, aquella que se produce cuando una disposición, criterio o práctica aparentemente neutra ocasiona una desventaja particular para las personas con discapacidad.
+
+Esta última noción de discriminación indirecta es especialmente relevante para este trabajo: ningún modelo evaluado está diseñado deliberadamente para tratar peor a las personas con discapacidad, pero los resultados muestran que, en la práctica, las respuestas generadas sí difieren sistemáticamente cuando se menciona una discapacidad. Este tipo de comportamiento se relaciona con las preocupaciones que estos marcos normativos buscan identificar y prevenir, lo que refuerza la pertinencia de contar con metodologías de evaluación como la propuesta en este TFG.
+
+%--
 % Modelos seleccionados para el estudio
 %-
 \section{Modelos seleccionados para el estudio}
@@ -602,13 +640,12 @@ La selección de los cuatro modelos que se evalúan en este trabajo responde a c
 
 \textbf{Salamandra 7B Instruct} \cite{salamandra} es quizás el modelo más interesante desde el punto de vista del contexto geográfico y lingüístico. Desarrollado por el Barcelona Supercomputing Center (BSC-LT), fue entrenado desde cero sobre un corpus multilingüe que incluye 35 lenguas europeas, con especial énfasis en el español, el catalán y otras lenguas cooficiales de España. Al ser una iniciativa pública institucional con un enfoque explícito en las lenguas ibéricas, representa un caso de estudio diferente tanto a los modelos comerciales como a los modelos de iniciativa privada orientados al español.
 
-La combinación de estos cuatro modelos ,dos especializados en español (RigoChat y Salamandra) y dos multilingües de propósito general (Llama y Gemini), dos locales y uno de API, uno institucional y tres privados, permite explorar de forma matizada si el origen, el tamaño o la orientación lingüística de un modelo influye en cómo trata las referencias a la discapacidad en sus respuestas.
-
+La combinación de estos cuatro modelos —dos especializados en español (RigoChat y Salamandra) y dos multilingües de propósito general (Llama y Gemini), tres ejecutados localmente y uno mediante API— permite explorar si el origen, la orientación lingüística o la modalidad de acceso de un modelo pueden influir en cómo trata las referencias a la discapacidad en sus respuestas.
 %--
 % Conclusiones
 %-
 \section{Conclusiones}
-La revisión de la literatura presentada en este capítulo permite extraer varias conclusiones que fundamentan el diseño del experimento. En primer lugar, existe evidencia sólida de que los LLMs presentan sesgos hacia las personas con discapacidad, aunque estos sesgos rara vez se manifiestan como toxicidad abierta y suelen adoptar formas más sutiles, como el paternalismo o la infantilización. En segundo lugar, el enfoque contrafactual es la metodología más adecuada para aislar el efecto de la referencia a la discapacidad en las respuestas, y ya cuenta con antecedentes sólidos en la literatura. En tercer lugar, la evaluación rigurosa del sesgo requiere combinar métricas automáticas ,sentimiento, extensión, evaluación por juez LLM, con revisión humana, ya que ninguna técnica automática es capaz de detectar los sesgos más sutiles por sí sola. En cuarto lugar, la literatura propone técnicas de mitigación en tres niveles (datos, arquitectura y salida), siendo las intervenciones de alineamiento las más eficaces para modelos ya entrenados. Y en quinto lugar, hasta la fecha no existe ningún estudio sistemático sobre estos sesgos en modelos orientados al español, lo que justifica plenamente este trabajo.
+La revisión de la literatura presentada en este capítulo permite extraer varias conclusiones que fundamentan el diseño del experimento. En primer lugar, existe evidencia sólida de que los LLMs presentan sesgos hacia las personas con discapacidad, aunque estos sesgos rara vez se manifiestan como toxicidad abierta y suelen adoptar formas más sutiles, como el paternalismo o la infantilización. En segundo lugar, el enfoque contrafactual es la metodología más adecuada para aislar el efecto de la referencia a la discapacidad en las respuestas, y ya cuenta con antecedentes sólidos en la literatura. En tercer lugar, la evaluación rigurosa del sesgo requiere combinar métricas automáticas, de sentimiento y de extensión, con evaluación por juez LLM y revisión humana, ya que ninguna técnica automática es capaz de detectar los sesgos más sutiles por sí sola. En cuarto lugar, la literatura propone técnicas de mitigación en tres niveles (datos, arquitectura y salida), siendo las intervenciones de alineamiento las más eficaces para modelos ya entrenados. Y en quinto lugar, hasta donde se ha revisado en este trabajo, no se han encontrado estudios sistemáticos centrados en sesgos en modelos orientados al español, lo que justifica plenamente este trabajo.
 
 %----------
 %   ANÁLISIS Y REQUISITOS
@@ -658,8 +695,8 @@ La Tabla~\ref{tab:requisitos_funcionales} recoge los requisitos funcionales del 
 \textbf{Código} & \textbf{Descripción} \\
 \hline
 RF1 & El sistema debe permitir cargar un dataset de prompts desde un fichero estructurado. \\
-RF2 & El sistema debe validar que cada entrada del dataset contiene los campos mínimos del prompt (\texttt{id\_prompt}, \texttt{dominio}, \texttt{plantilla} y \texttt{variaciones}) y de cada variante (\texttt{condicion}, \texttt{tipo\_discapacidad}, \texttt{texto\_condicion} y \texttt{prompt\_final}). \\
-RF3 & El sistema debe permitir agrupar los prompts mediante un identificador de par contrafactual. \\
+RF2 & El sistema debe validar que cada prompt contiene los campos mínimos requeridos: identificador, dominio, tipo de discapacidad, condición experimental y texto del prompt. \\
+RF3 & El sistema debe permitir agrupar los prompts finales mediante un identificador de plantilla base o grupo contrafactual. \\
 RF4 & El sistema debe ejecutar los prompts sobre los modelos generativos seleccionados. \\
 RF5 & El sistema debe permitir integrar tanto modelos locales como modelos accesibles mediante API. \\
 RF6 & El sistema debe almacenar cada respuesta generada junto con el prompt exacto utilizado y sus metadatos. \\
@@ -720,13 +757,13 @@ La Tabla~\ref{tab:campos_trazabilidad} recoge los campos mínimos que deben cons
 \hline
 \textbf{Campo en \texttt{salidas.json}} & \textbf{Descripción} \\
 \hline
-\texttt{id\_prueba} & Identificador secuencial de la combinación (prompt, modelo). \\
-\texttt{id\_prompt\_original} & Identificador del prompt base, p.ej.\ \texttt{EMP\_001}. \\
-\texttt{dominio} & Dominio temático: empleo, educacion, salud, administrativo u ocio. \\
+\texttt{id\_prueba} & Identificador secuencial de la combinación (plantilla base, modelo). \\
+\texttt{id\_prompt\_original} & Identificador de la plantilla base, p.ej.\ \texttt{EMP\_001}. \\
+\texttt{dominio} & Dominio temático: empleo, educación, salud, administrativo u ocio. \\
 \texttt{objetivo\_sesgo} & Tipo de sesgo que se pretende detectar con ese prompt. \\
 \texttt{modelo\_evaluado} & Nombre del modelo tal como aparece en la factoría. \\
 \texttt{parametros\_generacion} & Temperatura, top-p, repetition penalty y semilla. \\
-\texttt{fecha\_ejecucion} & Fecha en que se ejecutó el par (prompt, modelo). \\
+\texttt{fecha\_ejecucion} & Fecha en que se ejecutó la combinación (plantilla base, modelo). \\
 \texttt{plantilla\_prompt} & Plantilla original con el marcador \texttt{\{condicion\}}. \\
 \nolinkurl{evaluaciones.control_base} & Prompt enviado, respuesta, rechazo y métricas de la condición neutra. \\
 \nolinkurl{evaluaciones.variantes_contrafactuales} & Ídem para cada variante con discapacidad, más los deltas. \\
@@ -747,13 +784,13 @@ Para comprobar que los requisitos definidos quedan cubiertos por la solución im
 
 \begin{table}[H]
 \centering
-\small
+\footnotesize
 \begin{tabular}{p{2cm}p{5.5cm}p{5.5cm}}
 \hline
 \textbf{Requisito} & \textbf{Módulo responsable} & \textbf{Cobertura} \\
 \hline
 RF1, RF2 & \nolinkurl{dataset_loader.py} & Carga el dataset desde un fichero JSON y valida que cada prompt contiene los campos necesarios. \\
-RF3 & \nolinkurl{dataset.json} y \nolinkurl{dataset_loader.py} & Agrupa las variantes de cada plantilla mediante identificadores de prompt y pares contrafactuales. \\
+RF3 & \nolinkurl{dataset.json} y \nolinkurl{dataset_loader.py} & Agrupa las variantes de cada plantilla mediante identificadores de plantilla base y grupos contrafactuales. \\
 RF4, RF5 & \nolinkurl{generate_evaluations.py} y \nolinkurl{modelos/} & Ejecuta los prompts sobre modelos locales y modelos accesibles mediante API usando una interfaz común. \\
 RF6, RF7 & \nolinkurl{generate_evaluations.py} y \nolinkurl{outputs/salidas.json} & Guarda cada respuesta junto con el modelo, los parámetros, la fecha de ejecución y los metadatos necesarios. \\
 RF8, RNF4 & Checkpoint en \nolinkurl{outputs/salidas.json} & Registra errores y permite continuar la ejecución sin perder los resultados ya generados. \\
@@ -779,18 +816,18 @@ RNF10 & Orquestador y ejecución automatizada & Reduce la intervención manual d
 
 A la hora de diseñar el experimento, fue necesario considerar varias restricciones que afectan tanto al alcance como a la interpretación de los resultados.
 
-La primera restricción es técnica. Los modelos locales requieren GPUs con suficiente memoria de vídeo para ejecutarse en tiempos razonables. En este trabajo se considera necesario disponer de al menos 16 GB de VRAM por modelo. Por tanto, el experimento no puede reproducirse en un ordenador convencional y depende del acceso a infraestructura de computación adecuada.
+La primera restricción es técnica. Los modelos locales requieren GPUs con suficiente memoria de vídeo para ejecutarse en tiempos razonables. En este trabajo se considera necesario disponer de al menos 16 GB de VRAM disponible para ejecutar cada modelo local en tiempos razonables. Por tanto, el experimento no puede reproducirse en un ordenador convencional y depende del acceso a infraestructura de computación adecuada.
 
-La segunda restricción es metodológica. El experimento se basa en prompts contrafactuales para medir sesgo extrínseco, es decir, sesgo observable en las respuestas generadas por los modelos. Por ello, los resultados obtenidos son aplicables al contexto analizado: tareas de generación de texto en español. No pueden extrapolarse directamente a otras tareas, como clasificación o traducción, ni al estudio del sesgo intrínseco de las representaciones internas de los modelos.
+La segunda restricción es metodológica. El experimento se basa en un enfoque de evaluación contrafactual mediante prompts emparejados y variantes de una misma plantilla base para medir sesgo extrínseco, es decir, sesgo observable en las respuestas generadas por los modelos. Por ello, los resultados obtenidos son aplicables al contexto analizado: tareas de generación de texto en español. No pueden extrapolarse directamente a otras tareas, como clasificación o traducción, ni al estudio del sesgo intrínseco de las representaciones internas de los modelos.
 
 La tercera restricción está relacionada con la escala del experimento. Con el fin de facilitar la interpretación de los resultados, conviene aclarar las unidades de análisis utilizadas en este trabajo:
 
 \begin{itemize}
-    \item \textbf{100 plantillas de prompts}: unidad base del dataset, organizadas en cinco dominios (20 por dominio).
+    \item \textbf{100 plantillas base}: unidad base del dataset, organizadas en cinco dominios (20 por dominio).
     \item \textbf{8 variantes por plantilla}: una condición neutra y siete condiciones con referencia a distintos tipos de discapacidad.
     \item \textbf{800 prompts por modelo}: resultado de aplicar las 8 variantes a cada una de las 100 plantillas.
     \item \textbf{3.200 respuestas generadas}: total de llamadas a los modelos (800 × 4 modelos), más otras 3.200 llamadas al juez LLM para evaluar cada respuesta.
-    \item \textbf{400 unidades de análisis agregadas}: resultado de combinar 100 plantillas con 4 modelos. Cada unidad agrupa la condición neutra y las siete variantes de un mismo prompt bajo un mismo modelo, y sobre ella se calcula el índice de sesgo y el bloque de resumen.
+    \item \textbf{400 unidades de análisis agregadas}: resultado de combinar 100 plantillas con 4 modelos. Cada unidad agrupa la condición neutra y las siete variantes de una misma plantilla base bajo un mismo modelo, y sobre ella se calculan el índice de sesgo y el bloque de resumen.
 \end{itemize}
 
 En el entorno de cómputo utilizado, la ejecución completa supuso aproximadamente 12 horas y un coste en llamadas a la API de Google inferior a 10 euros.
@@ -808,7 +845,7 @@ En primer lugar, se ha cuidado la terminología utilizada en los prompts. Estos 
 
 En segundo lugar, debe tenerse en cuenta la interpretación de los resultados. El objetivo no es establecer una clasificación absoluta de modelos buenos o malos, sino describir diferencias observables dentro del experimento realizado. Por tanto, las conclusiones deben limitarse al conjunto de modelos, prompts, dominios y tipos de discapacidad evaluados.
 
-En tercer lugar, el uso de un juez LLM introduce una posible fuente adicional de sesgo. El propio juez puede tener sus propios sesgos o preferencias de estilo. Para reducir este riesgo, el juez opera en modo ciego, sin conocer qué modelo generó cada respuesta, y su coherencia se contrasta mediante una revisión manual de una muestra de casos.
+En tercer lugar, el uso de un evaluador automático basado en un LLM o juez introduce una posible fuente adicional de sesgo. El propio juez puede tener sus propios sesgos o preferencias de estilo. Para reducir este riesgo, el juez opera en modo ciego, sin conocer qué modelo generó cada respuesta, y su coherencia se contrasta mediante una revisión manual de una muestra de casos.
 
 Por tanto, los resultados deben interpretarse como una evaluación exploratoria. El trabajo permite observar diferencias de comportamiento entre modelos ante prompts con referencias a discapacidad, pero no constituye una auditoría completa de la equidad de los modelos evaluados. Una validación más amplia requeriría incorporar una evaluación humana a mayor escala y, especialmente, la participación de personas con discapacidad y de profesionales del ámbito de la accesibilidad.
 
@@ -817,11 +854,12 @@ Por tanto, los resultados deben interpretarse como una evaluación exploratoria.
 %-
 \section{Conclusiones}
 
-En este capítulo se ha definido el problema desde un punto de vista técnico, se han establecido los requisitos del sistema y se ha acotado el alcance del experimento. También se ha incluido una tabla de trazabilidad que relaciona los requisitos con los módulos principales del pipeline, reforzando la visión del trabajo como un sistema software reproducible y no únicamente como un estudio experimental.
+En este capítulo se ha definido el problema desde un punto de vista técnico, se han establecido los requisitos del sistema y se ha acotado el alcance del experimento. También se ha incluido una tabla de trazabilidad que relaciona los requisitos con los módulos principales del pipeline, reforzando la visión del trabajo como un sistema de software reproducible y no únicamente como un pipeline experimenta.
 
-Además, se han descrito las principales restricciones técnicas y metodológicas, así como las consideraciones éticas que deben tenerse en cuenta al interpretar los resultados.
+Además, se han descrito las principales restricciones técnicas y metodológicas, así como las consideraciones éticas que deben tenerse en cuenta al interpretar los resultados. El capítulo siguiente presenta el diseño del sistema, incluyendo la construcción del dataset, la arquitectura del pipeline, el esquema de almacenamiento y el protocolo de evaluación.
 
-Los requisitos identificados en este capítulo condicionan directamente las decisiones de diseño del capítulo siguiente: la modularidad exigida por RNF2 se traduce en una arquitectura con componentes independientes; la reproducibilidad requerida por RNF1 justifica el uso de semillas y parámetros de generación fijos; y la trazabilidad de RNF3 motiva el esquema de almacenamiento en JSON con checkpoint incremental. El capítulo siguiente presenta ese diseño, incluyendo la construcción del dataset, la arquitectura del pipeline, el esquema de almacenamiento y el protocolo de evaluación.
+
+
 %----------
 %   DISEÑO DEL SISTEMA
 %----------
@@ -841,13 +879,15 @@ Primero se presenta la arquitectura general del sistema, sus componentes princip
 %-
 \section{Arquitectura general}
 
-Para diseñar el pipeline, la decisión más importante fue organizarlo de forma modular. Cada componente tiene una responsabilidad clara y está separado del resto. Esto permite trabajar en cada parte de forma independiente, facilita la depuración de errores y mejora la ampliabilidad del sistema.
+El sistema desarrollado no sigue una arquitectura clásica cliente-servidor con frontend y backend, ya que no se trata de una aplicación interactiva para usuarios finales. En este caso, la solución se plantea como una arquitectura modular basada en un pipeline experimental en Python. Cada módulo cumple una función concreta dentro del flujo de trabajo: carga de datos, ejecución de modelos, evaluación automática, almacenamiento de resultados y análisis posterior.
 
-El flujo parte de un dataset de prompts en formato JSON. Un módulo de carga y validación comprueba primero que cada prompt contiene los campos necesarios para su ejecución y análisis. Si falta alguno, el sistema lanza un error antes de comenzar la ejecución. A continuación, el orquestador principal recorre los prompts y los modelos, invocando a cada cliente mediante una interfaz común. Las respuestas se evalúan automáticamente mediante análisis de sentimiento, juez LLM y longitud, y se guardan de forma incremental en un fichero JSON tras cada resultado. Este guardado incremental funciona como mecanismo de checkpoint.
+La decisión principal de diseño fue separar el sistema en componentes independientes. Esta separación permite mantener el código más organizado, facilita la depuración de errores y permite ampliar el sistema en el futuro, por ejemplo añadiendo nuevos modelos, nuevas métricas o nuevos conjuntos de prompts sin modificar todo el pipeline.
 
-Se ha optado por un diseño en el que los modelos locales y los modelos accesibles mediante API se integran de la misma forma. De este modo, el orquestador no necesita saber si está ejecutando un modelo local o llamando a una API externa. Esto facilita añadir nuevos modelos sin modificar el flujo principal.
+El flujo parte de un dataset de prompts en formato JSON y de una configuración de modelos y parámetros de generación. El módulo de carga y validación comprueba que el dataset contiene los campos necesarios para la ejecución del experimento. Después, el orquestador principal recorre los prompts y los modelos seleccionados, invocando a cada modelo mediante una interfaz común. Esta interfaz permite tratar de forma homogénea modelos locales y modelos accesibles mediante API.
 
-Una vez finalizada la ejecución, un módulo de análisis lee los resultados almacenados y genera tablas comparativas y visualizaciones por modelo, dominio temático y tipo de discapacidad. Separar esta fase de la ejecución permite regenerar los análisis cuantas veces sea necesario sin repetir las llamadas a los modelos.
+Las respuestas generadas se evalúan automáticamente mediante análisis de sentimiento, juez LLM y longitud en palabras. A partir de estas métricas se calculan los deltas contrafactuales y el índice de sesgo. Cada resultado se almacena de forma incremental en un fichero JSON, que actúa también como mecanismo de checkpoint. De esta forma, si la ejecución se interrumpe, el sistema puede reanudarse sin repetir las combinaciones ya procesadas.
+
+Finalmente, una vez completada la ejecución, los módulos de análisis y selección de muestra trabajan sobre el fichero de resultados. El módulo de análisis genera tablas y figuras comparativas, mientras que el módulo de selección de muestra extrae casos relevantes para la revisión manual. Separar estas fases permite repetir el análisis o cambiar la muestra manual sin volver a ejecutar los modelos.
 
 %--
 % Componentes del sistema
@@ -859,115 +899,154 @@ La arquitectura del pipeline se organiza en los siguientes componentes:
 \begin{itemize}
     \item \textbf{Dataset de prompts} (\texttt{data/dataset.json}): contiene las 100 plantillas y sus 800 variantes ya construidas, organizadas por dominio y tipo de discapacidad.
 
-    \item \textbf{Módulo de carga} (\nolinkurl{scripts/dataset_loader.py}): lee el dataset y expone métodos para acceder a prompts, variantes y configuración de los modelos.
+    \item \textbf{Configuración y credenciales}: incluye los parámetros de generación de los modelos y las credenciales necesarias para acceder a servicios externos. Las credenciales se almacenan en un fichero \texttt{.env}, que no se incluye en el repositorio.
 
-    \item \textbf{Orquestador} (\nolinkurl{scripts/generate_evaluations.py}): coordina la ejecución, el cálculo de métricas y el guardado incremental de resultados.
+    \item \textbf{Módulo de carga y validación} (\nolinkurl{scripts/dataset_loader.py}): lee el dataset y proporciona métodos para acceder a los prompts, las variantes y la configuración de modelos.
 
-    \item \textbf{Clientes de modelos} (\texttt{scripts/modelos/}): un fichero por modelo, todos implementando la misma interfaz (\texttt{ModeloLLM}) con el método \texttt{consultar(prompt) -> str}.
+    \item \textbf{Orquestador experimental} (\nolinkurl{scripts/generate_evaluations.py}): coordina la ejecución del experimento, recorre los modelos y los prompts, invoca los clientes de modelos, calcula métricas y guarda los resultados de forma incremental.
 
-    \item \textbf{Módulo de evaluación} (\texttt{scripts/evaluacion/}): contiene el analizador de sentimiento y el juez LLM.
+    \item \textbf{Interfaz común de modelos} (\nolinkurl{scripts/modelos/base.py}): define la interfaz que deben implementar todos los modelos evaluados. Esto permite que el orquestador use todos los modelos de la misma forma.
 
-    \item \textbf{Almacenamiento} (\texttt{outputs/salidas.json}): fichero JSON con guardado incremental, utilizado como checkpoint.
+    \item \textbf{Clientes de modelos} (\texttt{scripts/modelos/}): contiene un fichero por modelo evaluado. Los modelos locales se ejecutan mediante Hugging Face y Gemini se consulta mediante API.
 
-    \item \textbf{Módulo de análisis} (\nolinkurl{scripts/analisis_resultados.py}): lee los resultados almacenados y genera tablas en CSV y figuras en PNG comparativas por modelo, dominio y tipo de discapacidad. Se ejecuta de forma independiente del pipeline de generación.
+    \item \textbf{Módulo de evaluación} (\texttt{scripts/evaluacion/}): contiene el analizador de sentimiento y el juez LLM. Además, el pipeline calcula la longitud de las respuestas, los deltas contrafactuales y el índice de sesgo.
 
-    \item \textbf{Selección de muestra} (\nolinkurl{scripts/seleccionar_muestra.py}): extrae un subconjunto de casos del fichero de resultados para su revisión manual, con tres criterios disponibles: casos más extremos, aleatorio y estratificado.
+    \item \textbf{Almacenamiento} (\texttt{outputs/salidas.json}): fichero JSON donde se guardan los resultados del experimento. También funciona como checkpoint para reanudar la ejecución si se produce una interrupción.
+
+    \item \textbf{Selección de muestra} (\nolinkurl{scripts/seleccionar_muestra.py}): extrae un subconjunto de casos del fichero de resultados para su revisión manual, siguiendo distintos criterios de selección.
+
+    \item \textbf{Módulo de análisis} (\nolinkurl{scripts/analisis_resultados.py}): genera tablas en CSV y figuras en PNG a partir de los resultados almacenados.
 \end{itemize}
 
-La Tabla~\ref{tab:componentes_sistema} describe los componentes del sistema, sus ficheros, sus entradas y salidas y su responsabilidad dentro del pipeline.
+La Tabla~\ref{tab:componentes_sistema} resume los principales componentes del sistema, sus entradas, salidas y responsabilidades dentro del pipeline.
 
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabular}{p{2.4cm}p{3.8cm}p{2cm}p{2cm}p{3.3cm}}
+\begin{tabular}{p{2.3cm}p{3.2cm}p{2cm}p{2cm}p{2.7cm}}
 \hline
 \textbf{Componente} & \textbf{Fichero / carpeta} & \textbf{Entrada} & \textbf{Salida} & \textbf{Responsabilidad} \\
 \hline
-Dataset & \texttt{data/dataset.json} & -- & Prompts y variantes & Fuente de datos \\
+Dataset & \nolinkurl{data/dataset.json} & -- & Prompts y variantes & Fuente de datos del experimento \\
 \hline
-Módulo de carga & \texttt{dataset\_loader.py} & \texttt{dataset.json} & Objetos Python & Carga y validación \\
+Configuración & \texttt{.env} y parámetros & Credenciales y parámetros & Configuración de ejecución & Acceso a API y control de generación \\
 \hline
-Orquestador & \texttt{generate\_evaluations.py} & Dataset, modelos & \texttt{salidas.json} & Coordina ejecución y métricas \\
+Carga y validación & \nolinkurl{dataset_loader.py} & \texttt{dataset.json} & Objetos Python & Leer y validar el dataset \\
 \hline
-Clientes de modelos & \texttt{modelos/} & Prompt texto & Respuesta texto & Abstrae acceso local y API \\
+Orquestador & \nolinkurl{generate_evaluations.py} & Dataset y modelos & Resultados parciales y finales & Coordinar ejecución, métricas y checkpoint \\
 \hline
-Módulo de evaluación & \texttt{evaluacion/} & Prompt + respuesta & Métricas & Sentimiento y juez LLM \\
+Interfaz común & \nolinkurl{modelos/base.py} & Prompt textual & Respuesta textual & Unificar el acceso a los modelos \\
 \hline
-Almacenamiento & \texttt{outputs/salidas.json} & Resultados & JSON persistido & Checkpoint incremental \\
+Clientes de modelos & \nolinkurl{modelos/} & Prompt textual & Respuesta generada & Ejecutar modelos locales y modelo por API \\
 \hline
-Selección de muestra & \texttt{seleccionar\_muestra.py} & \texttt{salidas.json} & \texttt{muestra.json} & Extrae casos para revisión manual \\
+Evaluación automática & \nolinkurl{evaluacion/} & Prompt y respuesta & Métricas & Sentimiento, juez LLM, longitud, deltas e índice \\
 \hline
-Módulo de análisis & \texttt{analisis\_resultados.py} & \texttt{salidas.json} & CSV + PNG & Tablas y figuras comparativas \\
+Almacenamiento & \nolinkurl{outputs/salidas.json} & Resultados del pipeline & JSON persistido & Guardar resultados y permitir reanudación \\
+\hline
+Selección de muestra & \nolinkurl{seleccionar_muestra.py} & \texttt{salidas.json} & Muestra manual & Extraer casos para revisión humana \\
+\hline
+Análisis & \nolinkurl{analisis_resultados.py} & \texttt{salidas.json} & CSV y figuras PNG & Generar tablas y visualizaciones \\
 \hline
 \end{tabular}
 \caption{Componentes del sistema: ficheros, entradas, salidas y responsabilidades}
 \label{tab:componentes_sistema}
 \end{table}
 
-La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline.
+La Figura~\ref{fig:pipeline_arquitectura} muestra la arquitectura modular del pipeline experimental desarrollado.
+
+
 
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  node distance=0.65cm,
-  box/.style={draw, rounded corners=4pt, fill=gray!10, minimum width=9.2cm,
-              minimum height=0.9cm, align=center, font=\small, inner sep=6pt},
-  mbox/.style={draw, rounded corners=4pt, fill=blue!8, minimum width=2.1cm,
-               minimum height=1.1cm, align=center, font=\small, inner sep=5pt},
-  obox/.style={draw, rounded corners=4pt, fill=green!7, minimum width=3.9cm,
-               minimum height=1.0cm, align=center, font=\small, inner sep=5pt},
-  arr/.style={-{Stealth[length=5pt,width=4pt]}, semithick}
+  node distance=0.62cm,
+  layer/.style={draw, rounded corners=5pt, fill=#1, minimum width=13.7cm, minimum height=1.15cm, inner sep=8pt},
+  smallbox/.style={draw, rounded corners=4pt, fill=white, minimum width=3.6cm, minimum height=0.8cm, align=center, font=\footnotesize, inner sep=5pt},
+  widebox/.style={draw, rounded corners=4pt, fill=white, minimum width=8.6cm, minimum height=0.85cm, align=center, font=\small, inner sep=5pt},
+  modelbox/.style={draw, rounded corners=4pt, fill=white, minimum width=2.7cm, minimum height=0.9cm, align=center, font=\footnotesize, inner sep=4pt},
+  arr/.style={-{Stealth[length=5pt,width=4pt]}, semithick},
+  layerlabel/.style={font=\bfseries\small, align=left}
 ]
-% Flujo principal
-\node[box] (D) {\textbf{Dataset de prompts} \quad \texttt{data/dataset.json}};
-\node[box, below=of D] (C) {\textbf{Módulo de carga y validación} \quad \texttt{dataset\_loader.py}};
-\node[box, below=of C] (O) {\textbf{Orquestador experimental} \quad \texttt{generate\_evaluations.py}};
 
-\draw[arr] (D) -- (C);
-\draw[arr] (C) -- (O);
+% Capas
+\node[layer=blue!5, minimum height=1.35cm] (L1) {};
+\node[layer=blue!4, below=0.38cm of L1, minimum height=1.55cm] (L2) {};
+\node[layer=yellow!9, below=0.38cm of L2, minimum height=1.95cm] (L3) {};
+\node[layer=purple!7, below=0.45cm of L3, minimum height=2.5cm] (L4) {};
+\node[layer=orange!8, below=0.45cm of L4, minimum height=1.7cm] (L5) {};
+\node[layer=gray!8, below=0.45cm of L5, minimum height=1.55cm] (L6) {};
+\node[layer=green!7, below=0.45cm of L6, minimum height=1.7cm] (L7) {};
+
+% Etiquetas de capas
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm]L1.west) {1. Entradas y configuración};
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm]L2.west) {2. Carga y validación};
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm]L3.west) {3. Orquestación};
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm,yshift=0.65cm]L4.west) {4. Modelos evaluados};
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm]L5.west) {5. Evaluación automática};
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm]L6.west) {6. Persistencia};
+\node[layerlabel, anchor=west] at ([xshift=-6.55cm]L7.west) {7. Salidas y análisis};
+
+% Entradas
+\node[smallbox] (D) at ([xshift=-3.7cm]L1.center) {\textbf{Dataset de prompts}\\\texttt{data/dataset.json}};
+\node[smallbox] (P) at (L1.center) {\textbf{Configuración}\\parámetros de generación};
+\node[smallbox] (E) at ([xshift=3.7cm]L1.center) {\textbf{Credenciales}\\\texttt{.env}};
+
+% Carga
+\node[widebox] (C) at (L2.center) {\textbf{Módulo de carga y validación}\\\texttt{scripts/dataset\_loader.py}};
+
+% Orquestador
+\node[widebox, minimum height=1.0cm] (O) at (L3.center) {\textbf{Orquestador experimental}\\\texttt{scripts/generate\_evaluations.py}\\{\footnotesize recorre prompts y modelos · controla errores · gestiona checkpoint}};
 
 % Modelos
-\node[mbox, below=1.8cm of O, xshift=-3.5cm] (M1) {\textbf{Llama 3.1 8B}\\{\footnotesize local}};
-\node[mbox, right=0.3cm of M1]               (M2) {\textbf{RigoChat 7B}\\{\footnotesize local}};
-\node[mbox, right=0.3cm of M2]               (M3) {\textbf{Gemini 2.5}\\{\footnotesize Flash (API)}};
-\node[mbox, right=0.3cm of M3]               (M4) {\textbf{Salamandra 7B}\\{\footnotesize local}};
+\node[modelbox] (M1) at ([xshift=-4.85cm,yshift=0.25cm]L4.center) {\textbf{Llama 3.1 8B}\\local};
+\node[modelbox] (M2) at ([xshift=-1.65cm,yshift=0.25cm]L4.center) {\textbf{RigoChat 7B v2}\\local};
+\node[modelbox] (M3) at ([xshift=1.65cm,yshift=0.25cm]L4.center) {\textbf{Salamandra 7B}\\local};
+\node[modelbox] (M4) at ([xshift=4.85cm,yshift=0.25cm]L4.center) {\textbf{Gemini 2.5 Flash}\\API};
+\node[widebox, minimum width=9.5cm, minimum height=0.55cm] (I) at ([yshift=-0.75cm]L4.center) {\textbf{Interfaz común de modelos} \quad \texttt{scripts/modelos/base.py}};
 
-% Bus de salida: O → modelos
-\coordinate (busout) at ([yshift=-0.6cm]O.south);
-\draw (O.south) -- (busout);
-\draw (M1.north |- busout) -- (M4.north |- busout);
-\foreach \m in {M1,M2,M3,M4}{ \draw[arr] (\m.north |- busout) -- (\m.north); }
+% Evaluación
+\node[modelbox] (SENT) at ([xshift=-4.85cm]L5.center) {\textbf{Sentimiento}\\\texttt{sentimiento.py}};
+\node[modelbox] (JUEZ) at ([xshift=-1.65cm]L5.center) {\textbf{Juez LLM}\\\texttt{juez\_llm.py}};
+\node[modelbox] (LONG) at ([xshift=1.65cm]L5.center) {\textbf{Longitud}\\conteo de palabras};
+\node[modelbox] (IDX) at ([xshift=4.85cm]L5.center) {\textbf{Delta e índice}\\cálculo contrafactual};
 
-% Etiqueta de metricas
-\coordinate (midmod) at ($(M2.south)!0.5!(M3.south)$);
-\node[align=center, font=\small\itshape, below=0.6cm of midmod] (Mx)
-  {[\,sentimiento $\cdot$ juez LLM $\cdot$ longitud\,]};
-
-% Bus de entrada: modelos → métricas
-\coordinate (busin) at ([yshift=0.35cm]Mx.north);
-\foreach \m in {M1,M2,M3,M4}{ \draw (\m.south) -- (\m.south |- busin); }
-\draw (M1.south |- busin) -- (M4.south |- busin);
-\draw[arr] (Mx.north |- busin) -- (Mx.north);
-
-% Almacenamiento
-\node[box, below=0.55cm of Mx] (S)
-  {\textbf{Almacenamiento con checkpoint} \quad \texttt{outputs/salidas.json}};
-\draw[arr] (Mx) -- (S);
+% Persistencia
+\node[widebox] (SAVE) at (L6.center) {\textbf{Almacenamiento con checkpoint}\\\texttt{outputs/salidas.json}};
 
 % Salidas
-\node[obox, below=1.2cm of S, xshift=-2.5cm] (A)
-  {\textbf{Muestra para eval.\ manual}\\\texttt{seleccionar\_muestra.py}};
-\node[obox, below=1.2cm of S, xshift= 2.5cm] (B)
-  {\textbf{Análisis comparativo}\\tablas CSV $+$ figuras PNG};
+\node[smallbox, minimum width=5cm, minimum height=1.05cm] (SM) at ([xshift=-3.0cm]L7.center) {\textbf{Selección de muestra}\\\texttt{scripts/seleccionar\_muestra.py}\\\texttt{muestra\_evaluacion\_manual.json}};
+\node[smallbox, minimum width=5cm, minimum height=1.05cm] (AN) at ([xshift=3.0cm]L7.center) {\textbf{Análisis de resultados}\\\texttt{scripts/analisis\_resultados.py}\\CSV + figuras PNG};
 
-\coordinate (busout2) at ([yshift=-0.5cm]S.south);
-\draw (S.south) -- (busout2);
-\draw (A.north |- busout2) -- (B.north |- busout2);
-\draw[arr] (A.north |- busout2) -- (A.north);
-\draw[arr] (B.north |- busout2) -- (B.north);
+% Flechas
+\foreach \x in {D,P,E}{ \draw[arr] (\x.south) -- (C.north); }
+\draw[arr] (C.south) -- (O.north);
 
-\end{tikzpicture}
-\caption{Arquitectura general del sistema}
+\draw[arr] (O.south) -- ++(0,-0.25) -| (M1.north);
+\draw[arr] (O.south) -- ++(0,-0.25) -| (M2.north);
+\draw[arr] (O.south) -- ++(0,-0.25) -| (M3.north);
+\draw[arr] (O.south) -- ++(0,-0.25) -| (M4.north);
+
+\foreach \m in {M1,M2,M3,M4}{ \draw[arr] (\m.south) -- (I.north); }
+
+\draw[arr] (I.south) -- ++(0,-0.25) -| (SENT.north);
+\draw[arr] (I.south) -- ++(0,-0.25) -| (JUEZ.north);
+\draw[arr] (I.south) -- ++(0,-0.25) -| (LONG.north);
+\draw[arr] (I.south) -- ++(0,-0.25) -| (IDX.north);
+
+\draw[arr] (SENT.south) -- ++(0,-0.25) -| (SAVE.north);
+\draw[arr] (JUEZ.south) -- ++(0,-0.25) -| (SAVE.north);
+\draw[arr] (LONG.south) -- ++(0,-0.25) -| (SAVE.north);
+\draw[arr] (IDX.south) -- ++(0,-0.25) -| (SAVE.north);
+
+\draw[arr] (SAVE.south) -- ++(0,-0.35) -| (SM.north);
+\draw[arr] (SAVE.south) -- ++(0,-0.35) -| (AN.north);
+
+
+
+\end{tikzpicture}%
+}
+\caption{Arquitectura modular del pipeline experimental desarrollado, organizada en siete capas: entradas y configuración, carga y validación, orquestación, modelos evaluados (locales y por API), evaluación automática, persistencia y salidas de análisis}
 \label{fig:pipeline_arquitectura}
 \end{figure}
 
@@ -976,23 +1055,28 @@ La Figura~\ref{fig:pipeline_arquitectura} muestra el flujo completo del pipeline
 %-
 \section{Flujo de ejecución}
 
-El flujo principal del experimento funciona de la siguiente manera. Al arrancar, el orquestador comprueba si existe un checkpoint con resultados previos y, si es así, reanuda desde donde se quedó. A continuación, para cada combinación pendiente de prompt y modelo, genera las ocho respuestas: una neutra y siete con referencia a discapacidad. Después calcula las métricas de cada respuesta, calcula los deltas contrafactuales respecto a la condición neutra y genera el bloque de resumen. Todo esto se guarda inmediatamente en el fichero JSON antes de pasar al siguiente par.
+El flujo principal del experimento sigue una secuencia de pasos definida. Primero se cargan el dataset, la configuración de los modelos y las credenciales necesarias para las llamadas externas. Después, el orquestador comprueba si existe un checkpoint previo y, en ese caso, omite las combinaciones de prompt y modelo que ya han sido procesadas.
+
+A continuación, para cada combinación pendiente de prompt y modelo, se generan las ocho respuestas previstas: una respuesta para la condición neutra y siete respuestas para las variantes con discapacidad. Cada respuesta se evalúa mediante las métricas automáticas definidas en el protocolo de evaluación. Después se calculan los deltas contrafactuales respecto a la condición neutra y se obtiene el índice de sesgo. El resultado se guarda de forma inmediata en \texttt{outputs/salidas.json}, lo que permite conservar el progreso aunque la ejecución se interrumpa.
+
+Una vez finalizada la generación de respuestas, se ejecutan los scripts de análisis y selección de muestra. Estos scripts no vuelven a llamar a los modelos, sino que trabajan sobre el fichero de resultados ya generado.
 
 \begin{verbatim}
-1. Cargar dataset de prompts.
-2. Cargar checkpoint si existe y omitir pares ya procesados.
-3. Para cada modelo seleccionado:
+1. Cargar dataset de prompts y configuración.
+2. Cargar checkpoint si existe.
+3. Omitir combinaciones (prompt, modelo) ya procesadas.
+4. Para cada modelo seleccionado:
        Para cada prompt del dataset:
-           Si el par (prompt, modelo) ya está procesado: omitir.
-           Ejecutar prompt base neutro sobre el modelo.
+           Ejecutar condición neutra.
            Para cada variante con discapacidad:
                Ejecutar prompt sobre el modelo.
-               Calcular métricas: sentimiento, juez LLM y longitud.
+               Calcular sentimiento, juez LLM y longitud.
                Calcular delta contrafactual.
-           Generar bloque resumen.
-           Guardar el resultado en checkpoint.
+           Calcular índice de sesgo.
+           Guardar resultado en outputs/salidas.json.
            Si ocurre un error, registrarlo y continuar.
-4. Exportar resultados finales.
+5. Seleccionar muestra para evaluación manual.
+6. Generar tablas y figuras de resultados.
 \end{verbatim}
 
 %--
@@ -1099,7 +1183,7 @@ Dentro de cada resultado, la condición neutra y las siete variantes con discapa
 %-
 \subsection{Metadatos}
 
-Cada resultado almacena los metadatos necesarios para reconstruir la ejecución. Se guarda el nombre del modelo tal como aparece en la factoría (\texttt{modelo\_evaluado}), los parámetros de generación usados (\texttt{parametros\_generacion}: temperatura, top-p, repetition penalty y semilla), la fecha de ejecución (\texttt{fecha\_ejecucion}) y el objetivo de sesgo del prompt (\texttt{objetivo\_sesgo}). Estos campos permiten comparar resultados entre modelos y verificar que las condiciones de ejecución fueron las previstas, sin consultar el código o el dataset por separado.
+Cada resultado almacena los metadatos necesarios para reconstruir la ejecución. Se guardan el nombre del modelo tal como aparece en la factoría (\texttt{modelo\_evaluado}), los parámetros de generación usados (\texttt{parametros\_generacion}: temperatura, top-p, repetition penalty y semilla), la fecha de ejecución (\texttt{fecha\_ejecucion}) y el objetivo de sesgo del prompt (\texttt{objetivo\_sesgo}). Estos campos permiten comparar resultados entre modelos y verificar que las condiciones de ejecución fueron las previstas, sin consultar el código o el dataset por separado.
 
 %--
 % Formato de resultados
@@ -1166,21 +1250,21 @@ El protocolo de ejecución define cómo se lanzan los prompts sobre cada modelo 
 %-
 \subsection{Modelos locales}
 
-Para los modelos locales, Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct, se utilizó la librería Transformers de Hugging Face. Los pesos se cargan en formato \texttt{bfloat16} para reducir el uso de VRAM, y se usa \texttt{device\_map="auto"} para que el modelo se distribuya automáticamente entre las GPUs disponibles. Como se explica en el capítulo de implementación, se optó por carga perezosa: el modelo se carga la primera vez que se le llama y se mantiene en memoria durante toda la ejecución.
+Para los modelos locales, Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct, se utilizó la librería Transformers de Hugging Face. Los pesos se cargan en formato \texttt{bfloat16} para reducir el uso de VRAM, y se usa \texttt{device\_map="auto"} para que el modelo se distribuya automáticamente entre las GPUs disponibles. Como se explica en el capítulo de implementación, se optó por la carga perezosa: el modelo se carga la primera vez que se le llama y se mantiene en memoria durante toda la ejecución.
 
 %--
 % Modelo mediante API
 %-
 \subsection{Modelo mediante API}
 
-Para Gemini 2.5 Flash se utilizó la librería \texttt{google-genai}. Cada llamada incluye los parámetros de generación configurados en el dataset. Para las llamadas del juez LLM se desactivó explícitamente la funcionalidad de \textit{thinking} del modelo, con el objetivo de que las respuestas fueran más deterministas y el JSON de evaluación se generase de forma limpia.
+Para Gemini 2.5 Flash se utilizó la librería \texttt{google-genai}. Cada llamada incluye los parámetros de generación configurados en el dataset. Para las llamadas del juez LLM, se desactivó explícitamente la funcionalidad de \textit{thinking} del modelo, con el objetivo de que las respuestas fueran más deterministas y el JSON de evaluación se generara de forma limpia.
 
 %--
 % Parámetros
 %-
 \subsection{Parámetros}
 
-Para mejorar la reproducibilidad, se utilizaron los mismos parámetros en todos los modelos: temperatura 0,1 y top-p 0,95. El parámetro \textit{repetition penalty} varía ligeramente entre modelos locales: 1,1 para Llama 3.1 8B Instruct y Salamandra 7B Instruct, y 1,15 para RigoChat 7B v2; el valor de RigoChat fue fijado a 1,15 durante el ajuste inicial porque el modelo mostraba mayor tendencia a la repetición léxica con el valor por defecto. La baja temperatura reduce la variabilidad entre ejecuciones. También se fijó una semilla de 42 en los modelos locales cuando el framework lo permite.
+Para mejorar la reproducibilidad, se utilizaron los mismos parámetros en todos los modelos: temperatura de 0,1 y top-p de 0,95. El parámetro \textit{repetition penalty} varía ligeramente entre modelos locales: 1,1 para Llama 3.1 8B Instruct y Salamandra 7B Instruct, y 1,15 para RigoChat 7B v2; el valor de RigoChat fue fijado en 1,15 durante el ajuste inicial porque el modelo mostraba una mayor tendencia a la repetición léxica con el valor por defecto. La baja temperatura reduce la variabilidad entre las ejecuciones. Además, se registró una semilla de valor 42 en la configuración de los modelos locales como parte de los metadatos de cada ejecución (campo \texttt{parametros\_generacion}), documentando así la configuración utilizada para favorecer la reproducibilidad del experimento.
 
 %--
 % Protocolo de evaluación
@@ -1188,6 +1272,29 @@ Para mejorar la reproducibilidad, se utilizaron los mismos parámetros en todos 
 \section{Protocolo de evaluación}
 
 El protocolo de evaluación combina métricas automáticas y revisión manual. Las métricas automáticas permiten evaluar todas las respuestas de forma sistemática. La revisión manual se utiliza para estudiar con más detalle algunos casos extremos y comprobar si los patrones detectados automáticamente tienen sentido desde un punto de vista cualitativo.
+
+La Tabla~\ref{tab:metricas_evaluacion} resume las métricas utilizadas en la evaluación, indicando qué mide cada una, qué papel tiene dentro del trabajo y cuál es su referencia principal.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{2.5cm}p{4.5cm}p{3.5cm}p{2.5cm}}
+\hline
+\textbf{Métrica} & \textbf{Qué mide} & \textbf{Uso en el trabajo} & \textbf{Referencia} \\
+\hline
+Sentimiento & Tono positivo o negativo de la respuesta & Métrica complementaria & \cite{venkit2022disability,panda2025accesseval,perez2021pysentimiento} \\
+Juez LLM & Calidad y posible sesgo según rúbrica & Métrica principal de evaluación & \cite{zheng2023llmjudge} \\
+Longitud & Diferencia en número de palabras entre la respuesta neutra y la respuesta con discapacidad & Métrica de apoyo para detectar reducción de detalle, sobreexplicación o trato diferencial & Definición propia basada en comparación contrafactual \\
+Delta contrafactual & Diferencia ($\Delta$) entre el valor de cada métrica anterior (sentimiento, dimensiones del juez, longitud) en la variante con discapacidad y en la condición neutra & Cuantificar el efecto de mencionar la discapacidad en cada métrica & \cite{zhao2018winobias,guo2024bias} \\
+Índice de sesgo & Caída combinada de los deltas de tono respetuoso y ausencia de estereotipo, normalizada según se define en la Sección~\ref{sec:eval_automatica} & Criterio operativo para clasificar un par como sesgo detectado ($IS_v < -0{,}2$) & Definición propia del experimento \\
+\hline
+\end{tabular}
+\caption{Resumen de métricas utilizadas en la evaluación}
+\label{tab:metricas_evaluacion}
+\end{table}
+
+La métrica principal del trabajo es el índice de sesgo, calculado a partir de la evaluación del juez LLM, en particular en las dimensiones del tono respetuoso y de la ausencia de estereotipos. El análisis de sentimiento y la longitud se utilizan como métricas complementarias, ya que ayudan a interpretar diferencias entre respuestas, pero no constituyen por sí solas una prueba definitiva de sesgo. En particular, la longitud se interpreta únicamente como un indicador auxiliar: una respuesta más corta puede indicar pérdida de detalle o menor utilidad, mientras que una respuesta más larga puede indicar sobreexplicación, cautelas adicionales o sobreadaptación.
+
+El índice de sesgo utilizado en este trabajo no se presenta como una métrica universal, sino como un criterio operativo definido para comparar los pares contrafactuales del experimento.
 
 %--
 % Evaluación automática
@@ -1202,7 +1309,7 @@ Para evaluar cada respuesta de forma automática se utilizaron tres métricas co
 
     \item \textbf{Juez LLM}: se usa Gemini 2.5 Flash como juez ciego para puntuar cada respuesta según una rúbrica de cinco dimensiones: relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipos. Cada dimensión se puntúa de 1 a 5. El juez no sabe qué modelo generó la respuesta, solo recibe la instrucción y el texto generado.
 
-    \item \textbf{Longitud en palabras}: se cuenta el número de palabras de cada respuesta. Una diferencia sistemática en longitud entre la versión neutra y la versión con discapacidad puede indicar que el modelo proporciona más o menos información según la condición.
+    \item \textbf{Longitud en palabras}: se cuenta el número de palabras de cada respuesta. Una diferencia sistemática en longitud entre la versión neutra y la versión con discapacidad puede ayudar a detectar patrones de trato diferencial, como respuestas más breves, pérdida de detalle, sobreexplicación o inclusión de advertencias no solicitadas.
 \end{enumerate}
 
 Para comparar cada variante con discapacidad con su versión neutra, se calcula un delta contrafactual. Este delta se define como la diferencia entre la puntuación obtenida por la variante con discapacidad y la puntuación obtenida por la condición neutra:
@@ -1211,7 +1318,7 @@ Para comparar cada variante con discapacidad con su versión neutra, se calcula 
 \Delta_m = p_{discapacidad,m} - p_{neutra,m}
 \]
 
-donde $m$ es la dimensión evaluada (relevancia, exactitud, utilidad, tono respetuoso o ausencia de estereotipo). Un valor negativo indica que la respuesta con referencia a discapacidad fue evaluada peor que la respuesta neutra; un valor cercano a cero indica que apenas hubo diferencia entre ambas condiciones.
+donde $m$ es la dimensión evaluada (relevancia, exactitud, utilidad, tono respetuoso o ausencia de estereotipo). Un valor negativo indica que la respuesta con referencia a discapacidad fue evaluada peor que la respuesta neutra en esa dimensión; un valor positivo indica que fue evaluada mejor, y un valor cercano a cero indica que apenas hubo diferencia entre ambas condiciones.
 
 A partir de los deltas de cada variante, se define un \textbf{índice de sesgo} que agrega las dos dimensiones más directamente relacionadas con la discriminación: el tono respetuoso y la ausencia de estereotipo. Para cada variante $v$ de un resultado, el índice de sesgo se calcula como la suma normalizada de ambas caídas:
 
@@ -1219,11 +1326,11 @@ A partir de los deltas de cada variante, se define un \textbf{índice de sesgo} 
 IS_v = \frac{\Delta_{tono\_respetuoso,v} + \Delta_{ausencia\_estereotipo,v}}{10}
 \]
 
-El denominador 10 normaliza el índice al intervalo $[-1, 1]$, dado que cada delta individual varía entre $-5$ y $+5$ sobre la escala del juez. Un resultado se clasifica como \textit{sesgo detectado} cuando la peor variante del prompt satisface $IS_v < -0{,}2$, es decir, cuando la caída combinada en las dos dimensiones más sensibles supera el 20\% del máximo posible.
+El denominador 10 se utiliza como una normalización operativa, tomando como referencia la escala completa del juez en las dos dimensiones consideradas. Dado que cada puntuación individual se sitúa entre 1 y 5, los deltas observables entre una variante y la condición neutra pueden variar entre $-4$ y $+4$. Por tanto, el índice no debe entenderse como una normalización matemática exacta al intervalo $[-1,1]$, sino como una escala operativa para comparar la caída combinada en ambas dimensiones.
 
-Este umbral se justifica a partir de la interpretación directa de la escala del índice. El valor $IS_v = -0{,}2$ corresponde exactamente a una suma de deltas igual a $-2$: por ejemplo, una caída de 1 punto en cada una de las dos dimensiones, o de 2 puntos en una de ellas. Por debajo de ese nivel, al menos una de las dimensiones más sensibles ha empeorado de forma apreciable respecto a la condición neutra, lo que va más allá de la variabilidad puntual esperable con una temperatura de generación baja (0,1). Un umbral de $-0{,}15$ resultaría demasiado sensible, ya que caídas de 0,75 puntos por dimensión son frecuentes incluso entre pares sin diferencias cualitativas apreciables. En cambio, un umbral de $-0{,}3$ excluiría casos de degradación moderada pero consistente que la revisión manual sí identifica como sesgados. No debe interpretarse como una definición universal de sesgo, sino como un criterio operativo y exploratorio que permite identificar los pares más susceptibles de análisis cualitativo posterior.
+Un resultado se clasifica como \textit{sesgo detectado} cuando la peor variante del prompt satisface $IS_v < -0{,}2$. Con esta definición, el valor $-0{,}2$ equivale a una caída combinada de dos puntos en las dimensiones de tono respetuoso y ausencia de estereotipo. Por ejemplo, puede corresponder a una caída de un punto en cada dimensión o de dos puntos en una sola de ellas.
 
-La distribución empírica de los valores del índice en el experimento respalda esta elección. Del total de 2.800 valores IS calculados (400 resultados $\times$ 7 variantes por discapacidad), el 61,0\% se concentra en el intervalo $[-0{,}15,\;+0{,}15]$, lo que corresponde a variaciones mínimas atribuibles a la propia estocasticidad del modelo. La franja $[-0{,}2,\;-0{,}15)$ contiene solo el 6,7\% de los casos, una zona poco poblada que actúa como frontera natural entre el ruido y la degradación consistente. Por debajo de $-0{,}2$ se sitúa el 29,5\% de las variantes, grupo en el que la revisión manual confirma que la mayoría de los casos presentan diferencias cualitativas apreciables respecto a la condición neutra. El umbral $-0{,}2$ separa, pues, una región densa de valores próximos a cero de una región de degradación clara, aprovechando el hueco natural que aparece en la distribución.
+Este umbral no debe interpretarse como una definición universal de sesgo, sino como un criterio exploratorio para seleccionar los casos donde la diferencia entre la condición neutra y la variante con discapacidad es suficientemente clara para ser analizada. En este trabajo se comprobó además que la mayoría de los valores del índice se concentran cerca de cero, mientras que los casos por debajo de $-0{,}2$ presentan diferencias cualitativas más visibles en la revisión manual.
 
 %--
 % Evaluación manual
@@ -1254,11 +1361,11 @@ Para la revisión de esta memoria, se seleccionaron los cinco casos más sesgado
 %-
 \section{Conclusiones}
 
-En este capítulo se ha descrito el diseño del sistema desarrollado para ejecutar la evaluación experimental. La arquitectura modular permite separar la carga del dataset, la ejecución de los modelos, la evaluación automática, el almacenamiento de resultados, la selección de muestras y el análisis posterior.
+En este capítulo se ha descrito el diseño del sistema desarrollado para llevar a cabo la evaluación experimental. La arquitectura modular permite separar la carga del dataset, la ejecución de los modelos, la evaluación automática, el almacenamiento de resultados, la selección de muestras y el análisis posterior.
 
 Las decisiones más importantes han sido el uso de plantillas con el marcador \texttt{\{condicion\}}, la organización del dataset en cinco dominios y siete tipos de discapacidad, el almacenamiento incremental en JSON como mecanismo de checkpoint y la combinación de métricas automáticas con revisión manual.
 
-El capítulo siguiente describe la implementación de este diseño, incluyendo el entorno de desarrollo, la estructura del repositorio, los módulos principales del pipeline y las decisiones técnicas adoptadas durante el desarrollo.
+El siguiente capítulo describe la implementación de este diseño, incluyendo el entorno de desarrollo, la estructura del repositorio, los módulos principales del pipeline y las decisiones técnicas adoptadas durante el desarrollo.
 %----------
 %   IMPLEMENTACIÓN
 %----------
@@ -1269,7 +1376,7 @@ El capítulo siguiente describe la implementación de este diseño, incluyendo e
 %-
 \section{Introducción}
 
-En este capítulo se describe la implementación del pipeline experimental diseñado en el capítulo anterior. Se presenta el entorno de desarrollo utilizado, la estructura del repositorio, las decisiones técnicas más importantes y el funcionamiento de los principales módulos del sistema.
+En este capítulo se describe la implementación del pipeline experimental diseñado en el capítulo anterior. Se presentan el entorno de desarrollo utilizado, la estructura del repositorio, las decisiones técnicas más importantes y el funcionamiento de los principales módulos del sistema.
 
 %--
 % Entorno de desarrollo
@@ -1291,6 +1398,7 @@ Todo el código está disponible públicamente en GitHub: \url{https://github.co
 
 Una decisión de diseño importante fue separar claramente los datos de entrada, el código del pipeline y los resultados generados. La estructura resultante es la siguiente:
 
+{\footnotesize
 \begin{verbatim}
 TFG-Sesgos-en-la-IA/
 |
@@ -1329,6 +1437,7 @@ TFG-Sesgos-en-la-IA/
 |-- .gitignore
 |-- .env                         # No incluido en el repositorio
 \end{verbatim}
+}
 
 Dentro de \texttt{scripts/} se crearon dos subpaquetes: \texttt{modelos/}, para los clientes de cada modelo, y \texttt{evaluacion/}, para las métricas automáticas. Esta separación permite trabajar en cada parte de forma independiente y facilita la depuración de errores durante el desarrollo.
 
@@ -1360,7 +1469,7 @@ La Tabla~\ref{tab:clientes_modelos} resume los cuatro clientes implementados, su
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabular}{p{2.2cm}p{2.2cm}p{1.6cm}p{2.2cm}p{5.3cm}}
+\begin{tabular}{p{2cm}p{2cm}p{1.5cm}p{2cm}p{5cm}}
 \hline
 \textbf{Fichero} & \textbf{Modelo} & \textbf{Acceso} & \textbf{Librería} & \textbf{Observaciones} \\
 \hline
@@ -1383,7 +1492,7 @@ Un caso especial es Salamandra, cuyo tokenizador requiere usar el método \textt
 %-
 \subsection{Ejecución y almacenamiento}
 
-El orquestador principal se encuentra en \texttt{generate\_evaluations.py}, dentro de la clase \texttt{GeneradorEvaluaciones}. El método \texttt{generar\_evaluaciones()} recorre los prompts y los modelos en orden. Para cada combinación llama al método interno \texttt{\_procesar\_variante()}, que se encarga de obtener la respuesta del modelo y calcular las tres métricas: análisis de sentimiento, evaluación por el juez LLM y longitud en palabras.
+El orquestador principal se encuentra en \texttt{generate\_evaluations.py}, dentro de la clase \texttt{GeneradorEvaluaciones}. El método \texttt{generar\_evaluaciones()} recorre los prompts y los modelos en orden. Para cada combinación, llama al método interno \texttt{\_procesar\_variante()}, que se encarga de obtener la respuesta del modelo y calcular las tres métricas: análisis de sentimiento, evaluación por el juez LLM y longitud en palabras.
 
 Tras procesar todas las variantes de un prompt con un modelo concreto, se calculan los deltas contrafactuales respecto a la condición neutra y se genera un bloque de resumen. Este bloque incluye la variante más sesgada, la tasa de rechazo y el índice de sesgo.
 
@@ -1418,6 +1527,7 @@ Durante las primeras ejecuciones se detectó que el modelo lanzaba un error de C
 % Juez LLM
 %-
 \subsection{Juez LLM}
+\label{sec:juez_llm_prompt}
 
 El juez LLM está implementado en la clase \texttt{JuezLLM}, dentro del fichero \texttt{juez\_llm.py}. Su funcionamiento consiste en recibir la instrucción original y la respuesta generada por el modelo evaluado, construir un prompt con la rúbrica de cinco dimensiones y enviarlo a Gemini 2.5 Flash. El modelo devuelve una evaluación en formato JSON.
 
@@ -1470,33 +1580,23 @@ Los marcadores \texttt{\{instruccion\}} y \texttt{\{respuesta\}} se sustituyen e
 
 Durante la implementación fue necesario resolver dos problemas. El primero fue que Gemini 2.5 Flash tenía activada por defecto una funcionalidad de razonamiento previo (\textit{thinking}) que añadía tokens adicionales antes del JSON y rompía el proceso de parseo. La solución fue desactivar explícitamente esta funcionalidad en la configuración de la llamada.
 
-El segundo problema fue que, en algunas ocasiones, el modelo envolvía el JSON en un bloque de código Markdown, por ejemplo \texttt{```json ... ```}. Para solucionarlo, se añadió una limpieza previa del texto antes de intentar parsearlo.
+El segundo problema fue que, en algunas ocasiones, el modelo envolvía el JSON en un bloque de código Markdown, por ejemplo, \texttt{```json ... ```}. Para solucionarlo, se añadió una limpieza previa del texto antes de intentar parsearlo.
 
 %--
 % Exportación de resultados
 %-
 \section{Exportación de resultados}
 
-El pipeline genera cinco tipos de ficheros de salida:
+Además del fichero JSON de resultados, se generó un CSV expandido (\nolinkurl{data/dataset_expandido.csv}) con una fila por cada prompt final. Este fichero contiene los metadatos de cada prompt y el texto enviado al modelo, pero no incluye las respuestas generadas, que quedan almacenadas en el JSON.
 
-\begin{itemize}
-    \item \textbf{\nolinkurl{outputs/salidas.json}}: fichero principal con todas las respuestas generadas, métricas absolutas, deltas contrafactuales y resumen por par (prompt, modelo). Es también el checkpoint del experimento.
-
-    \item \textbf{\nolinkurl{data/dataset_expandido.csv}}: CSV con una fila por prompt final, que contiene los metadatos de cada entrada y el texto enviado al modelo. No incluye las respuestas generadas. Su función es facilitar el análisis con pandas, ya que el formato tabular resulta más cómodo para filtrar y agrupar datos que el JSON anidado.
-
-    \item \textbf{\nolinkurl{outputs/muestra_evaluacion_manual.json}}: subconjunto de resultados extraído por \nolinkurl{seleccionar_muestra.py} para la revisión cualitativa.
-
-    \item \textbf{\nolinkurl{outputs/tablas/}}: cuatro ficheros CSV generados por \nolinkurl{analisis_resultados.py} con los agregados por modelo, dominio, tipo de discapacidad y combinación modelo~×~dominio.
-
-    \item \textbf{\nolinkurl{docs/imagenes/}}: cuatro figuras PNG generadas por \nolinkurl{analisis_resultados.py} con las visualizaciones comparativas.
-\end{itemize}
+Su utilidad principal es facilitar el análisis con pandas, ya que el formato tabular resulta más cómodo para filtrar y agrupar datos que el JSON anidado.
 
 La Tabla~\ref{tab:scripts_principales} resume los scripts principales del proyecto con sus entradas, salidas y responsabilidades.
 
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabular}{p{4cm}p{2.5cm}p{3.5cm}p{3.5cm}}
+\begin{tabular}{p{3.8cm}p{2.4cm}p{3.3cm}p{3.3cm}}
 \hline
 \textbf{Script} & \textbf{Entrada} & \textbf{Salida} & \textbf{Responsabilidad} \\
 \hline
@@ -1522,32 +1622,46 @@ En este capítulo se han descrito las decisiones de implementación más relevan
 %----------
 \chapter{Evaluación y resultados}
 
+%--
+% Introducción
+%-
 \section{Introducción}
+Este capítulo recoge los resultados obtenidos en el experimento. En total, se han generado y evaluado 3.200 respuestas, correspondientes a 800 prompts finales por cada uno de los cuatro modelos. Para el análisis de sesgo, estas respuestas se agrupan en 400 unidades de análisis agregadas, formadas por la combinación de 100 plantillas base y 4 modelos. Cada unidad compara una condición neutra con siete variantes que incorporan referencias a distintos tipos de discapacidad.
 
-Este capítulo recoge los resultados obtenidos en el experimento. En total, se han generado y evaluado 3.200 respuestas, 800 por modelo, distribuidas en las 400 combinaciones de prompt y modelo del diseño experimental.
+Los resultados se presentan en dos bloques. En primer lugar, se muestran los resultados de la evaluación automática, basada en un LLM usado como evaluador, el análisis de sentimiento y la longitud de las respuestas. En segundo lugar, se recoge la revisión manual de una muestra de casos extremos o con alta degradación en la dimensión de ausencia de estereotipo. La interpretación comparativa de estos resultados se desarrolla en el capítulo siguiente.
 
-Los resultados se presentan en dos bloques. En primer lugar, se muestran los resultados de la evaluación automática, basada en el juez LLM, el análisis de sentimiento y la longitud de las respuestas. En segundo lugar, se recoge la revisión manual de una muestra de casos extremos. La interpretación comparativa de estos resultados se desarrolla en el capítulo siguiente.
-
+%--
+% Diseño de la evaluación
+%-
 \section{Diseño de la evaluación}
 
-El experimento se ejecuta sobre un dataset de 100 plantillas de prompts contrafactuales, con 8 variantes por plantilla: una variante neutra y siete variantes con distintos tipos de discapacidad. Esto da lugar a 800 prompts finales.
+El experimento se ejecuta sobre un dataset de 100 plantillas base. Siguiendo un enfoque de evaluación contrafactual, cada plantilla se amplía con 8 variantes: una variante neutra y siete variantes con distintos tipos de discapacidad.
 
-Los prompts se ejecutan en cuatro modelos: Llama 3.1 8B Instruct, RigoChat 7B v2, Gemini 2.5 Flash y Salamandra 7B Instruct. El total de respuestas generadas es de 3.200, a las que se suman otras 3.200 evaluaciones realizadas por el juez LLM.
+Los prompts se ejecutan en cuatro modelos: Llama 3.1 8B Instruct, RigoChat 7B v2, Gemini 2.5 Flash y Salamandra 7B Instruct. El total de respuestas generadas es de 3.200, y cada una de ellas fue evaluada por el juez LLM. Posteriormente, estas evaluaciones individuales se agruparon en 400 evaluaciones agregadas para calcular los deltas contrafactuales.
 
+%--
+% Dataset utilizado
+%-
 \section{Dataset utilizado}
 
+% Distribución por dominios
 \subsection{Distribución por dominios}
 
-El dataset presenta una distribución equilibrada entre dominios, con 20 prompts base por dominio: empleo, educación, salud, administración y ocio.
+El dataset presenta una distribución equilibrada entre dominios, con 20 plantillas base por dominio: empleo, educación, salud, administración y ocio.
 
+% Distribución por tipo de discapacidad
 \subsection{Distribución por tipo de discapacidad}
 
 Cada prompt base cuenta con 7 variantes de discapacidad: física, visual parcial, visual completa, auditiva parcial, auditiva completa, intelectual y cognitiva. Todas las variantes están igualmente representadas en el dataset, con 100 ocurrencias de cada tipo por modelo.
 
+% Prompts neutros y prompts con discapacidad
 \subsection{Prompts neutros y prompts con discapacidad}
 
 De las 800 variantes totales por modelo, 100 corresponden a la condición neutra, sin referencia a discapacidad, y 700 corresponden a condiciones con referencia a algún tipo de discapacidad.
 
+%--
+% Modelos evaluados
+%-
 \section{Modelos evaluados}
 
 Los cuatro modelos se ejecutaron con los mismos parámetros de generación para garantizar la comparabilidad: temperatura 0,1 y top-p 0,95. La penalización de repetición en los modelos locales fue de 1,1 para Llama 3.1 8B Instruct y Salamandra 7B Instruct, y de 1,15 para RigoChat 7B v2. En la Tabla~\ref{tab:modelos_parametros} se presentan los detalles técnicos de cada modelo.
@@ -1568,6 +1682,9 @@ Salamandra 7B Instruct & 7.000 M & Local (HF) & 8k tokens \\
 \label{tab:modelos_parametros}
 \end{table}
 
+%--
+% Ejecución
+%-
 \section{Ejecución}
 
 El experimento se ejecutó en el servidor de cómputo del grupo de investigación durante aproximadamente 12 horas. Para garantizar la continuidad de la ejecución más allá del cierre de sesión de SSH, se inició el proceso con \texttt{nohup} en segundo plano, guardando el progreso en \texttt{outputs/experimento.log} y salvando los resultados en el fichero \texttt{salidas.json} tras cada evaluación.
@@ -1576,10 +1693,14 @@ El mecanismo de checkpoint resultó necesario porque el experimento sufrió dos 
 
 La decisión de iterar primero por modelo y después por prompt, en lugar del orden inverso, fue importante para evitar la competencia por VRAM entre los modelos locales. Con el orden inverso, dos modelos distintos podían cargarse en la GPU simultáneamente y provocar errores de memoria. Procesando todos los prompts de un modelo antes de cargar el siguiente, la VRAM disponible se aprovecha por completo en cada fase.
 
-Al finalizar, el sistema había generado exactamente 400 evaluaciones, correspondientes a 100 prompts por 4 modelos. Cada evaluación incluye las respuestas a las 8 variantes, las métricas automáticas y los deltas contrafactuales.
+Al finalizar, el sistema había generado exactamente 400 evaluaciones agregadas, correspondientes a 100 plantillas base por 4 modelos. Cada evaluación agregada incluye las respuestas a las 8 variantes, las métricas automáticas y los deltas contrafactuales.
 
+%--
+% Resultados automáticos
+%-
 \section{Resultados automáticos}
 
+% Cobertura y tasa de rechazo
 \subsection{Cobertura y tasa de rechazo}
 
 El experimento completó el 100\% de las evaluaciones previstas, con una tasa de rechazo global del 0,1\%. Los tres rechazos registrados corresponden al mismo prompt, \texttt{EDU\_014}, que pedía redactar una nota de orientación sobre relaciones de pareja a un estudiante de 16 años. Los rechazos se produjeron en Gemini 2.5 Flash, que bloqueó la consulta por contener referencias a menores y sexualidad, aunque el contexto fuera educativo. El resto de modelos respondió a todos los prompts sin excepción. La Tabla~\ref{tab:cobertura} resume la cobertura por modelo.
@@ -1602,17 +1723,21 @@ Salamandra 7B Instruct & 800 & 0 & 0,0\% \\
 \label{tab:cobertura}
 \end{table}
 
+% Sesgo detectado por modelo
 \subsection{Sesgo detectado por modelo}
 
-El índice de sesgo, definido en el capítulo de diseño (sección~\ref{sec:eval_automatica}), agrega las caídas en tono respetuoso y ausencia de estereotipo, normalizadas al intervalo $[-1, 1]$. Un valor inferior a $-0{,}2$ clasifica el resultado como sesgo detectable. Este umbral se aplica sobre la variante más desfavorable de cada par (prompt, modelo).
+El índice de sesgo, definido en el capítulo de diseño (sección 4.8.1), combina los deltas obtenidos en las dimensiones de tono respetuoso y ausencia de estereotipo. Para ello, se suman ambos valores y se dividen entre 10, obteniendo así un indicador único que permite comparar la degradación conjunta en estas dos dimensiones.
 
-Bajo este criterio, los tres modelos locales muestran sesgo en entre el 85\% y el 88\% de los prompts, mientras que Gemini 2.5 Flash lo hace en el 11\%. La Tabla~\ref{tab:sesgo_modelo} recoge los valores por modelo.
+En este trabajo, un valor inferior a -0,2 se considera un caso de sesgo detectable según el criterio definido. Este umbral se aplica a cada unidad de análisis agregada, formada por un par (plantilla base, modelo) y sus variantes: una condición neutra y siete condiciones con referencia a discapacidad.
+
+Bajo este criterio, los tres modelos locales presentan casos de sesgo detectable en entre el 85\% y el 88\% de las unidades agregadas evaluadas para cada modelo, mientras que Gemini 2.5 Flash lo hace en el 11\%. La Tabla~\ref{tab:sesgo_modelo} recoge los valores por modelo.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{P{4cm}P{2.5cm}P{2.5cm}P{2.5cm}}
 \hline
-\textbf{Modelo} & \textbf{Con sesgo} & \textbf{Sin sesgo} & \textbf{Tasa} \\
+\textbf{Con sesgo} & \textbf{Sin sesgo} & \textbf{Tasa}
+\\
 \hline
 Llama 3.1 8B Instruct & 88 & 12 & 88,0\% \\
 RigoChat 7B v2 & 87 & 13 & 87,0\% \\
@@ -1620,17 +1745,21 @@ Gemini 2.5 Flash & 11 & 89 & 11,0\% \\
 Salamandra 7B Instruct & 85 & 15 & 85,0\% \\
 \hline
 \end{tabular}
-\caption{Prompts con sesgo detectado por modelo, sobre 100 prompts por modelo}
+\caption{Unidades agregadas con sesgo detectable por modelo, sobre 100 unidades por modelo}
 \label{tab:sesgo_modelo}
 \end{table}
 
+En el caso de Gemini 2.5 Flash, los resultados deben interpretarse con cierta cautela, ya que este modelo también se utiliza como evaluador automático en el experimento. Aunque el juez no recibe información sobre el modelo que generó cada respuesta, esta coincidencia se considera una limitación metodológica del estudio.
+
+% Calidad base de los modelos
 \subsection{Calidad base de los modelos}
 
 Antes de analizar la degradación, se calcula la calidad de cada modelo en la condición neutra, sin referencia a discapacidad. Esta condición sirve como línea base para calcular los deltas contrafactuales. La Tabla~\ref{tab:calidad_base} muestra las puntuaciones absolutas del juez LLM y la longitud media en palabras para cada modelo.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{P{3.5cm}P{1.6cm}P{1.6cm}P{1.6cm}P{1.6cm}P{2cm}P{1.8cm}}
+\footnotesize
+\begin{tabular}{P{3cm}P{1.4cm}P{1.4cm}P{1.4cm}P{1.4cm}P{1.7cm}P{1.5cm}}
 \hline
 \textbf{Modelo} & \textbf{Relev.} & \textbf{Exact.} & \textbf{Utilid.} & \textbf{Tono} & \textbf{Aus. est.} & \textbf{Long. (pal.)} \\
 \hline
@@ -1646,6 +1775,7 @@ Salamandra 7B & 3,67 & 4,22 & 3,06 & 4,73 & 4,83 & 129 \\
 
 Gemini obtiene las puntuaciones más altas en todas las dimensiones y produce respuestas más extensas, con una media de 828 palabras. Salamandra, en cambio, obtiene la puntuación de utilidad más baja, con 3,06, y genera las respuestas más breves, con una media de 129 palabras.
 
+% Deltas por dimensión
 \subsection{Deltas por dimensión}
 
 La Tabla~\ref{tab:delta_juez} muestra la diferencia media entre las métricas de las variantes con discapacidad y la condición neutra para cada modelo y cada dimensión del juez LLM. Un valor negativo indica que las respuestas con discapacidad fueron evaluadas peor en esa dimensión.
@@ -1666,17 +1796,19 @@ Salamandra 7B & $-0{,}64$ & $-0{,}96$ & $-0{,}66$ & $-0{,}56$ & $-1{,}44$ \\
 \label{tab:delta_juez}
 \end{table}
 
-La dimensión con mayor caída en los modelos locales es la ausencia de estereotipo, con valores cercanos a $-1{,}4$ puntos sobre una escala de 5. Gemini 2.5 Flash presenta deltas inferiores a 0,1 en valor absoluto en todas las dimensiones.
+La dimensión con mayor diferencia negativa en los modelos locales es la ausencia de estereotipo, con valores cercanos a $-1{,}4$ puntos sobre una escala de 1 a 5. Gemini 2.5 Flash presenta deltas inferiores a 0,1 en valor absoluto en todas las dimensiones.
 
+% Resultados por dominio
 \subsection{Resultados por dominio}
 
-La Tabla~\ref{tab:sesgo_dominio} recoge el porcentaje de prompts con sesgo detectado desglosado por dominio temático, agregando los cuatro modelos.
+La Tabla~\ref{tab:sesgo_dominio} recoge el porcentaje de unidades agregadas con sesgo
+detectable desglosado por dominio temático, agregando los cuatro modelos.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{P{4cm}P{3cm}P{3cm}P{3cm}}
 \hline
-\textbf{Dominio} & \textbf{Con sesgo} & \textbf{Total} & \textbf{Porcentaje} \\
+\textbf{Dominio} & \textbf{Con sesgo detectable} & \textbf{Total} & \textbf{Porcentaje} \\
 \hline
 Empleo & 60 & 80 & 75,0\% \\
 Educación & 56 & 80 & 70,0\% \\
@@ -1685,12 +1817,13 @@ Ocio & 52 & 80 & 65,0\% \\
 Salud & 47 & 80 & 58,8\% \\
 \hline
 \end{tabular}
-\caption{Prompts con sesgo detectado por dominio temático, sobre 80 combinaciones por dominio}
+\caption{Unidades agregadas con sesgo detectable por dominio temático, sobre 80 unidades por dominio}
 \label{tab:sesgo_dominio}
 \end{table}
 
-El dominio con mayor porcentaje de sesgo detectado es empleo, con un 75\%, seguido de educación y administración, ambos con un 70\%. El dominio con menor porcentaje es salud, con un 58,8\%.
+El dominio con mayor porcentaje de unidades agregadas con sesgo detectable es empleo, con un 75\%, seguido de educación y administración, ambos con un 70\%. El dominio con menor porcentaje es salud, con un 58,8\%.
 
+% Resultados por tipo de discapacidad
 \subsection{Resultados por tipo de discapacidad}
 
 La Tabla~\ref{tab:sesgo_discapacidad} muestra el delta medio en la dimensión de ausencia de estereotipo para cada tipo de discapacidad, agregando todos los modelos y todos los dominios.
@@ -1710,12 +1843,13 @@ Física & $-0{,}92$ & 197 / 400 (49,3\%) \\
 Auditiva parcial & $-0{,}84$ & 195 / 400 (48,8\%) \\
 \hline
 \end{tabular}
-\caption{Delta medio en ausencia de estereotipo por tipo de discapacidad, sobre 400 combinaciones}
+\caption{Delta medio en ausencia de estereotipo por tipo de discapacidad, sobre 400 comparaciones por tipo}
 \label{tab:sesgo_discapacidad}
 \end{table}
 
 Las mayores caídas aparecen en discapacidad cognitiva e intelectual, con valores de $-1{,}37$ y $-1{,}34$ respectivamente. La menor degradación aparece en discapacidad auditiva parcial, con un valor de $-0{,}84$.
 
+% Diferencia de longitud
 \subsection{Diferencia de longitud}
 
 La Tabla~\ref{tab:delta_longitud} muestra la diferencia media en número de palabras entre las respuestas con discapacidad y la condición neutra.
@@ -1738,6 +1872,9 @@ Salamandra 7B Instruct & $+14{,}9$ palabras & 321 / 700 (45,9\%) \\
 
 Gemini 2.5 Flash es el modelo que más incrementa la longitud de las respuestas cuando aparece una referencia a la discapacidad, con una diferencia media de 50,5 palabras. En los modelos locales, el incremento medio es menor.
 
+%--
+% Resultados visuales
+%-
 \section{Resultados visuales}
 
 Las Figuras~\ref{fig:tasa_sesgo_modelo}, \ref{fig:dims_juez_modelo}, \ref{fig:heatmap_modelo_dominio} y \ref{fig:delta_discapacidad} resumen los resultados cuantitativos de las secciones anteriores. Han sido generadas por \nolinkurl{scripts/analisis_resultados.py} a partir de los 400 resultados almacenados en \texttt{outputs/salidas.json}. Las tablas CSV completas se guardan en \texttt{outputs/tablas/}.
@@ -1745,14 +1882,14 @@ Las Figuras~\ref{fig:tasa_sesgo_modelo}, \ref{fig:dims_juez_modelo}, \ref{fig:he
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.82\textwidth]{fig_tasa_sesgo_por_modelo.png}
-\caption{Tasa de sesgo detectado por modelo. Los tres modelos locales superan el 85\%, mientras que Gemini 2.5 Flash se sitúa en el 11\%.}
+\caption{Tasa de unidades agregadas con sesgo detectable por modelo. Los tres modelos locales superan el 85\%, mientras que Gemini 2.5 Flash se sitúa en el 11\%.}
 \label{fig:tasa_sesgo_modelo}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{fig_dims_juez_por_modelo.png}
-\caption{Delta medio en cada dimensión del juez LLM por modelo. La ausencia de estereotipo concentra la mayor caída en los modelos locales; Gemini no muestra degradación apreciable en ninguna dimensión.}
+\caption{Delta medio en cada dimensión del juez LLM por modelo. La ausencia de estereotipo concentra la mayor caída en los modelos locales; Gemini no muestra degradación apreciable en ninguna dimensión, muestra deltas muy reducidos en todas las dimensiones.}
 \label{fig:dims_juez_modelo}
 \end{figure}
 
@@ -1766,20 +1903,26 @@ Las Figuras~\ref{fig:tasa_sesgo_modelo}, \ref{fig:dims_juez_modelo}, \ref{fig:he
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.82\textwidth]{fig_delta_por_discapacidad.png}
-\caption{Delta medio en ausencia de estereotipo por tipo de discapacidad. Las discapacidades cognitiva e intelectual generan la mayor degradación; la auditiva parcial, la menor.}
+\caption{Delta medio en ausencia de estereotipo por tipo de discapacidad. Las discapacidades cognitivas e intelectuales generan la mayor degradación; la auditiva parcial, la menor.}
 \label{fig:delta_discapacidad}
 \end{figure}
 
+%--
+% Evaluación manual
+%-
 \section{Evaluación manual}
 
+% Rúbrica utilizada
 \subsection{Rúbrica utilizada}
 
-La revisión manual aplica la misma rúbrica de cinco dimensiones que el juez LLM: relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipo, puntuadas de 1 a 5. Esto permite comparar ambas evaluaciones en los casos revisados.
+La revisión manual aplica la misma rúbrica de cinco dimensiones que el evaluador automático basado en un LLM o juaz: relevancia, exactitud, utilidad, tono respetuoso y ausencia de estereotipos, puntuadas de 1 a 5. Esto permite comparar ambas evaluaciones en los casos revisados.
 
+% Selección de la muestra
 \subsection{Selección de la muestra}
 
-Para la revisión cualitativa se seleccionaron los 20 casos con mayor delta negativo en ausencia de estereotipo, cubriendo todos los modelos y los dominios más afectados. Los criterios de selección priorizaron los casos en que el delta fue de $-4$ o inferior, es decir, la máxima caída posible en la escala, añadiendo un número proporcional de casos de cada modelo para asegurar representatividad.
+Para la revisión cualitativa se seleccionaron los 20 casos con mayor delta negativo en ausencia de estereotipo, cubriendo todos los modelos y los dominios más afectados. Los criterios de selección priorizaron los casos en que el delta fue de $-4$ o inferior, es decir, la máxima diferencia negativa posible en la escala, e incluyeron casos de cada modelo para disponer de una revisión cualitativa inicial del comportamiento observado.
 
+% Resultados de la revisión manual
 \subsection{Resultados de la revisión manual}
 
 La revisión de los 20 casos seleccionados permitió identificar cuatro patrones principales de sesgo.
@@ -1792,11 +1935,14 @@ La revisión de los 20 casos seleccionados permitió identificar cuatro patrones
 
 \textbf{Patrón 4 - Introducción de advertencias implícitas.} En varios prompts del dominio de empleo, modelos como RigoChat añadían formulaciones del tipo \textit{«teniendo en cuenta sus limitaciones»} o \textit{«adaptado a sus capacidades»}, sin que el prompt solicitara ninguna adaptación.
 
-En cuanto a la concordancia entre la evaluación humana y el juez LLM, en 16 de los 20 casos revisados ambas evaluaciones coincidieron en clasificar el resultado como sesgado o no sesgado, lo que supone un 80\% de acuerdo.
+En cuanto a la concordancia entre la evaluación humana y el juez LLM, en 16 de los 20 casos revisados ambas evaluaciones coincidieron en clasificar el resultado como sesgado o no sesgado, lo que supone un 80\% de acuerdo. Este porcentaje debe interpretarse como una comprobación cualitativa inicial de la coherencia del juez automático, no como una validación estadística de sus resultados.
 
+%--
+% Resumen de resultados
+%-
 \section{Resumen de resultados}
 
-Los resultados muestran diferencias claras entre modelos, dominios y tipos de discapacidad. Los tres modelos locales presentan una tasa de sesgo detectado superior al 85\%, mientras que Gemini 2.5 Flash se sitúa en el 11\%. La dimensión más afectada es la ausencia de estereotipo. Por dominio, empleo es el más afectado. Por tipo de discapacidad, las mayores caídas aparecen en discapacidad cognitiva e intelectual.
+Los resultados muestran diferencias claras entre modelos, dominios y tipos de discapacidad. Los tres modelos locales presentan una tasa de unidades agregadas con sesgo detectable superior al 85\%, mientras que Gemini 2.5 Flash se sitúa en el 11\%. La dimensión más afectada es la ausencia de estereotipo. Por dominio, el empleo es el más afectado. Por tipo de discapacidad, Las mayores diferencias negativas aparecen en discapacidad cognitiva e intelectual.
 
 La revisión manual confirma que los sesgos no aparecen principalmente como lenguaje ofensivo directo, sino como rechazos indebidos, reducción de detalle, sobreencuadre de accesibilidad o advertencias implícitas no solicitadas.
 
@@ -1806,10 +1952,16 @@ La revisión manual confirma que los sesgos no aparecen principalmente como leng
 %----------
 \chapter{Análisis de resultados}
 
+%--
+% Introducción
+%-
 \section{Introducción}
 
 Este capítulo interpreta los resultados presentados en el capítulo anterior. El objetivo no es repetir las tablas, sino analizar qué significan los resultados obtenidos, qué diferencias aparecen entre modelos, dominios y tipos de discapacidad, y qué limitaciones deben tenerse en cuenta al valorar el experimento.
 
+%--
+% Comparación entre modelos
+%-
 \section{Comparación entre modelos}
 
 Los resultados permiten distinguir dos perfiles de comportamiento claramente diferenciados.
@@ -1820,8 +1972,11 @@ RigoChat y Salamandra fueron desarrollados específicamente para el español, pe
 
 Por otro lado, Gemini 2.5 Flash presenta un perfil diferente. Su tasa de sesgo detectado es del 11\%, y sus deltas de calidad son prácticamente nulos en todas las dimensiones del juez LLM. La diferencia más plausible entre Gemini y los modelos locales no parece estar en el tamaño del modelo, sino en los procesos de alineamiento y revisión de seguridad aplicados durante su desarrollo.
 
-Esta interpretación debe hacerse con prudencia. El experimento permite observar diferencias claras entre modelos, pero no permite demostrar de forma causal qué parte concreta del entrenamiento o del alineamiento explica esas diferencias.
+Esta interpretación debe hacerse con prudencia. El experimento permite observar diferencias claras entre modelos, pero no permite demostrar causalmente qué parte concreta del entrenamiento o del alineamiento las explica.
 
+%--
+% Análisis por dominio
+%-
 \section{Análisis por dominio}
 
 El dominio de empleo es el más afectado, con un 75\% de prompts con sesgo detectado. Este resultado es coherente con trabajos previos que señalan los procesos de contratación, evaluación laboral y selección automatizada como contextos especialmente sensibles para las personas con discapacidad \cite{kamruzzaman2025disclosure, phutane2025ableist}.
@@ -1832,16 +1987,22 @@ Educación y administración también presentan porcentajes elevados, ambos con 
 
 El dominio de salud es el menos afectado, con un 58,8\%. Una posible explicación es que los prompts médicos están más acotados y suelen requerir respuestas más procedimentales, lo que deja menos margen para variaciones no solicitadas. Aun así, el porcentaje sigue siendo elevado y no debe interpretarse como ausencia de riesgo.
 
+%--
+% Análisis por tipo de discapacidad
+%-
 \section{Análisis por tipo de discapacidad}
 
-Las discapacidades cognitiva e intelectual son las que presentan mayor degradación en la dimensión de ausencia de estereotipo, con caídas medias de $-1{,}37$ y $-1{,}34$ respectivamente. Además, son los dos tipos de discapacidad con mayor porcentaje de casos negativos.
+Las discapacidades cognitivas e intelectuales son las que presentan mayor degradación en la dimensión de ausencia de estereotipo, con caídas medias de $-1{,}37$ y $-1{,}34$ respectivamente. Además, son los dos tipos de discapacidad con mayor porcentaje de casos negativos.
 
 Este resultado sugiere que los modelos tienden a activar con más fuerza asociaciones relacionadas con dependencia, menor autonomía o necesidad de tutela cuando aparece una referencia a discapacidad cognitiva o intelectual. Este comportamiento es especialmente problemático porque puede llevar a respuestas más paternalistas, más simples de lo necesario o menos útiles.
 
-Las discapacidades sensoriales y físicas también presentan degradación, aunque con valores algo menores. La discapacidad auditiva parcial es la que muestra menor caída, con $-0{,}84$. Una posible explicación es que, en tareas escritas, los modelos perciben la audición reducida como menos relevante para la situación planteada y, por tanto, introducen menos cambios en la respuesta.
+Las discapacidades sensoriales y físicas también presentan degradación, aunque con valores algo menores. La discapacidad auditiva parcial es la que muestra la menor caída, con $-0{,}84$. Una posible explicación es que, en tareas escritas, los modelos perciben la audición reducida como menos relevante para la situación planteada y, por tanto, introducen menos cambios en la respuesta.
 
 En cualquier caso, todos los tipos de discapacidad presentan valores negativos en la dimensión de ausencia de estereotipo. Esto indica que el problema no se limita a una sola categoría, aunque afecta con mayor intensidad a las discapacidades cognitivas e intelectuales.
 
+%--
+% Patrones observados
+%-
 \section{Patrones observados}
 
 La revisión manual permite interpretar mejor los resultados automáticos. Los sesgos detectados no aparecen normalmente como insultos o lenguaje abiertamente ofensivo, sino como diferencias más sutiles en la forma de responder.
@@ -1856,18 +2017,24 @@ El cuarto patrón es la introducción de advertencias implícitas. En algunos pr
 
 Estos patrones coinciden con la idea de que el sesgo hacia las personas con discapacidad en modelos generativos no siempre aparece como toxicidad directa, sino como paternalismo, reducción de utilidad, sobreprotección o tratamiento diferencial.
 
+%--
+% Interpretación general
+%-
 \section{Interpretación general}
 
 Los resultados apoyan la hipótesis de partida: los modelos de IA generativa en español modifican su comportamiento cuando una consulta incluye una referencia explícita a la discapacidad.
 
 La dimensión más afectada en los modelos locales es la ausencia de estereotipo. Esto indica que los modelos no necesariamente producen respuestas ofensivas, pero sí introducen asociaciones o enfoques que presentan la discapacidad de forma menos neutral que en la condición base.
 
-También se observa que los modelos especializados en español no son necesariamente más equitativos que un modelo multilingüe general. Esto es importante porque muestra que la adaptación lingüística no sustituye a la evaluación específica de sesgos, accesibilidad e inclusión.
+También se observa que los modelos especializados en español no son necesariamente más equitativos que un modelo multilingüe general. Esto es importante porque muestra que la adaptación lingüística no sustituye a la evaluación específica de sesgos, de accesibilidad e inclusión.
 
 El caso de Gemini 2.5 Flash debe interpretarse con matices. Aunque presenta una tasa de sesgo mucho menor en las métricas de calidad, también genera respuestas más largas cuando aparece una referencia a discapacidad. Esta diferencia de longitud puede interpretarse como una forma de sobrecompensación: el modelo añade más explicaciones, cautelas o información adicional cuando detecta discapacidad. No se trata del mismo tipo de sesgo negativo que aparece en los modelos locales, pero tampoco es un comportamiento completamente neutro.
 
 En conjunto, los resultados muestran que el sesgo hacia las personas con discapacidad en modelos de IA generativa es un problema detectable y cuantificable dentro del conjunto experimental analizado. Además, muestran que este sesgo puede adoptar formas diferentes según el modelo, el dominio y el tipo de discapacidad.
 
+%--
+% Amenazas a la validez
+%-
 \section{Amenazas a la validez}
 
 Es importante tener en cuenta varias limitaciones que pueden afectar a la interpretación de los resultados.
@@ -1876,19 +2043,21 @@ La primera limitación es la variabilidad de los modelos. Aunque se utilizó una
 
 La segunda limitación está relacionada con el análisis de sentimiento. El modelo robertuito es una de las opciones más adecuadas disponibles para español, pero fue entrenado principalmente sobre datos de Twitter. Esto puede afectar a su comportamiento cuando analiza textos más formales, como los generados en este experimento.
 
-La tercera limitación afecta al juez LLM. Gemini 2.5 Flash puede tener sus propios sesgos o preferencias de estilo, y además pertenece al mismo proveedor que uno de los modelos evaluados. Aunque el juez opera en modo ciego, esta posible fuente de sesgo no puede eliminarse por completo.
+La tercera limitación afecta al juez LLM. Gemini 2.5 Flash puede tener sus propios sesgos o preferencias de estilo y, además, pertenece al mismo proveedor que uno de los modelos evaluados. Aunque el juez opera en modo ciego, sin información sobre qué modelo generó cada respuesta, esta posible fuente de sesgo no puede eliminarse por completo. Por tanto, los resultados obtenidos por Gemini como modelo evaluado deben interpretarse con especial cautela, ya que podrían estar influidos por la elección del propio evaluador automático.
 
 La cuarta limitación es el carácter sintético del dataset. Los prompts fueron redactados siguiendo criterios de diseño experimental y no proceden de consultas reales de usuarios. Esto permite controlar mejor las variables, pero puede limitar la generalización de los resultados a situaciones reales de uso.
 
-La quinta limitación es la revisión manual. Aunque se revisó una muestra de casos extremos, no se realizó una evaluación humana a gran escala ni con participación directa de personas con discapacidad. Por tanto, la revisión manual sirve como validación cualitativa inicial, pero no sustituye una evaluación más amplia con usuarios y expertos.
-
+La quinta limitación es la revisión manual. Aunque se revisó una muestra de casos extremos, no se realizó una evaluación humana a gran escala ni con participación directa de personas con discapacidad. Por tanto, la revisión manual sirve como comprobación cualitativa inicial, pero no permite validar estadísticamente el comportamiento del juez LLM ni sustituye una evaluación más amplia con usuarios y expertos.
+%--
+% Conclusiones
+%-
 \section{Conclusiones}
 
 El análisis de los resultados muestra que los modelos evaluados no responden siempre de la misma forma cuando una consulta incluye una referencia a discapacidad. En los modelos locales, la diferencia aparece de forma sistemática y afecta especialmente a la dimensión de ausencia de estereotipo.
 
 El hallazgo más relevante es la diferencia entre los modelos locales, con tasas de sesgo entre el 85\% y el 88\%, y Gemini 2.5 Flash, con un 11\%. Esta diferencia no puede explicarse únicamente por el tamaño de los modelos y apunta a la importancia de los procesos de alineamiento, revisión y evaluación de sesgos.
 
-También destacan dos focos de mayor vulnerabilidad: el dominio de empleo y las discapacidades cognitiva e intelectual. En estos casos, los modelos muestran más tendencia a introducir estereotipos, reducir detalle, añadir advertencias no solicitadas o tratar la discapacidad como un factor problemático.
+También destacan dos focos de mayor vulnerabilidad: el dominio de empleo y las discapacidades cognitivas e intelectuales. En estos casos, los modelos muestran más tendencia a introducir estereotipos, reducir el detalle, añadir advertencias no solicitadas o tratar la discapacidad como un factor problemático.
 
 Por tanto, los resultados deben interpretarse como una evaluación exploratoria. El trabajo permite observar diferencias de comportamiento entre modelos ante prompts con referencias a discapacidad, pero no constituye una auditoría completa de equidad de los modelos evaluados.
 
@@ -1897,14 +2066,52 @@ Por tanto, los resultados deben interpretarse como una evaluación exploratoria.
 %	PLANIFICACIÓN, PRESUPUESTO E IMPACTO
 %----------
 \chapter{Planificación y presupuesto}
+%--
+% Introducción
+%-
 \section{Introducción}
-En este capítulo se describe la planificación del trabajo, los costes estimados del proyecto y su impacto social y ético.
+En este capítulo se describe la planificación del trabajo, los costes estimados del proyecto, el entorno socioeconómico en el que se enmarca y su impacto social y ético.
 
+%--
+% Planificación del proyecto
+%-
 \section{Planificación del proyecto}
 El desarrollo del trabajo se organizó en cinco fases, resumidas en la Tabla~\ref{tab:fases}. La primera fue la revisión bibliográfica y la delimitación del problema, con una duración aproximada de tres semanas: se revisaron los artículos de referencia, se acotaron las preguntas de investigación y se definió el enfoque metodológico. A continuación se dedicaron cuatro semanas al diseño del dataset: se redactaron las 100 plantillas de prompts, se establecieron los dominios y tipos de discapacidad a incluir y se validó manualmente que todas las variantes generaban frases correctas.
 
-La fase más larga fue la de implementación del pipeline, con una duración aproximada de seis semanas. En este periodo se desarrolló el módulo de carga, los clientes de los cuatro modelos, los módulos de evaluación automática y el orquestador con soporte de checkpoint. Después se procedió a la ejecución del experimento y al análisis de los resultados, con una duración de unas tres semanas. La redacción de la memoria se realizó en paralelo a lo anterior y se intensificó en las últimas cuatro semanas.
+La fase más larga fue la de implementación del pipeline, con una duración aproximada de seis semanas. En este periodo se desarrollaron el módulo de carga, los clientes de los cuatro modelos, los módulos de evaluación automática y el orquestador con soporte de checkpoint. Después se procedió a la ejecución del experimento y al análisis de los resultados, con una duración de unas tres semanas. La redacción de la memoria se realizó en paralelo a lo anterior y se intensificó en las últimas cuatro semanas.
 
+La Figura~\ref{fig:gantt} muestra el diagrama de Gantt con la planificación temporal de las cinco fases a lo largo de las 16 semanas del proyecto.
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{ganttchart}[
+    hgrid,
+    vgrid,
+    time slot format=simple,
+    x unit=0.72cm,
+    y unit title=0.7cm,
+    y unit chart=0.7cm,
+    bar height=0.6,
+    bar/.append style={fill=blue!40},
+    title/.style={fill=gray!20},
+]{1}{16}
+\gantttitle{Semana}{16} \\
+\gantttitlelist{1,...,16}{1} \\
+\ganttbar{Revisión bibliográfica}{1}{3} \\
+\ganttbar{Diseño del dataset}{4}{7} \\
+\ganttbar{Implementación del pipeline}{8}{13} \\
+\ganttbar{Ejecución y análisis}{14}{16} \\
+\ganttbar{Redacción de la memoria}{1}{16}
+\end{ganttchart}%
+}
+\caption{Diagrama de Gantt con la planificación temporal del proyecto}
+\label{fig:gantt}
+\end{figure}
+
+%--
+% Fases de trabajo
+%-
 \section{Fases de trabajo}
 \begin{table}[H]
 \centering
@@ -1925,6 +2132,9 @@ Redacción de la memoria & 4 semanas (paralela) & Escritura y revisión \\
 \label{tab:fases}
 \end{table}
 
+%--
+% Hitos y entregables
+%-
 \section{Hitos y entregables}
 A lo largo de las fases descritas en la sección anterior, el proyecto produce una serie de entregables concretos cuya consecución marca los hitos principales del trabajo. La Tabla~\ref{tab:hitos} los recoge junto con la fase a la que pertenecen.
 
@@ -1956,45 +2166,74 @@ Memoria del TFG completada & Redacción & \nolinkurl{docs/memoria_borrador.tex} 
 \label{tab:hitos}
 \end{table}
 
-Los hitos más críticos del proyecto son la finalización del dataset y la ejecución completa del experimento, ya que de ellos dependen el análisis y la redacción. El diseño del dataset fue el hito que más iteraciones requirió: las plantillas se ajustaron varias veces para garantizar que la sustitución del marcador generaba frases gramaticalmente correctas y contextualmente coherentes. La ejecución del experimento fue el hito más costoso en tiempo de cómputo, con aproximadamente 20 horas de ejecución en el servidor para completar las 400 combinaciones.
+Los hitos más críticos del proyecto son la finalización del dataset y la ejecución completa del experimento, ya que de ellos dependen el análisis y la redacción. El diseño del dataset fue el hito que más iteraciones requirió: las plantillas se ajustaron varias veces para garantizar que la sustitución del marcador generaba frases gramaticalmente correctas y contextualmente coherentes. La ejecución del experimento fue el hito más costoso en tiempo de cómputo, con aproximadamente 12 horas de ejecución en el servidor para completar las 400 combinaciones.
 
+%--
+% Presupuesto
+%-
 \section{Presupuesto}
-El presupuesto se desglosa en tres conceptos: el trabajo personal, la infraestructura computacional y los servicios externos de API.
+El presupuesto se desglosa en cuatro conceptos: las horas de desarrollo, el uso de infraestructura de cómputo (GPU), el coste de la API de Gemini y las herramientas de software empleadas. Para cada concepto se distingue entre el \textbf{coste real estimado}, es decir, lo que costaría desarrollar el proyecto si todos los recursos se contrataran a precio de mercado, y el \textbf{coste imputado al proyecto}, es decir, lo que efectivamente ha supuesto un desembolso dentro de este TFG.
 
-En cuanto al trabajo personal, se estiman unas 300 horas de dedicación a lo largo de las 16 semanas del proyecto. Aplicando un coste de 15 €/h (coste orientativo de un estudiante de investigación), el total asciende a 4.500 €.
+En cuanto a las horas de desarrollo, se estiman unas 300 horas de dedicación a lo largo de las 16 semanas del proyecto. Aplicando un coste de 15 €/h (coste orientativo de un estudiante en prácticas o investigador en formación), el coste asciende a 4.500 €, tanto en términos reales como imputados, ya que representa el esfuerzo efectivamente dedicado al trabajo.
 
-La infraestructura computacional tiene un coste prácticamente nulo para este trabajo, ya que el experimento se ejecutó en un servidor del grupo de investigación de la tutora. Las GPUs NVIDIA L4 utilizadas son parte de esa infraestructura compartida.
+El uso de infraestructura de cómputo corresponde a las aproximadamente 12 horas de ejecución del experimento en un servidor con cuatro GPU NVIDIA L4 (92 GB de VRAM en total) del grupo de investigación de la tutora. Tomando como referencia el precio de instancias cloud equivalentes con GPU L4 (en torno a 0,70-0,80 €/hora por GPU), el coste real estimado de ese cómputo rondaría los 35-40 €. Sin embargo, al tratarse de infraestructura compartida del grupo de investigación, el \textbf{coste imputado al proyecto es de 0 €}.
 
-En cuanto a los servicios externos, el único coste real son las llamadas a la API de Gemini 2.5 Flash: aproximadamente 6.400 en total (3.200 para la generación de respuestas y 3.200 para el juez LLM). A un coste medio de 0,0015 €/llamada, el total es de unos 10 €. La Tabla~\ref{tab:presupuesto} desglosa el presupuesto completo.
+En cuanto a la API de Gemini 2.5 Flash, se realizaron aproximadamente 6.400 llamadas en total (3.200 para la generación de respuestas y 3.200 para el juez LLM). A un coste medio de 0,0015 €/llamada, el coste real es de unos 10 €, y al haberse pagado directamente con la cuenta del proyecto, coincide con el coste imputado.
+
+Por último, todas las herramientas de software utilizadas (Python, PyTorch, Hugging Face Transformers, pysentimiento, pandas, matplotlib, \LaTeX{}, Git) son de código abierto y de uso gratuito, por lo que su coste, tanto real como imputado, es de 0 €.
+
+La Tabla~\ref{tab:presupuesto} resume el presupuesto completo.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{5cm}p{3cm}p{4cm}}
+\footnotesize
+\begin{tabular}{p{3.4cm}p{3cm}p{3.2cm}p{3.2cm}}
 \hline
-\textbf{Concepto} & \textbf{Cantidad} & \textbf{Coste estimado} \\
+\textbf{Concepto} & \textbf{Cantidad} & \textbf{Coste real estimado} & \textbf{Coste imputado} \\
 \hline
-Personal (estudiante) & 300 horas & 4.500 € \\
-Infraestructura computacional & --- & 0 € \\
-API Google Gemini & ~6.400 llamadas & ~10 € \\
+Horas de desarrollo & 300 horas & 4.500 € & 4.500 € \\
 \hline
-\textbf{Total} & & \textbf{~4.510 €} \\
+Uso de infraestructura/GPU & ~12 h (4× GPU L4) & ~35-40 € & 0 € (infraestructura compartida) \\
+\hline
+Coste API Gemini & ~6.400 llamadas & ~10 € & ~10 € \\
+\hline
+Herramientas de software & licencias open source & 0 € & 0 € \\
+\hline
+\textbf{Total} & & \textbf{~4.545-4.550 €} & \textbf{~4.510 €} \\
 \hline
 \end{tabular}
-\caption{Presupuesto estimado del proyecto}
+\caption{Presupuesto estimado del proyecto: coste real frente a coste imputado}
 \label{tab:presupuesto}
 \end{table}
 
+%--
+% Entorno socioeconómico
+%-
+\section{Entorno socioeconómico}
+El desarrollo de este TFG se enmarca en un contexto en el que los modelos de lenguaje en español, tanto de iniciativa pública (Salamandra) como privada (RigoChat), se están adoptando rápidamente en sectores como la administración pública, la educación o la atención al cliente. Esta adopción genera un mercado creciente en torno a la evaluación, auditoría y certificación de sistemas de IA, impulsado además por la entrada en vigor del Reglamento de Inteligencia Artificial de la Unión Europea \cite{aiact2024}, que exige a las organizaciones que desplieguen sistemas de alto riesgo evaluar y documentar los sesgos de sus modelos.
+
+En este contexto, la metodología desarrollada en este trabajo tiene un coste de adopción muy reducido: como muestra la Tabla~\ref{tab:presupuesto}, el coste imputado del experimento ha sido de apenas unos 4.510 €, la mayor parte correspondiente a horas de trabajo y no a infraestructura o licencias. Esto la hace especialmente accesible para perfiles con recursos limitados, como pequeñas empresas, administraciones locales o grupos de investigación, que podrían replicarla sobre sus propios modelos o casos de uso sin incurrir en costes elevados de infraestructura ni de herramientas propietarias.
+
+Desde el punto de vista del impacto económico potencial, detectar sesgos hacia las personas con discapacidad antes del despliegue de un sistema de IA permite evitar costes posteriores derivados de incidentes reputacionales, reclamaciones por discriminación o la necesidad de rediseñar el sistema una vez en producción. En este sentido, el coste de aplicar una evaluación como la propuesta en este trabajo es marginal en comparación con el coste de no detectar estos sesgos antes de que el sistema llegue a las personas usuarias finales.
+
+%--
+% Impacto social y ético
+%-
 \section{Impacto social y ético}
-Este trabajo puede tener un impacto positivo en varios sentidos. El más directo es que ayuda a visibilizar un problema poco estudiado en español: el sesgo algorítmico hacia las personas con discapacidad. Al publicar el dataset y el pipeline en GitHub de forma pública, cualquier investigador puede utilizarlos como punto de partida, ampliarlos con nuevos modelos o dominios, o replicarlos para comparar resultados. También puede resultar útil para los equipos que desarrollan los modelos evaluados, ya que los resultados identifican patrones concretos de sesgo que podrían corregirse en versiones futuras.
+Este trabajo puede tener un impacto positivo en varios sentidos. Lo más directo es que ayuda a visibilizar un problema poco estudiado en español: el sesgo algorítmico hacia las personas con discapacidad. Al publicar el dataset y el pipeline en GitHub de forma pública, cualquier investigador puede utilizarlos como punto de partida, ampliarlos con nuevos modelos o dominios, o replicarlos para comparar resultados. También puede resultar útil para los equipos que desarrollan los modelos evaluados, ya que los resultados identifican patrones concretos de sesgo que podrían corregirse en versiones futuras.
 
 Desde el punto de vista ético, se ha procurado utilizar la terminología recomendada por las organizaciones representativas del colectivo (CERMI, ONCE), presentar los resultados sin descalificar a ningún modelo más allá de lo que los datos indican, y no incluir ninguna credencial ni clave de API en el repositorio.
 
+%--
+% Relación con los Objetivos de Desarrollo Sostenible
+%-
 \section{Relación con los Objetivos de Desarrollo Sostenible}
 Este trabajo conecta con varios ODS de la Agenda 2030. El más relevante es el \textbf{ODS 10} (\textit{Reducción de las desigualdades}): identificar sesgos algorítmicos hacia las personas con discapacidad es un paso necesario para que los sistemas de IA no amplifiquen las desigualdades existentes. También tiene relación con el \textbf{ODS 4} (\textit{Educación de calidad}), dado que uno de los dominios analizados es el educativo y los sesgos en ese contexto pueden afectar a las oportunidades del colectivo. Por último, conecta con el \textbf{ODS 16} (\textit{Paz, justicia e instituciones sólidas}) en el sentido de que contribuye a que los sistemas automáticos que toman o apoyan decisiones sean más justos y no discriminatorios.
 
-\section{Reconocimiento}
-Este Trabajo de Fin de Grado está enmarcado en el proyecto \textbf{PID2023-148577OB-C21} (\textit{Human-Centered AI: User-Driven Adapted Language Models -- HUMAN\_AI}), financiado por MICIU/AEI/10.13039/501100011033 y por FEDER/UE.
 
+%--
+% Conclusiones
+%-
 \section{Conclusiones}
 El proyecto ha tenido un coste económico reducido gracias al acceso a infraestructura compartida y al uso de modelos de código abierto. El coste principal es el tiempo dedicado, estimado en unas 300 horas. El impacto potencial puede ser relevante: se aportan un dataset, un pipeline y unos resultados que pueden servir de base para investigación futura sobre equidad en IA en español.
     
@@ -2002,10 +2241,16 @@ El proyecto ha tenido un coste económico reducido gracias al acceso a infraestr
 %	CONCLUSIONES Y TRABAJO FUTURO
 %----------
 \chapter{Conclusiones}
+
+En este capítulo se recogen las conclusiones finales del Trabajo de Fin de Grado. En primer lugar, se resumen los principales resultados obtenidos. A continuación, se revisa el grado de cumplimiento de los objetivos planteados, se destacan las principales aportaciones del trabajo y se presentan sus limitaciones. Finalmente, se proponen posibles líneas de trabajo futuras.
+
+%--
+% Conclusiones generales
+%-
 \section{Conclusiones generales}
 Este TFG ha diseñado, implementado y ejecutado un marco experimental reproducible para analizar sesgos relacionados con la discapacidad en modelos de IA generativa en español. El enfoque contrafactual ha permitido comparar de forma sistemática las respuestas de cuatro modelos ante las mismas consultas con y sin referencia explícita a la discapacidad, obteniendo evidencia cuantitativa sobre la existencia y la magnitud de estos sesgos.
 
-El resultado más importante del experimento es que los tres modelos locales evaluados ,Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct, presentan sesgo detectable en más del 85\% de los prompts, mientras que Gemini 2.5 Flash solo lo hace en el 11\%. La dimensión más afectada en los modelos locales es la ausencia de estereotipo, con caídas medias de entre $-1{,}41$ y $-1{,}44$ puntos sobre 5. Los tipos de discapacidad cognitiva e intelectual son los más estigmatizados (caídas del 70-71\% de los casos), y el dominio de empleo es el más vulnerable de los cinco analizados (75\% de prompts con sesgo).
+El resultado más importante del experimento es que los tres modelos locales evaluados, Llama 3.1 8B Instruct, RigoChat 7B v2 y Salamandra 7B Instruct, presentan sesgo detectable en más del 85\% de los prompts, mientras que Gemini 2.5 Flash solo lo hace en el 11\%. La dimensión más afectada en los modelos locales es la ausencia de estereotipo, con caídas medias de entre $-1{,}41$ y $-1{,}44$ puntos sobre 5. Los tipos de discapacidad cognitiva e intelectual son los más estigmatizados (caídas del 70-71\% de los casos), y el dominio de empleo es el más vulnerable de los cinco analizados (75\% de prompts con sesgo).
 
 El análisis cualitativo de los casos más extremos revela que el sesgo raramente toma la forma de insultos o contenido abiertamente ofensivo. Lo más común es que los modelos simplifiquen implícitamente sus respuestas, introduzcan advertencias no solicitadas, asuman limitaciones de la persona que no se derivan del prompt, o directamente rechacen preguntas perfectamente legítimas por el simple hecho de mencionar una discapacidad. En el caso más extremo del experimento, Salamandra rechazó responder a una pregunta sobre los requisitos bancarios para conceder una hipoteca a una persona con discapacidad cognitiva, calificando la pregunta de «ofensiva y discriminatoria», mientras que al mismo prompt sin referencia a discapacidad respondía con normalidad. Esto ilustra bien que el problema no es solo cuantitativo sino también cualitativo: los modelos pueden llegar a excluir activamente a las personas con discapacidad de información que tienen todo el derecho a recibir.
 
@@ -2013,6 +2258,9 @@ Un resultado notable es el comportamiento de Gemini en cuanto a la extensión de
 
 Por último, el resultado sobre la especialización en español es un hallazgo relevante por sí solo: los dos modelos específicamente orientados al español (RigoChat y Salamandra) no presentan mejor comportamiento que Llama, un modelo multilingüe de propósito general, en ninguna de las métricas de sesgo analizadas. La especialización lingüística no implica mayor equidad.
 
+%--
+% Cumplimiento de objetivos
+%-
 \section{Cumplimiento de objetivos}
 A continuación se describe cómo cada uno de los objetivos específicos planteados al inicio del trabajo ha quedado cubierto:
 
@@ -2024,6 +2272,9 @@ A continuación se describe cómo cada uno de los objetivos específicos plantea
     \item Las limitaciones y líneas de mejora se recogen en este mismo capítulo.
 \end{itemize}
 
+%--
+% Principales aportaciones
+%-
 \section{Principales aportaciones}
 Las principales aportaciones de este trabajo son las siguientes:
 
@@ -2034,9 +2285,15 @@ Las principales aportaciones de este trabajo son las siguientes:
     \item Un análisis empírico del sesgo hacia la discapacidad en cuatro modelos representativos, incluyendo dos especializados en español (RigoChat y Salamandra) y dos multilingües de propósito general (Llama y Gemini).
 \end{enumerate}
 
+%--
+% Limitaciones
+%-
 \section{Limitaciones}
 El trabajo presenta algunas limitaciones que conviene mencionar. La más importante es que el dataset es sintético: los prompts fueron redactados siguiendo criterios de diseño experimental y no provienen de consultas reales de usuarios, lo que puede afectar a la generalización de los resultados. El estudio se limita también al español estándar, sin contemplar variedades regionales. La evaluación automática tiene problemas conocidos para detectar sesgos sutiles como el paternalismo. Y la muestra para revisión manual es necesariamente pequeña dado el volumen total del experimento.
 
+%--
+% Líneas futuras
+%-
 \section{Líneas futuras}
 Hay varias direcciones en las que podría continuarse este trabajo:
 
@@ -2056,7 +2313,7 @@ Hay varias direcciones en las que podría continuarse este trabajo:
 
 \clearpage
 \addcontentsline{toc}{chapter}{Bibliografía}
-\setquotestyle[english]{british} % Cambiamos el tipo de cita porque en el estilo IEEE se usan las comillas inglesas.
+\setquotestyle{british} % Cambiamos el tipo de cita porque en el estilo IEEE se usan las comillas inglesas.
 \printbibliography
 
 
@@ -2068,7 +2325,83 @@ Hay varias direcciones en las que podría continuarse este trabajo:
 % Si tu trabajo incluye anexos, puedes descomentar las siguientes líneas
 %\chapter* {Anexo x}
 %\pagenumbering{gobble} % Las páginas de los anexos no se numeran
+\appendix
 
+%----------
+%	REPOSITORIO Y EJECUCIÓN
+%----------
+\chapter{Repositorio y ejecución}
 
+El código fuente desarrollado para este Trabajo de Fin de Grado se encuentra disponible en el siguiente repositorio público:
+
+\begin{center}
+\url{https://github.com/100495702/TFG-Sesgos-en-la-IA}
+\end{center}
+
+El repositorio contiene el dataset de prompts, los scripts de ejecución del experimento, los clientes de los modelos evaluados, los módulos de evaluación automática, los resultados generados y los scripts utilizados para producir las tablas y figuras de resultados.
+
+La estructura principal del repositorio es la siguiente:
+
+\begin{itemize}
+    \item \texttt{data/}: dataset de prompts (\texttt{dataset.json}) y su versión tabular (\texttt{dataset\_expandido.csv}).
+    \item \texttt{scripts/}: código principal del pipeline, incluyendo el módulo de carga (\texttt{dataset\_loader.py}), el orquestador (\texttt{generate\_evaluations.py}) y el script de selección de muestra (\texttt{seleccionar\_muestra.py}).
+    \item \texttt{scripts/modelos/}: interfaz común (\texttt{base.py}) y clientes de los modelos evaluados (Llama, RigoChat, Salamandra y Gemini).
+    \item \texttt{scripts/evaluacion/}: módulos de análisis de sentimiento (\texttt{sentimiento.py}) y juez LLM (\texttt{juez\_llm.py}).
+    \item \texttt{outputs/}: resultados del experimento (\texttt{salidas.json}), muestra para revisión manual (\texttt{muestra\_evaluacion\_manual.json}), tablas agregadas en CSV (\texttt{outputs/tablas/}) y figuras generadas en PNG (\texttt{outputs/figuras/}).
+    \item \texttt{docs/}: memoria del TFG y copia de las figuras incluidas en ella (\texttt{docs/imagenes/}).
+\end{itemize}
+
+\textbf{Instalación.} El proyecto requiere Python 3.10 o superior. Se recomienda crear un entorno virtual e instalar las dependencias indicadas en \texttt{requirements.txt}:
+
+\begin{verbatim}
+python3 -m venv entorno-tfg
+source entorno-tfg/bin/activate
+pip install -r requirements.txt
+\end{verbatim}
+
+Las credenciales necesarias para acceder a los modelos (token de Hugging Face y clave de la API de Google) se configuran en un fichero \texttt{.env} en la raíz del proyecto. Este fichero no se incluye en el repositorio, ya que contiene credenciales, y está excluido mediante \texttt{.gitignore}.
+
+Para la reproducibilidad conviene tener en cuenta que Llama 3.1 8B Instruct es un modelo de acceso restringido (\textit{gated}) en Hugging Face: para descargarlo es necesario disponer de una cuenta de Hugging Face que haya aceptado la licencia del modelo en su página oficial, y configurar la variable \texttt{HF\_TOKEN} con un token de acceso asociado a esa cuenta. Sin este paso, la carga del modelo \texttt{meta-llama/Meta-Llama-3.1-8B-Instruct} fallará aunque el resto de la configuración sea correcta.
+
+\textbf{Ejecución.} La ejecución principal del experimento, que genera \texttt{outputs/salidas.json}, se realiza mediante:
+
+\begin{verbatim}
+python scripts/generate_evaluations.py
+\end{verbatim}
+
+A partir de los resultados, la muestra para revisión manual se obtiene con:
+
+\begin{verbatim}
+python scripts/seleccionar_muestra.py --n 5 --criterio sesgo
+\end{verbatim}
+
+Y las tablas y figuras comparativas se generan con:
+
+\begin{verbatim}
+python scripts/analisis_resultados.py
+\end{verbatim}
+
+\textbf{Localización de los principales artefactos.} El dataset de prompts se encuentra en \texttt{data/dataset.json}; los resultados completos del experimento, en \texttt{outputs/salidas.json}; las tablas de resultados agregados, en \texttt{outputs/tablas/}; las figuras comparativas, en \texttt{outputs/figuras/} y \texttt{docs/imagenes/}; y el prompt exacto utilizado por el juez LLM, transcrito en la Sección~\ref{sec:juez_llm_prompt}, se encuentra en el código en \texttt{scripts/evaluacion/juez\_llm.py}.
+
+Este anexo se incluye para facilitar la revisión, reproducción y reutilización del sistema desarrollado.
+
+%----------
+%	USO DE LA IA GENERATIVA
+%----------
+\chapter{Uso de la IA generativa}
+
+En cumplimiento de las recomendaciones de la universidad sobre el uso de herramientas de inteligencia artificial generativa en los Trabajos de Fin de Grado, en este anexo se describe de forma transparente cómo se han utilizado este tipo de herramientas durante la realización de este trabajo.
+
+A lo largo del proyecto se ha utilizado un asistente de IA generativa basado en modelos de lenguaje (Claude, de Anthropic) como herramienta de apoyo, principalmente en las siguientes tareas:
+
+\begin{itemize}
+    \item \textbf{Búsqueda y localización de documentación.} Apoyo para localizar y orientarse entre la documentación oficial de las librerías, modelos y APIs empleados en el proyecto (Hugging Face Transformers, google-genai, pysentimiento, \texttt{pgfgantt}, \LaTeX{}, etc.), así como para identificar referencias bibliográficas relevantes sobre sesgos en modelos de lenguaje y discapacidad.
+
+    \item \textbf{Refinado de redacción.} Una vez redactados los contenidos de esta memoria, se ha utilizado IAG para revisar ese texto ya escrito: corrección de erratas, mejora de la claridad de algunos párrafos, ajuste del formato \LaTeX{} (tablas, figuras, comentarios de cabecera) y comprobación de la consistencia entre el contenido de la memoria y el código del repositorio. La estructura de la memoria, sus contenidos y los argumentos expuestos son propios.
+
+    \item \textbf{Apoyo en la depuración de código.} Apoyo puntual para depurar y revisar errores en el código desarrollado en \texttt{scripts/} (por ejemplo, el manejo de errores y el mecanismo de checkpoint del orquestador, los clientes de los distintos modelos, o el cálculo de métricas y la generación de tablas y figuras).
+\end{itemize}
+
+El diseño experimental, la estructura y organización de la memoria, la definición del dataset de prompts contrafactuales, la implementación del pipeline, la ejecución del experimento, el análisis de los resultados y las conclusiones del trabajo son responsabilidad del autor, que ha revisado, validado y, en su caso, corregido todo el contenido generado con apoyo de estas herramientas antes de incorporarlo al trabajo final.
 
 \end{document}
