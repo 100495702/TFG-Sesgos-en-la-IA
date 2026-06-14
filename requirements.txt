@@ -1,24 +1,24 @@
 # Dependencias para TFG - Evaluación de Sesgos en LLMs
 
 # Procesamiento de datos
-numpy>=1.21.0
-pandas>=1.3.0
+numpy==2.2.6
+pandas==2.3.3
 
 # Modelos NLP y transformers
-torch>=1.10.0
-transformers>=4.25.0
+# torch se instaló con soporte CUDA 12.1: ver https://pytorch.org/get-started/locally/
+torch==2.5.1
+transformers==5.6.2
+huggingface_hub==1.12.0
 
-# APIs de modelos
-google-generativeai>=0.3.0
-anthropic>=0.7.0
+# API de modelos (Gemini)
+google-genai==1.75.0
 
 # Utilidades
-python-dotenv>=0.19.0
-requests>=2.28.0
+python-dotenv==1.2.2
 
 # Visualización
-matplotlib>=3.5.0
-seaborn>=0.12.0
+matplotlib==3.10.9
+seaborn==0.13.2
 
 # Para desarrollo
 jupyter>=1.0.0
