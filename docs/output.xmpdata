@@ -1,6 +1,0 @@
-\Title{Análisis de sesgos relacionados con la discapacidad en modelos de IA Generativa en español}
-\Author{Alejandro López Sancho}
-\Copyright{\copyright The author. Some rights reserved. This document is under terms of Creative Commons license Attribution - Non Commercial - Non Derivatives.}
-\CopyrightURL{http://creativecommons.org/licenses/by-nc-nd/3.0/es/}
-\Keywords{sesgos en IA\sep modelos de lenguaje\sep discapacidad\sep prompts contrafactuales\sep evaluación automática\sep español\sep análisis de sentimiento\sep LLM-as-judge}
-\Subject{Trabajo Fin de Grado: marco experimental reproducible para analizar sesgos relacionados con la discapacidad en modelos de IA generativa en español mediante prompts contrafactuales.}

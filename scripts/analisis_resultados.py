@@ -22,7 +22,7 @@ import seaborn as sns
 PROJECT_ROOT = Path(__file__).parent.parent
 SALIDAS = PROJECT_ROOT / "outputs" / "salidas.json"
 DIR_TABLAS = PROJECT_ROOT / "outputs" / "tablas"
-DIR_FIGURAS = PROJECT_ROOT / "docs" / "imagenes"
+DIR_FIGURAS = PROJECT_ROOT / "outputs" / "imagenes"
 
 NOMBRES_MODELO = {
     "Llama_3.1_8B_Instruct": "Llama 3.1 8B",

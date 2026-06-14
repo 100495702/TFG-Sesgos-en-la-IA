@@ -38,11 +38,7 @@ TFG/
 ├── outputs/
 │   ├── salidas.json              # Resultados completos del experimento (checkpoint)
 │   ├── muestra_evaluacion_manual.json  # Muestra para revisión humana
-│   └── tablas/                   # Tablas CSV generadas por analisis_resultados.py
-│
-├── docs/
-│   ├── memoria_borrador.tex      # Memoria del TFG (LaTeX)
-│   ├── referencias.bib           # Bibliografía
+│   ├── tablas/                   # Tablas CSV generadas por analisis_resultados.py
 │   └── imagenes/                 # Figuras PNG generadas por analisis_resultados.py
 │
 ├── requirements.txt
